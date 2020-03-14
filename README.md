@@ -27,5 +27,15 @@ Open a terminal from IDE:
 
 Open another terminal:
 
-	1. npm start
+	1: npm start
 	2: http://localhost:3000/
+	
+	
+
+RUNNING DATA INIT
+
+
+Open PSQL:
+	1: CREATE DATABASE api;
+	2: \c api
+	3: \i path/to/your/postgresql script.sql
