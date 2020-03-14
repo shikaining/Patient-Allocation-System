@@ -52,8 +52,10 @@ app.use(function (req, res, next) {
 //app.use(express.static(path.join(__dirname, 'public_static')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.join(__dirname, 'public_static')));
+
 //View pages
-app.use('/', indexRouter);
+app.use('/home', indexRouter);
 app.use('/login', loginRouter);
 
 

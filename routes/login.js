@@ -26,7 +26,6 @@ const pool = new Pool({
 //   connectionString: process.env.DATABASE_URL
 // });
 
-
 router.post('/', function (req, res, next) {
 
   var email = req.body.email;
