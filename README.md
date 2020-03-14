@@ -36,6 +36,7 @@ RUNNING DATA INIT
 
 
 Open PSQL:
+
 	1: CREATE DATABASE api;
 	2: \c api
 	3: \i path/to/your/postgresql script.sql
