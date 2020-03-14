@@ -1,7 +1,6 @@
 # Patient-Allocation-System
 
-SETTING UP
-
+# Setting Up
 
 
 Open a terminal from IDE:
@@ -12,7 +11,7 @@ Open a terminal from IDE:
 
 
 
-RUNNING THE PROJECT
+# Running the project
 
 
 
@@ -32,7 +31,7 @@ Open another terminal:
 	
 	
 
-RUNNING DATA INIT
+# Setting up database and running Data Init
 
 
 Open PSQL:
