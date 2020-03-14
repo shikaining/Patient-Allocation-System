@@ -1,0 +1,29 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#login_form {
+  width: 50%;
+  margin-left: 320px;
+  margin-top: 160px;
+  background-color:rgb(171, 187, 199); 
+  align-content: center;
+}
+
+.form-login {
+  width: 85%;
+  margin-left: 50px;
+}
+
+#adminLogin_form {
+  width: 50%;
+  margin-left: 320px;
+  margin-top: 160px;
+  background-color:rgb(147, 172, 201); 
+  align-content: center;
+}

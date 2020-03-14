@@ -25,9 +25,16 @@
   },
   "dependencies": {
     "body-parser": "^1.18.2",
-    "express": "^4.16.2",
+    "client-sessions": "^0.8.0",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^6.2.0",
+    "express": "^4.17.1",
+    "express-flash": "0.0.2",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.17.0",
     "jquery": "^3.3.1",
-    "nodemon": "^1.14.12"
+    "nodemon": "^1.14.12",
+    "pg": "^7.18.2"
   },
   "main": "index.js"
 }

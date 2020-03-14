@@ -4,7 +4,9 @@ const port = 3000 || process.env.PORT;
 const Web3 = require('web3');
 const truffle_connect = require('./connection/app.js');
 const bodyParser = require('body-parser');
-const db = require('./connection/queries')
+const db = require('./connection/queries');
+var path = require('path');
+var session = require('express-session');
 
 app.get('/users', db.getUsers)
 app.get('/users/:id', db.getUserById)
@@ -12,18 +14,53 @@ app.post('/users', db.createUser)
 app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 
+
+//Public pages
+var indexRouter = require('./routes/index');
+var loginRouter = require('./routes/login');
+
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+//session
+app.use(session({
+	secret: '...',
+	resave: true,
+    saveUninitialized: true,
+	maxAge: 1000 * 60 * 60		// 1 hour
+}));
+
+//messages
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
+});
+
+
 //calls the files in public static
-app.use('/', express.static('public_static'));
+//app.use('/', express.static('public_static'));
+
+//app.use(express.static(path.join(__dirname, 'public_static')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+//View pages
+app.use('/', indexRouter);
+app.use('/login', loginRouter);
+
+
 
 app.get('/getAccounts', (req, res) => {
   console.log("**** GET /getAccounts ****");
-  //calls app.js's start method 
+  //calls app.js's start method
   //the 'answer' here refers to the response from the start method
   truffle_connect.start(function (answer) {
     res.send(answer);
@@ -69,7 +106,7 @@ app.post('/sendCoin', (req, res) => {
 app.listen(port, () => {
 
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
 
   console.log("Express Listening at http://localhost:" + port);
 

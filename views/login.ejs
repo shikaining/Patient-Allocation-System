@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Page Title -->
+    <title>Login</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/modern-business.css" rel="stylesheet">
+
+    <!-- CSS for Styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- JavaScript for Interactivity -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+    <script src="javascripts/loginScript.js"></script>
+
+    <script type="text/javascript">
+        // function login.js(error){
+        //     if(error.responseText == 'showAlert')
+        //         alert("Please enter correct user name and password.")
+        // }
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="http://localhost:3000">Patient Allocation System</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:3000/register">Register for Student Account</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Login
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
+                            <a class="dropdown-item" href="http://localhost:3000/login">Login as Student</a>
+                            <a class="dropdown-item" href="http://localhost:3000/adminLogin">Login as Admin</a>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <form id="login_form" action="login" role="form" method="post">
+        &nbsp;
+
+        <%- messages('my_message_template', locals) %>
+        <div class="form-login">
+            <h1>Login</h1>
+            <br />
+            <label for="email">Please enter your email:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+                required="required">
+
+        </div>
+        <div class="form-login">
+            <label for="password">Please enter your password:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
+                required="required">
+            <br />
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+        <br />
+    </form>
+    <script>
+        (function () {
+            window.addEventListener('load', function () {
+                var forms = [document.getElementById('login_form')];
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', check, false);
+                });
+            }, false);
+        })();
+    </script>
+    </table>
+
+</body>
+
+<br /><br /><br /><br /><br /><br />
+ <!-- Footer -->
+ <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-0 text-center text-white">Copyright &copy; Patient Allocation System 2020</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
