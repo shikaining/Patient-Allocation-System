@@ -1,8 +1,14 @@
-var ConvertLib = artifacts.require("./ConvertLib.sol");
-var MetaCoin = artifacts.require("./MetaCoin.sol");
+const Patient = artifacts.require("Patient");
 
-module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+module.exports = function(deployer, network, accounts) {
+	const owner = accounts[0];
+	const powerUsers = [accounts[1], accounts[2]];
+	let patientInstance;
+	
+	return deployer
+    .then(() => {
+        return deployer.deploy(Patient, powerUsers, {from: owner});
+    }).then((inst) => {
+        patientInstance = inst;
+    })
 };
