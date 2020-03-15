@@ -6,7 +6,7 @@ Title		: Group02 Project - Patient
 
 pragma solidity ^0.5.0;
 
-import "./@openzeppelin/contracts/token/ERC721/ERC721Full.sol";
+import "./ERC721Full.sol";
 
 contract Patient is ERC721Full {
 	
