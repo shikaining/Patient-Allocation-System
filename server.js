@@ -32,10 +32,10 @@ app.set('view engine', 'ejs');
 
 //session
 app.use(session({
-	secret: '...',
-	resave: true,
-    saveUninitialized: true,
-	maxAge: 1000 * 60 * 60		// 1 hour
+  secret: '...',
+  resave: true,
+  saveUninitialized: true,
+  maxAge: 1000 * 60 * 60		// 1 hour
 }));
 
 //messages
@@ -102,6 +102,75 @@ app.post('/sendCoin', (req, res) => {
   //this is sent to another file's method that calls current method
   truffle_connect.sendCoin(amount, sender, receiver, (balance) => {
     res.send(balance);
+  });
+});
+/*
+PATIENT CONTRACT
+*/
+app.post('/allocatePatient', (req, res) => {
+  console.log("**** /allocatePatient ****");
+  console.log(req.body);
+
+  //embedded information from req
+  let patientId = req.body.patientId;
+  let studentAddr = req.body.studentAddr;
+  let sender = req.body.sender;
+
+  truffle_connect.allocatePatient(patientId, studentAddr, sender => {
+    //res.send(balance);
+  });
+});
+
+app.get('/getTotalPatients', (req, res) => {
+  console.log("**** GET /getTotalPatients ****");
+
+  truffle_connect.getTotalPatients(function (answer) {
+    res.send(answer);
+  })
+});
+
+app.get('/getOwner', (req, res) => {
+  console.log("**** GET /getOwner ****");
+
+  truffle_connect.getOwner(function (answer) {
+    res.send(answer);
+  })
+});
+
+app.post('/listPatient', (req, res) => {
+  console.log("**** /listPatient ****");
+  console.log(req.body);
+
+  let patientId = req.body.patientId;
+  let sender = req.body.sender;
+
+  truffle_connect.listPatient(patientId, sender => {
+    //res.send(balance);
+  });
+});
+
+app.post('/unlistPatient', (req, res) => {
+  console.log("**** /unlistPatient ****");
+  console.log(req.body);
+
+  let patientId = req.body.patientId;
+  let sender = req.body.sender;
+
+  truffle_connect.unlistPatient(patientId, sender => {
+    //res.send(balance);
+  });
+});
+
+app.post('/studentTransfer', (req, res) => {
+  console.log("**** /studentTransfer ****");
+  console.log(req.body);
+
+  let patientId = req.body.patientId;
+  let studentAddr = req.body.studentAddr;
+  let sender = req.body.sender;
+
+  truffle_connect.studentTransfer(patientId, studentAddr, sender => {
+    //res.send(balance);
   });
 });
 

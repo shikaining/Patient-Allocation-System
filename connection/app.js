@@ -1,7 +1,9 @@
 const contract = require('truffle-contract');
 
-const metacoin_artifact = require('../build/contracts/MetaCoin.json');
-var MetaCoin = contract(metacoin_artifact);
+// const metacoin_artifact = require('../build/contracts/MetaCoin.json');
+// var MetaCoin = contract(metacoin_artifact);
+const patient_artifact = require('../build/contracts/Patient.json');
+var Patient = contract(patient_artifact);
 
 //methods here calls contracts' methods
 module.exports = {
@@ -74,5 +76,85 @@ module.exports = {
       console.log(e);
       callback("ERROR 404");
     });
+  },
+
+  /*
+  CALLS PATIENT CONTRACT
+  */
+  allocatePatient: function (patientId, studentAddr, sender) {
+
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    //deploy Patient
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      //call send coin, must give receiver and amount and define sender acct
+      return patientInstance.allocatePatient(patientId, studentAddr, { from: sender });
+    });
+  },
+  getTotalPatients: function (callback) {
+    var self = this;
+
+    // Bootstrap the MetaCoin abstraction for Use.
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.getTotalPatients();
+    }).then(function (value) {
+      callback(value.valueOf());
+    }).catch(function (e) {
+      console.log(e);
+      callback("ERROR 404");
+    });
+  },
+  getOwner: function (callback) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.getOwner();
+    }).then(function (value) {
+      callback(value.valueOf());
+    }).catch(function (e) {
+      console.log(e);
+      callback("ERROR 404");
+    });
+  },
+  listPatient: function (patientId, sender) {
+
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    //deploy Patient
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      //call send coin, must give receiver and amount and define sender acct
+      return patientInstance.listPatient(patientId, { from: sender });
+    });
+  },
+  unlistPatient: function (patientId, sender) {
+
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    //deploy Patient
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      //call send coin, must give receiver and amount and define sender acct
+      return patientInstance.unlistPatient(patientId, { from: sender });
+    });
+  },
+  studentTransfer: function (patientId, studentAddr, sender) {
+
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    //deploy Patient
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      //call send coin, must give receiver and amount and define sender acct
+      return patientInstance.studentTransfer(patientId, studentAddr , { from: sender });
+    });
   }
+
+
 }
