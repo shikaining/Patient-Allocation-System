@@ -82,6 +82,7 @@ app.post('/getBalance', (req, res) => {
     truffle_connect.start(function (answer) {
       // get list of all accounts and send it along with the response
       let all_accounts = answer;
+      //returning array of ans in response
       response = [account_balance, all_accounts]
       res.send(response);
     });
@@ -174,10 +175,41 @@ app.post('/studentTransfer', (req, res) => {
   });
 });
 
+app.get('/getPatient', (req, res) => {
+  console.log("**** GET /getPatient ****");
+  console.log(req.body);
+  let patientId = req.body.patientId;
+  let sender = req.body.sender;
+
+  truffle_connect.getPatient(patientId, sender, (answer) => {
+    let patientName = answer[0];
+    let patientContact = answer[1];
+    let indications = answer[2];
+    let patientOwner = answer[3];
+    let resolved = answer[4];
+    response = [patientName, patientContact,indications, patientOwner, resolved]
+    res.send(response);
+  })
+});
+
+app.post('/createPatient', (req, res) => {
+  console.log("**** /createPatient ****");
+  console.log(req.body);
+
+  let patientName = req.body.patientName;
+  let patientContact = req.body.patientContact;
+  let indications = req.body.indications;
+  let sender = req.body.sender;
+
+  truffle_connect.createPatient(patientName, patientContact, indications, sender => {
+    //res.send(balance);
+  });
+});
+
 app.listen(port, () => {
 
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
+  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
 
   console.log("Express Listening at http://localhost:" + port);
 

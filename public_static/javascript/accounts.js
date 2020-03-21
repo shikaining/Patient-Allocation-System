@@ -61,11 +61,6 @@ $(document).ready(function () {
     })
   });
 
-  $.get('/getTotalPatients', function (response) {
-    var totalPatients = response[0];
-    //need a component in html with id: totalPatients
-    $('#totalPatients').text(totalPatients);
-  })
 
   $.get('/getOwner', function (response) {
     var owner = response[0];
@@ -95,6 +90,30 @@ $(document).ready(function () {
     let studentAddr = $('#studentAddr').val();
     $.post('/studentTransfer', { patientId: patientId, studentAddr: studentAddr, sender: sender }, function () {
       $('#status').text("Student transferred successfully");
+    })
+  });
+
+  $.get('/getPatient', function (response) {
+    var patientName = response[0];
+    var patientContact = response[1];
+    var indications = response[2];
+    var patientOwner = response[3];
+    var resolved = response[4];
+    //need a component in html with id: totalPatients
+    $('#patientName').text(patientName);
+    $('#patientContact').text(patientContact);
+    $('#indications').text(indications);
+    $('#patientOwner').text(patientOwner);
+    $('#resolved').text(resolved);
+  })
+
+  $('#createPatient').click(function () {
+    $('#status').text("Pending...");
+    let patientName = $('#patientName').val();
+    let patientContact = $('#patientContact').val();
+    let indications = $('#indications').val();
+    $.post('/createPatient', { patientName: patientName, patientContact: patientContact, indications: indications, sender: sender }, function () {
+      $('#status').text("Created successfully");
     })
   });
 
