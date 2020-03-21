@@ -18,7 +18,16 @@ app.delete('/users/:id', db.deleteUser)
 //Public pages
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
+var staffLoginRouter = require('./routes/staffLogin');
 
+//Staff pages
+var createPatientRouter = require('./routes/createPatient');
+var viewPatientRouter = require('./routes/viewPatients');
+var allocatePatientRouter = require('./routes/allocatePatients');
+
+//Student pages
+var viewAllPatientRouter = require('./routes/viewAllPatients');
+var viewRequestRouter = require('./routes/viewRequests');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -57,8 +66,14 @@ app.use(express.static(path.join(__dirname, 'public_static')));
 //View pages
 app.use('/home', indexRouter);
 app.use('/login', loginRouter);
+app.use('/staffLogin', staffLoginRouter);
 
+app.use('/createPatient', createPatientRouter);
+app.use('/viewPatients', viewPatientRouter);
+app.use('/allocatePatients', allocatePatientRouter);
 
+app.use('/viewAllPatients', viewAllPatientRouter);
+app.use('/viewRequests', viewRequestRouter);
 
 app.get('/getAccounts', (req, res) => {
   console.log("**** GET /getAccounts ****");
