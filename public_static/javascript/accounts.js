@@ -3,10 +3,12 @@ $(document).ready(function () {
   var curraccount;
   var selectedAccount;
   var sender;
+  var listOfAddress
 
   $.get('/getAccounts', function (response) {
     //response received from server.js has many accounts
     //for each account, prints the account
+    listOfAddress = response;
     for (let i = 0; i < response.length; i++) {
       curraccount = response[i];
       $('#options').append("<option value='" + curraccount + "'>" + curraccount + "</option>");
@@ -37,6 +39,11 @@ $(document).ready(function () {
     })
   })
 
+  $('#submit1').click(function () {
+      $('.select').removeClass("active");
+      $('.create').addClass("active");
+  })
+
   $('#send').click(function () {
     $('#status').text("Sending...");
     let amount = $('#amount').val();
@@ -55,6 +62,7 @@ $(document).ready(function () {
     $('#status').text("Pending...");
     let patientId = $('#patientId').val();
     let studentAddr = $('#studentAddr').val();
+    sender = listOfAddress[1]; // Temporary!!    sender will eventually be taken from account user and match to address stored in DB.
     $.post('/allocatePatient', { patientId: patientId, studentAddr: studentAddr, sender: sender }, function () {
       //response is from server.js, contains the balance
       $('#status').text("Allocated successfully");
@@ -62,29 +70,33 @@ $(document).ready(function () {
   });
 
 
-  $.get('/getOwner', function (response) {
-    var owner = response[0];
+  $.get('/getOwner', function (response) { //Checked 1
+    console.log("Response: " + response);
+    var owner = response; //Initially was response[0], which returns 0, not the address.
     //need a component in html with id: owner
     $('#owner').text(owner);
   })
 
-  $('#list').click(function () {
+  $('#list').click(function () { //Checked 1
     $('#status').text("Pending...");
+    console.log("Listing Patient in progress")
     let patientId = $('#patientId').val();
-    $.post('/listPatient', { patientId: patientId, sender: sender }, function () {
-      $('#status').text("Listed successfully");
+    sender = listOfAddress[1]; // Temporary!!    sender will eventually be taken from account user and match to address stored in DB.
+    $.post('/listPatient', { patientId: patientId, sender: sender }, function () { //
+      $('#status').text("Listed successfully"); 
     })
   });
 
-  $('#unlist').click(function () {
+  $('#unlist').click(function () { //Checked 1
     $('#status').text("Pending...");
     let patientId = $('#patientId').val();
+    sender = listOfAddress[1]; // Temporary!!    sender will eventually be taken from account user and match to address stored in DB.
     $.post('/unlistPatient', { patientId: patientId, sender: sender }, function () {
       $('#status').text("Unlisted successfully");
     })
   });
 
-  $('#transfer').click(function () {
+  $('#transfer').click(function () { //Can't test since createPatient don't work.
     $('#status').text("Pending...");
     let patientId = $('#patientId').val();
     let studentAddr = $('#studentAddr').val();
@@ -93,7 +105,7 @@ $(document).ready(function () {
     })
   });
 
-  $.get('/getPatient', function (response) {
+  $.get('/getPatient', function (response) { // Can't test this at the moment, need wait for frontend.
     var patientName = response[0];
     var patientContact = response[1];
     var indications = response[2];
@@ -107,12 +119,14 @@ $(document).ready(function () {
     $('#resolved').text(resolved);
   })
 
-  $('#createPatient').click(function () {
+  $('#createPatient').click(function () { //Doesn't work at the moment, Error: OUT OF GAS.
     $('#status').text("Pending...");
     let patientName = $('#patientName').val();
     let patientContact = $('#patientContact').val();
     let indications = $('#indications').val();
+    sender = listOfAddress[1]; // Temporary!!    sender will eventually be taken from account user and match to address stored in DB.
     $.post('/createPatient', { patientName: patientName, patientContact: patientContact, indications: indications, sender: sender }, function () {
+      /* Method to create patient in PostgreSQL DB */
       $('#status').text("Created successfully");
     })
   });

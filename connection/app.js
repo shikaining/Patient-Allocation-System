@@ -82,7 +82,7 @@ module.exports = {
   CALLS PATIENT CONTRACT
   */
   allocatePatient: function (patientId, studentAddr, sender) {
-
+    var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
     //deploy Patient
@@ -114,15 +114,16 @@ module.exports = {
     var patientInstance;
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
-      return patientInstance.getOwner();
+      return patientInstance.getOwner.call(); //BigNumber Error thrown inside, not sure why, but it returns address fine.
     }).then(function (value) {
       callback(value.valueOf());
     }).catch(function (e) {
-      console.log(e);
+      console.log("GetOWner Error: " + e);
       callback("ERROR 404");
     });
   },
   listPatient: function (patientId, sender) {
+    console.log("ListPatient Start")
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
@@ -130,6 +131,7 @@ module.exports = {
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
       //call send coin, must give receiver and amount and define sender acct
+      console.log("ListPatient End")
       return patientInstance.listPatient(patientId, { from: sender });
     });
   },

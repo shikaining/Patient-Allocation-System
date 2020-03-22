@@ -117,7 +117,7 @@ app.post('/allocatePatient', (req, res) => {
   let studentAddr = req.body.studentAddr;
   let sender = req.body.sender;
 
-  truffle_connect.allocatePatient(patientId, studentAddr, sender => {
+  truffle_connect.allocatePatient(patientId, studentAddr, sender, () => {
     //res.send(balance);
   });
 });
@@ -134,6 +134,7 @@ app.get('/getOwner', (req, res) => {
   console.log("**** GET /getOwner ****");
 
   truffle_connect.getOwner(function (answer) {
+    console.log("GetOwner: " + answer);
     res.send(answer);
   })
 });
@@ -145,7 +146,7 @@ app.post('/listPatient', (req, res) => {
   let patientId = req.body.patientId;
   let sender = req.body.sender;
 
-  truffle_connect.listPatient(patientId, sender => {
+  truffle_connect.listPatient(patientId, sender, () => {
     //res.send(balance);
   });
 });
@@ -157,7 +158,7 @@ app.post('/unlistPatient', (req, res) => {
   let patientId = req.body.patientId;
   let sender = req.body.sender;
 
-  truffle_connect.unlistPatient(patientId, sender => {
+  truffle_connect.unlistPatient(patientId, sender, () => {
     //res.send(balance);
   });
 });
@@ -170,12 +171,12 @@ app.post('/studentTransfer', (req, res) => {
   let studentAddr = req.body.studentAddr;
   let sender = req.body.sender;
 
-  truffle_connect.studentTransfer(patientId, studentAddr, sender => {
+  truffle_connect.studentTransfer(patientId, studentAddr, sender, () => {
     //res.send(balance);
   });
 });
 
-app.get('/getPatient', (req, res) => {
+app.get('/getPatient', (req, res) => { 
   console.log("**** GET /getPatient ****");
   console.log(req.body);
   let patientId = req.body.patientId;
@@ -198,10 +199,11 @@ app.post('/createPatient', (req, res) => {
 
   let patientName = req.body.patientName;
   let patientContact = req.body.patientContact;
-  let indications = req.body.indications;
+  let indications = req.body.indications.split(",").filter(x => x.trim().length && !isNaN(x)).map(Number);
+  console.log("Indications passed to contract: " + indications);
   let sender = req.body.sender;
 
-  truffle_connect.createPatient(patientName, patientContact, indications, sender => {
+  truffle_connect.createPatient(patientName, patientContact, indications, sender, () => {
     //res.send(balance);
   });
 });
