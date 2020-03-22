@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Page Title -->
+    <title>View Patients</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/modern-business.css" rel="stylesheet">
+
+    <!-- CSS for Styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- JavaScript for Interactivity -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        function listUnlistPatient(e) {
+            var patientId = $(e).closest("tr").find("td:first-child").text();
+            //alert(id);
+            console.log(patientId);
+            document.getElementById("patientId").value = patientId;
+
+            var listStatus = $(e).closest("tr").find("td:nth-child(5)").text();
+            //alert(id);
+            console.log(listStatus);
+            document.getElementById("listStatus").value = listStatus;
+
+            var allocatedStatus = $(e).closest("tr").find("td:nth-child(6)").text();
+            //alert(id);
+            console.log(allocatedStatus);
+            document.getElementById("allocationStatus").value = allocatedStatus;
+
+            var listUnlistPatient = document.getElementById("listUnlistPatient_form");
+            if (listUnlistPatient.style.display === 'none') {
+                listUnlistPatient.style.display = 'block';
+            }
+            else {
+                listUnlistPatient.style.display = 'none';
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+    <% include staffHeader.ejs %>
+
+    <!-- Page Content -->
+    <div class="container">
+        <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
+        <h3 class="mt-4 mb-3"><%= title %></h3>
+        <%- messages('my_message_template', locals) %>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Patient Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Contact No.</th>
+                    <th scope="col">Indications</th>
+                    <th scope="col">Listing Status</th>
+                    <th scope="col">Allocation Status</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Action</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i<data.length; i++) { %>
+                <tr>
+                    <td><%= data[i].pid%></td>
+                    <td><%= data[i].name%></td>
+                    <td><%= data[i].contactno%></td>
+                    <td><%= data[i].indications%></td>
+                    <td><%= data[i].liststatus%></td>
+                    <td><%= data[i].allocatedstatus%></td>
+                    <td><%= data[i].studid%></td>
+                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List/Unlist</button></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <form id="listUnlistPatient_form" action="viewPatients" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">List/Unlist Patient</h3>
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="text" class="form-control" id="patientId" name="patientId"
+                    required="required" readonly="true">
+            </div>
+
+            <div class="form-group">
+                <label for="listStatus">Listing Status:</label>
+                <input type="text" class="form-control" id="listStatus" name="listStatus"
+                     required="required" readonly="true">
+            </div>
+            <button type="submit" class="btn btn-primary">List/Unlist Patient</button>
+
+            <div class="form-group" style="display:none">
+                <label for="allocationStatus">Allocation Status:</label>
+                <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
+                     required="required" readonly="true">
+            </div>
+        </form>
+    </div>
+
+    <!-- /.container --><br />
+    <% include footer.ejs %>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
