@@ -20,8 +20,8 @@ router.get('/', function (req, res, next) {
     if (username === undefined) {
         res.redirect('/login');
     } else {
-        var retreiveAllPatientInfo = "SELECT * FROM public.patient";
-        pool.query(retreiveAllPatientInfo, (err, data) => {
+        var retreiveAllPatientInfo = "SELECT * FROM public.patient WHERE public.patient.listStatus = $1";
+        pool.query(retreiveAllPatientInfo, ['Listed'], (err, data) => {
             console.log("Patient" + data.rowCount);
             res.render('viewAllPatients', { title: 'View All Patients', user: username, data: data.rows });
         });
