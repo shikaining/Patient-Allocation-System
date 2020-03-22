@@ -33,27 +33,27 @@ router.post('/', function (req, res, next) {
   console.log(email);
   console.log(password);
 
-  var sql_query = "SELECT * FROM public.student WHERE public.student.email ='" + email + "' and public.student.password ='" + password + "'";
+  var sql_query = "SELECT * FROM public.staff WHERE public.staff.email ='" + email + "' and public.staff.password ='" + password + "'";
 
-  pool.query(sql_query, (err, user) => {
-    console.log(user);
-    if (user.rowCount === 1) {
+  pool.query(sql_query, (err, staff) => {
+    console.log(staff);
+    if (staff.rowCount === 1) {
       req.session.username = email;
       console.log(req.session.username);
-      console.log("asdasdasd" + user.rows[0].uid);
-      res.redirect('/viewAllPatients');
+      console.log("staff ID" + staff.rows[0].stfid);
+      res.redirect('/createPatient');
     }
     else {
       req.flash('error', 'Invalid username or password');
 
-      res.redirect('/login');
+      res.redirect('/staffLogin');
     }
 
   });
 });
 
 router.get('/', function (req, res, next) {
-  res.render('login', { title: 'Login' });
+  res.render('staffLogin', { title: 'Staff Login' });
 });
 
 module.exports = router;

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Page Title -->
+    <title>Add a Patient</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/modern-business.css" rel="stylesheet">
+
+    <!-- CSS for Styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- JavaScript for Interactivity -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+
+    <script src="javascripts/loginScript.js"></script>
+
+</head>
+
+<body>
+    <% include staffHeader.ejs %>
+
+    <!-- Page Content -->
+    <div class="container">
+        <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
+        <h3 class="mt-4 mb-3"><%= title %></h3>
+        <%- messages('my_message_template', locals) %>
+        <form id="addPatient_form" action="createPatient" role="form" method="post">
+            <div class="form-group">
+
+                <label for="patientName">Please enter Patient Name:</label>
+                <input type="text" class="form-control" id="patientName" name="patientName" placeholder="Enter Patient Name"
+                    required="required">
+            </div>
+            <div class="form-group">
+                <label for="patientNRIC">Please enter Patient NRIC:</label>
+                <input type="text" class="form-control" id="patientNRIC" name="patientNRIC" placeholder="Enter Patient NRIC"
+                    required="required">
+
+            </div>
+
+            <div class="form-group">
+                <label for="patientContact">Please enter Patient Contact Number:</label>
+                <input type="text" class="form-control" id="patientContact" name="patientContact"
+                    placeholder="Enter Patient Contact Number" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="patientContact">Please select Patient Indications:</label>
+                <br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="cDExamCase" value="CDExamCase">
+                    <label class="form-check-label" for="cDExamCase">CDExamCase</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="dentalPublicHealth" value="DentalPublicHealth">
+                    <label class="form-check-label" for="dentalPublicHealth">DentalPublicHealth</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="endodontics" value="Endodontics">
+                    <label class="form-check-label" for="endodontics">Endodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="fixedProsthodontics" value="FixedProsthodontics">
+                    <label class="form-check-label" for="fixedProsthodontics">FixedProsthodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="operativeDentistry" value="OperativeDentistry">
+                    <label class="form-check-label" for="operativeDentistry">OperativeDentistry</label>
+                </div>
+                <br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="oralSurgery" value="OralSurgery">
+                    <label class="form-check-label" for="oralSurgery">OralSurgery</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="orthodontics" value="Orthodontics">
+                    <label class="form-check-label" for="orthodontics">Orthodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="pedodontics" value="Pedodontics">
+                    <label class="form-check-label" for="pedodontics">Pedodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="periodontics" value="Periodontics">
+                    <label class="form-check-label" for="periodontics">Periodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="removableProsthodontics" value="RemovableProsthodontics">
+                    <label class="form-check-label" for="removableProsthodontics">RemovableProsthodontics</label>
+                </div>
+
+
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+
+
+        </form>
+
+    </div>
+
+    <!-- /.container --><br />
+    <% include footer.ejs %>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
