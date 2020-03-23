@@ -14,7 +14,6 @@ app.post('/users', db.createUser)
 app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 
-
 //Public pages
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -28,6 +27,17 @@ var allocatePatientRouter = require('./routes/allocatePatients');
 //Student pages
 var viewAllPatientRouter = require('./routes/viewAllPatients');
 var viewRequestRouter = require('./routes/viewRequests');
+
+var indicationsArray = ["CDExamCase",
+"DentalPublicHealth",
+"Endodontics",
+"FixedProsthodontics",
+"OperativeDentistry",
+"OralSurgery",
+"Orthodontics",
+"Pedodontics",
+"Periodontics",
+"RemovableProsthodontics"]
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -214,12 +224,27 @@ app.post('/createPatient', (req, res) => {
 
   let patientName = req.body.patientName;
   let patientContact = req.body.patientContact;
-  let indications = req.body.indications.split(",").filter(x => x.trim().length && !isNaN(x)).map(Number);
-  console.log("Indications passed to contract: " + indications);
+  let indications = req.body.indications.split(",").filter(x => x.trim().length && !isNaN(x)).map(Number); // To be used for Solidity Contract
+  let dbIndication = "{"; // To be use as insert statement to DB.
+  for(indication in indications){
+    dbIndication += indicationsArray[indication]
+  }
+  dbIndication += "}"
+  
+  //Testing dummy data, must change eventually
+  let staffId = 1
+  let patientNRIC = 1234
+
+  // db.insert('Patient',
+  //   'stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications',
+  //   staffId + "," + patientName + "," + patientNRIC + "," + patientContact + "," + "Not Listed"+ "," 
+  //   + "Not Allocated" + "," + "Not Cured" + "," + dbIndication)
+  // console.log("Indications passed to contract: " + indications);
   let sender = req.body.sender;
 
   truffle_connect.createPatient(patientName, patientContact, indications, sender, () => {
     //res.send(balance);
+    //insert into DB.
   });
 });
 

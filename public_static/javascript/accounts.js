@@ -124,7 +124,9 @@ $(document).ready(function () {
     let patientName = $('#patientName').val();
     let patientContact = $('#patientContact').val();
     let indications = $('#indications').val();
+    let staffId = 1; //Temporary dummmy value.
     sender = listOfAddress[1]; // Temporary!!    sender will eventually be taken from account user and match to address stored in DB.
+    console.log("Create Patient")
     $.post('/createPatient', { patientName: patientName, patientContact: patientContact, indications: indications, sender: sender }, function () {
       /* Method to create patient in PostgreSQL DB */
       $('#status').text("Created successfully");
