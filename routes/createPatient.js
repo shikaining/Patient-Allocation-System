@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const db = require('../connection/queries');
 
 const { Pool } = require('pg')
 /* --- V7: Using Dot Env ---
@@ -18,6 +19,17 @@ const pool = new Pool({
   password: 'password',
   port: 5432,
 })
+
+var indicationsArray = ["CDExamCase",
+"DentalPublicHealth",
+"Endodontics",
+"FixedProsthodontics",
+"OperativeDentistry",
+"OralSurgery",
+"Orthodontics",
+"Pedodontics",
+"Periodontics",
+"RemovableProsthodontics"]
 
 
 /* GET home page. */
@@ -42,10 +54,12 @@ router.get('/', function (req, res, next) {
 });
 
 // POST
-router.post('/', function (req, res, next) {
+router.post('/', /*async*/ function (req, res, next) {
   var username = req.session.username;
-
-  pool.query("SELECT stfId FROM public.staff WHERE public.staff.email = $1", [username], (err, staff) => {
+  //temporary for testing
+  var userEmail = "staff1@gmail.com"
+  pool.query("SELECT stfId FROM public.staff WHERE public.staff.email = $1", [username /*userEmail*/], (err, staff) => {
+    // staff = await db.select('staff', 'stfId', 'staff.email = ' + userEmail)
     console.log("staffId " + staff.rows[0].stfid);
     console.log("rowcount" + staff.rowCount);
     console.log("staff" + staff.rows[0]);

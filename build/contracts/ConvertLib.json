@@ -28,15 +28,15 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"conversionRate\",\"type\":\"uint256\"}],\"name\":\"convert\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"convertedAmount\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/jason/OneDrive/Desktop/NUS/Y3S2/IS4302/Project/Patient-Allocation-System/contracts/ConvertLib.sol\":\"ConvertLib\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/jason/OneDrive/Desktop/NUS/Y3S2/IS4302/Project/Patient-Allocation-System/contracts/ConvertLib.sol\":{\"keccak256\":\"0xe4f56ef10b30d34a7861a7aa52c37d3bcc6aa632b630162468040845026fe7c1\",\"urls\":[\"bzz-raw://23b44b3157d84616fcda297f0902a14625238f25c0f58ca7e73093dd79f0a900\",\"dweb:/ipfs/QmdPef5i4JPYCX8jE6VqgRpKy85RRNK9gkgkcwtZshMKYd\"]}},\"version\":1}",
-  "bytecode": "0x60c3610025600b82828239805160001a60731461001857fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea265627a7a723158203b02e7ec371f2862579085e51eed2ceec0824cb4a4542f0a70e51e528b8fd83864736f6c63430005100032",
-  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea265627a7a723158203b02e7ec371f2862579085e51eed2ceec0824cb4a4542f0a70e51e528b8fd83864736f6c63430005100032",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"conversionRate\",\"type\":\"uint256\"}],\"name\":\"convert\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"convertedAmount\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/User/Desktop/Y3S2/IS4302/Project/Code/contracts/ConvertLib.sol\":\"ConvertLib\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/User/Desktop/Y3S2/IS4302/Project/Code/contracts/ConvertLib.sol\":{\"keccak256\":\"0xe4f56ef10b30d34a7861a7aa52c37d3bcc6aa632b630162468040845026fe7c1\",\"urls\":[\"bzz-raw://23b44b3157d84616fcda297f0902a14625238f25c0f58ca7e73093dd79f0a900\",\"dweb:/ipfs/QmdPef5i4JPYCX8jE6VqgRpKy85RRNK9gkgkcwtZshMKYd\"]}},\"version\":1}",
+  "bytecode": "0x60c3610025600b82828239805160001a60731461001857fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea265627a7a72315820ddc46344f44b2670f6b38643341806952cee51e73f55e3c2fd3e5c2833ff6baf64736f6c63430005100032",
+  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060335760003560e01c806396e4ee3d146038575b600080fd5b606b60048036036040811015604c57600080fd5b8101908080359060200190929190803590602001909291905050506081565b6040518082815260200191505060405180910390f35b600081830290509291505056fea265627a7a72315820ddc46344f44b2670f6b38643341806952cee51e73f55e3c2fd3e5c2833ff6baf64736f6c63430005100032",
   "sourceMap": "36:175:0:-;;132:2:-1;166:7;155:9;146:7;137:37;255:7;249:14;246:1;241:23;235:4;232:33;222:2;;269:9;222:2;293:9;290:1;283:20;323:4;314:7;306:22;347:7;338;331:24",
   "deployedSourceMap": "36:175:0:-;;;;;;;;;;;;;;;;;;;;;;;;61:147;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;61:147:0;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;132:20;186:14;177:6;:23;170:30;;61:147;;;;:::o",
   "source": "pragma solidity >=0.4.25 <0.6.0;\r\n\r\nlibrary ConvertLib{\r\n    function convert(uint amount,uint conversionRate) public pure returns (uint convertedAmount)\r\n    {\r\n        return amount * conversionRate;\r\n    }\r\n}\r\n",
-  "sourcePath": "C:\\Users\\jason\\OneDrive\\Desktop\\NUS\\Y3S2\\IS4302\\Project\\Patient-Allocation-System\\contracts\\ConvertLib.sol",
+  "sourcePath": "C:\\Users\\User\\Desktop\\Y3S2\\IS4302\\Project\\Code\\contracts\\ConvertLib.sol",
   "ast": {
-    "absolutePath": "/C/Users/jason/OneDrive/Desktop/NUS/Y3S2/IS4302/Project/Patient-Allocation-System/contracts/ConvertLib.sol",
+    "absolutePath": "/C/Users/User/Desktop/Y3S2/IS4302/Project/Code/contracts/ConvertLib.sol",
     "exportedSymbols": {
       "ConvertLib": [
         16
@@ -244,7 +244,7 @@
     "src": "0:213:0"
   },
   "legacyAST": {
-    "absolutePath": "/C/Users/jason/OneDrive/Desktop/NUS/Y3S2/IS4302/Project/Patient-Allocation-System/contracts/ConvertLib.sol",
+    "absolutePath": "/C/Users/User/Desktop/Y3S2/IS4302/Project/Code/contracts/ConvertLib.sol",
     "exportedSymbols": {
       "ConvertLib": [
         16
@@ -488,7 +488,11 @@
     }
   },
   "schemaVersion": "3.0.23",
+<<<<<<< HEAD
   "updatedAt": "2020-03-23T04:38:37.533Z",
+=======
+  "updatedAt": "2020-03-23T02:43:18.390Z",
+>>>>>>> b4b65a24c34636aff0e43602453e840d4a499896
   "devdoc": {
     "methods": {}
   },
