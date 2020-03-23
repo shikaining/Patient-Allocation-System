@@ -21,7 +21,7 @@ router.get('/', function (req, res, next) {
         res.redirect('/staffLogin');
     } else {
         var retreiveAllPatientInfo = "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 AND public.patient.allocatedStatus = $2";
-        pool.query(retreiveAllPatientInfo, ['Listed', 'Pending'], (err, data) => {
+        pool.query(retreiveAllPatientInfo, ['Listed', 'Not Allocated'], (err, data) => {
             console.log("Patient" + data.rowCount);
             res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
         });
