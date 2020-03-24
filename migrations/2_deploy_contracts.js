@@ -11,6 +11,7 @@ module.exports = function(deployer, network, accounts) {
         return deployer.deploy(Patient, powerUsers, adminUsers, {from: owner});
     }).then((inst) => {
         patientInstance = inst;
+        console.log("Patient Contract Deployed @ Address : " + patientInstance.address)
         //return deployer.deploy(ERC20, {from: owner});
     })/*.then((_inst) => {
         tokenInstance = _inst;
