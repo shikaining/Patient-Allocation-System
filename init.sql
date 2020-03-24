@@ -21,6 +21,7 @@ CREATE TABLE Staff (
 	contactNo varchar(20),
 	email varchar(128) unique not null,
 	password varchar(60),
+	address varchar(60),
 	PRIMARY KEY (stfId)
 );
 

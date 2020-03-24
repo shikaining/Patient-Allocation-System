@@ -455,40 +455,9 @@
     "name": "solc",
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
-  "networks": {
-    "5777": {
-      "events": {},
-      "links": {},
-      "address": "0x2C3644502DA2AB7f1b0d59300c98748cC793A0b5",
-      "transactionHash": "0x27bdb059fc0277436df20bf6747a3380b7fa85a456fc4db92f001baf6bfb93d1"
-    },
-    "1583734886860": {
-      "events": {},
-      "links": {},
-      "address": "0x0f8069d23BCfbc3C6B0aE230A8054966B1F9e6e6",
-      "transactionHash": "0x349482626bb2e5545b4bf79821aed473d0ccf5e429d104cdccec72a656fed77d"
-    },
-    "1583735814873": {
-      "events": {},
-      "links": {},
-      "address": "0x0f8069d23BCfbc3C6B0aE230A8054966B1F9e6e6",
-      "transactionHash": "0x349482626bb2e5545b4bf79821aed473d0ccf5e429d104cdccec72a656fed77d"
-    },
-    "1583814264386": {
-      "events": {},
-      "links": {},
-      "address": "0x0f8069d23BCfbc3C6B0aE230A8054966B1F9e6e6",
-      "transactionHash": "0x349482626bb2e5545b4bf79821aed473d0ccf5e429d104cdccec72a656fed77d"
-    },
-    "1583893593650": {
-      "events": {},
-      "links": {},
-      "address": "0x0f8069d23BCfbc3C6B0aE230A8054966B1F9e6e6",
-      "transactionHash": "0x349482626bb2e5545b4bf79821aed473d0ccf5e429d104cdccec72a656fed77d"
-    }
-  },
+  "networks": {},
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-03-23T02:43:18.390Z",
+  "updatedAt": "2020-03-24T16:21:11.281Z",
   "devdoc": {
     "methods": {}
   },
