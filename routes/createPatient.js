@@ -89,17 +89,23 @@ router.post("/", async function(req, res, next) {
   var allocatedStatus = "Not Allocated";
   var curedStatus = "Not Cured";
 
-  console.log(staff.address);
-  console.log(patientName)
-  console.log(patientContact)
-  console.log(solidityIndication)
-  truffle_connect.createPatient(patientName,patientContact,solidityIndication,staff.address)
   try {
     //Update into Ethereum
-    var sql_query =
-    "INSERT INTO public.patient(stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8)";
+    console.log(staff.address);
+    console.log(patientName);
+    console.log(patientContact);
+    console.log(solidityIndication);
+    // truffle_connect.createPatient(
+    //   patientName,
+    //   patientContact,
+    //   solidityIndication,
+    //   staff.address
+    // );
 
     //Update postgreSQL Database
+    var sql_query =
+      "INSERT INTO public.patient(stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8)";
+    console.log(dbIndication);
     pool.query(
       sql_query,
       [
@@ -115,6 +121,8 @@ router.post("/", async function(req, res, next) {
       (err, data) => {
         if (err) {
           req.flash("info", "Patient Fail to be Created");
+          console.log("Error in query")
+          console.log(err)
         } else {
           req.flash("info", "Patient Created");
         }
