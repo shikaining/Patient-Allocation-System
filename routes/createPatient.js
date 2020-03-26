@@ -95,12 +95,12 @@ router.post("/", async function(req, res, next) {
     console.log(patientName);
     console.log(patientContact);
     console.log(solidityIndication);
-    // truffle_connect.createPatient(
-    //   patientName,
-    //   patientContact,
-    //   solidityIndication,
-    //   staff.address
-    // );
+    truffle_connect.createPatient(
+      patientName,
+      patientContact,
+      solidityIndication,
+      staff.address
+    );
 
     //Update postgreSQL Database
     var sql_query =

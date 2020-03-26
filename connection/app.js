@@ -193,7 +193,7 @@ module.exports = {
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
       console.log("#2")
-      return patientInstance.createPatient(patientName, patientContact, indications, { from: sender });
+      return patientInstance.createPatient(patientName, patientContact, indications, { from: sender, gas: '5000000' });
     });
   }
 

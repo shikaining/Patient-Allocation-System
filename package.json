@@ -24,7 +24,6 @@
     "web3": "^0.20.0"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.8.7",
     "alert-node": "^1.2.3",
     "body-parser": "^1.18.3",
     "bootstrap": "^4.3.1",
