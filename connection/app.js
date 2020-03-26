@@ -4,9 +4,23 @@ const metacoin_artifact = require('../build/contracts/MetaCoin.json');
 var MetaCoin = contract(metacoin_artifact);
 const patient_artifact = require('../build/contracts/Patient.json');
 var Patient = contract(patient_artifact);
+var db = require('./queries')
 
 //methods here calls contracts' methods
 module.exports = {
+  loadAddress: function(){
+    var self = this;
+    // var listOfAccounts = await self.web3.eth.getAccounts()
+    
+    self.web3.eth.getAccounts(function (err, accs) {
+      // console.log(accs)
+      console.log("Initialising DB Address")
+      db.init(accs)
+    })
+    
+    // })
+
+  },
   //this method retrieves users' accounts
   start: function (callback) {
     var self = this;
@@ -171,14 +185,15 @@ module.exports = {
       callback("ERROR 404");
     });
   },
-  createPatient: function (patientName, patientContact, indications, sender) {
+  createPatient: async function (patientName, patientContact, indications, sender) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
-    //deploy Patient
+    console.log("#1")
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
-      return patientInstance.createPatient(patientName, patientContact, indications, { from: sender });
+      console.log("#2")
+      return patientInstance.createPatient(patientName, patientContact, indications, { from: sender, gas: '5000000' });
     });
   }
 
