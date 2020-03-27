@@ -8,12 +8,6 @@ const db = require('./connection/queries');
 var path = require('path');
 var session = require('express-session');
 
-app.get('/users', db.getUsers)
-app.get('/users/:id', db.getUserById)
-app.post('/users', db.createUser)
-app.put('/users/:id', db.updateUser)
-app.delete('/users/:id', db.deleteUser)
-
 //Public pages
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -84,52 +78,6 @@ app.use('/allocatePatients', allocatePatientRouter);
 
 app.use('/viewAllPatients', viewAllPatientRouter);
 app.use('/viewRequests', viewRequestRouter);
-
-app.get('/getAccounts', (req, res) => {
-  console.log("**** GET /getAccounts ****");
-  //calls app.js's start method
-  //the 'answer' here refers to the response from the start method
-  truffle_connect.start(function (answer) {
-    res.send(answer);
-  })
-});
-
-app.post('/getBalance', (req, res) => {
-  console.log("**** GET /getBalance ****");
-  console.log(req.body);
-  //req has account embedded
-  //use this to specify the balance for the param in app.js
-  let currentAcount = req.body.account;
-  //calls refreshBalance in app.js
-  truffle_connect.refreshBalance(currentAcount, (answer) => {
-    let account_balance = answer;
-    // call the start method of app.js
-    truffle_connect.start(function (answer) {
-      // get list of all accounts and send it along with the response
-      let all_accounts = answer;
-      //returning array of ans in response
-      response = [account_balance, all_accounts]
-      res.send(response);
-    });
-  });
-});
-
-app.post('/sendCoin', (req, res) => {
-  console.log("**** GET /sendCoin ****");
-  console.log(req.body);
-
-  //embedded information from req
-  let amount = req.body.amount;
-  let sender = req.body.sender;
-  let receiver = req.body.receiver;
-
-  //send all the required info to app.js's send coin method
-  //the response from app.js is balance
-  //this is sent to another file's method that calls current method
-  truffle_connect.sendCoin(amount, sender, receiver, (balance) => {
-    res.send(balance);
-  });
-});
 /*
 PATIENT CONTRACT
 */
@@ -172,7 +120,7 @@ app.post('/listPatient', (req, res) => {
   let sender = req.body.sender;
 
   truffle_connect.listPatient(patientId, sender, () => {
-    //res.send(balance);
+    
   });
 });
 
@@ -184,7 +132,7 @@ app.post('/unlistPatient', (req, res) => {
   let sender = req.body.sender;
 
   truffle_connect.unlistPatient(patientId, sender, () => {
-    //res.send(balance);
+ 
   });
 });
 

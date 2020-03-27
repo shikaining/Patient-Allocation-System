@@ -43,6 +43,11 @@
             console.log(allocatedStatus);
             document.getElementById("allocationStatus").value = allocatedStatus;
 
+            var indications = $(e).closest("tr").find("td:nth-child(4)").text();
+            //alert(id);
+            console.log(indications);
+            document.getElementById("indications").value = indications;
+
             var requestPatient = document.getElementById("requestPatient_form");
             if (requestPatient.style.display === 'none') {
                 requestPatient.style.display = 'block';
@@ -93,7 +98,7 @@
             </tbody>
         </table>
 
-        <form id="requestPatient_form" action="viewPatients" role="form" method="post" style="display:none">
+        <form id="requestPatient_form" action="viewAllPatients" role="form" method="post" style="display:none">
             <h3 class="mt-4 mb-3">Request Patient</h3>
             <div class="form-group">
                 <label for="patientId">Patient ID:</label>
@@ -111,6 +116,12 @@
             <div class="form-group" style="display:none">
                 <label for="allocationStatus">Allocation Status:</label>
                 <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
+                     required="required" readonly="true">
+            </div>
+
+            <div class="form-group" style="display:none">
+                <label for="indications">Indications of Patient:</label>
+                <input type="text" class="form-control" id="indications" name="indications"
                      required="required" readonly="true">
             </div>
         </form>
