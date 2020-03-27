@@ -88,7 +88,7 @@ router.post('/', async function (req, res, next) {
         var updatePatient_query =
             "UPDATE public.patient SET allocatedStatus = $1 WHERE pid = $2";
         pool.query(
-            listPatient, ['Pending', patientId],
+            updatePatient_query, ['Pending', patientId],
             (err, data) => {
                 if (err) {
                     req.flash("info", "Request for Patient failed");
