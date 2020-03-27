@@ -75,7 +75,7 @@ router.post('/', async function (req, res, next) {
             ],
             (err, data) => {
                 if (err) {
-                    req.flash("info", "Request for Patient failed");
+                    req.flash("info", "Failed to create request");
                     console.log("Error in query")
                     console.log(err)
                 } else {
@@ -91,11 +91,11 @@ router.post('/', async function (req, res, next) {
             updatePatient_query, ['Pending', patientId],
             (err, data) => {
                 if (err) {
-                    req.flash("info", "Request for Patient failed");
+                    req.flash("info", "Failed to update patient");
                     console.log("Error in query")
                     console.log(err)
                 } else {
-                    req.flash("info", "Requested Successfully");
+                    req.flash("info", "Patient updated Successfully");
                 }
                 res.redirect("/viewAllPatients");
             }
