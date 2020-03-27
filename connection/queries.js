@@ -81,15 +81,28 @@ module.exports = {
     }
     pool.query("SELECT email FROM public.staff", (err, result)=>{
       // console.log(result.rows);
-      var updateStatement = "UPDATE public.staff SET address = $1 WHERE email = $2"
-      for(i = 0; i < result.rows.length; i++){
+      var updateStaff = "UPDATE public.staff SET address = $1 WHERE email = $2"
+      for(i = 0; i < 4; i++){
         address = accounts[i+1];
         email = result.rows[i].email;
         // console.log("Address : " + address);
         // console.log("Email : " + email)
         
-        pool.query(updateStatement,[accounts[i+1],result.rows[i].email])
+        pool.query(updateStaff,[address,email])
       }
+
+      //Add address to student
+      pool.query("SELECT email FROM public.student", (err, res) => {
+        var updateStudent = "UPDATE public.student SET address = $1 WHERE email = $2"
+        for(i = 0; i < 2; i++){
+          address = accounts[i+5];
+          email = res.rows[i].email;
+          // console.log("Address : " + address);
+          // console.log("Email : " + email)
+          
+          pool.query(updateStudent,[address,email])
+        }
+      })
       console.log("End of Init, Success updating Database")
     })
   },
