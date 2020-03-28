@@ -91,48 +91,33 @@ router.post("/", async function(req, res, next) {
 
   try {
     //Update into Ethereum
-    console.log(staff.address);
-    console.log(patientName);
-    console.log(patientContact);
-    console.log(solidityIndication);
-    truffle_connect.createPatient(
+    // console.log(staff.address);
+    // console.log(patientName);
+    // console.log(patientContact);
+    // console.log(solidityIndication);
+    var sql_query =
+      "INSERT INTO public.patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+
+    var patientId = await truffle_connect.createPatient(
+      sql_query,
+      stfId,
       patientName,
+      patientNRIC,
       patientContact,
+      listStatus,
+      allocatedStatus,
+      curedStatus,
+      dbIndication,
       solidityIndication,
       staff.address
     );
 
-    //Update postgreSQL Database
-    var sql_query =
-      "INSERT INTO public.patient(stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8)";
-    console.log(dbIndication);
-    pool.query(
-      sql_query,
-      [
-        stfId,
-        patientName,
-        patientNRIC,
-        patientContact,
-        listStatus,
-        allocatedStatus,
-        curedStatus,
-        dbIndication
-      ],
-      (err, data) => {
-        if (err) {
-          req.flash("info", "Patient Fail to be Created");
-          console.log("Error in query")
-          console.log(err)
-        } else {
-          req.flash("info", "Patient Created");
-        }
-        // truffle_connect.createPatient(1,2,3,4)
-        res.redirect("/createPatient");
-      }
-    );
+    req.flash("info", "Patient Created");
+    res.redirect("/createPatient");
   } catch (error) {
     console.log("ERROR: " + error);
-    return;
+    req.flash("info", "Patient Failed to be Created");
+    res.redirect("/createPatient");
   }
 });
 

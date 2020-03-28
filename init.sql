@@ -27,7 +27,7 @@ CREATE TABLE Staff (
 );
 
 CREATE TABLE Patient (
-	pId Serial,
+	pId integer not null,
 	stfId integer not null,
 	studId int,
 	name varchar(60),
@@ -67,7 +67,7 @@ insert into Staff(name, nric, contactNo, email, password) values('Staff2', 'S932
 insert into Staff(name, nric, contactNo, email, password) values('Staff3', 'S9423458A', '93234567', 'staff3@gmail.com', 'asd');
 insert into Staff(name, nric, contactNo, email, password) values('Staff4', 'S9523459A', '94234567', 'staff4@gmail.com', 'asd');
 
-insert into Patient(stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values(1, 'Patient1', 'S9223451A', '91234568', 'Not Listed', 'Not Allocated', 'Not Cured','{"CDExamCase", "Endodontics"}');
+insert into Patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values(1, 1, 'Patient1', 'S9223451A', '91234568', 'Not Listed', 'Not Allocated', 'Not Cured','{"CDExamCase", "Endodontics"}');
 -- update Patient set studId = 3;
 
 insert into Request(studId, pId, allocatedStatus, indications) values(1, 1, 'Pending', '{"CDExamCase", "Endodontics"}');

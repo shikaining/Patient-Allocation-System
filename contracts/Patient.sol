@@ -53,7 +53,7 @@ contract Patient is ERC721Full {
 	
 	// == COUNTERS ==
 	
-	uint patientCount;
+	uint patientCount = 2;
 	uint totalPatients;
 	
 	// ==============
