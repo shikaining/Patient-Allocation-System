@@ -13,9 +13,10 @@ const pool = new Pool({
 })
 
 var staff;
+var addr;
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
     var username = req.session.username;
 
     console.log(username);
@@ -23,7 +24,7 @@ router.get('/', function (req, res, next) {
     if (username === undefined) {
         res.redirect('/staffLogin');
     } else {
-        //retrieve all patients
+        //retrieve all patients from db
         var retreiveAllPatientInfo = "SELECT * FROM public.patient";
         pool.query(retreiveAllPatientInfo, (err, data) => {
             console.log("Patient" + data.rowCount);
@@ -31,10 +32,21 @@ router.get('/', function (req, res, next) {
         });
         //retrieve current staff object
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
-
-        pool.query(sql_query, [username], (err, data) => {
+        let me = this;
+        await pool.query(sql_query, [username], (err, data) => {
             staff = data.rows[0];
+            me.addr = staff.address;
         });
+
+        //retrieving patient info to check
+        // truffle_connect.getPatient(1, this.addr, (answer) => {
+        //     let patientInfo = answer;
+        //     //response = [account_balance, all_accounts]
+        //     console.log("*****************************");
+        //     console.log(patientInfo);
+        //     console.log("*****************************");
+        // });
+
     }
 });
 
@@ -88,6 +100,8 @@ router.post('/', function (req, res, next) {
         req.flash('error', 'An error has occurred! Please try again');
         res.redirect('/viewPatients');
     }
+    //tested getTotalPatients & getPatientInfo
+
 });
 
 module.exports = router;

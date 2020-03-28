@@ -14,9 +14,11 @@ const pool = new Pool({
 
 var staff;
 var student;
+var staffAddr;
+var studentAddr;
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
     var username = req.session.username;
 
     console.log(username);
@@ -41,16 +43,20 @@ router.get('/', function (req, res, next) {
                 res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
             });
         //retrieve current staff object
+        let me = this;
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
 
-        pool.query(sql_query, [username], (err, data) => {
-            staff = data.rows[0];
+        await pool.query(sql_query, [username], (err, data) => {
+            me.staff = data.rows[0];
+            me.staffAddr = data.rows[0].address;
+
         });
+
     }
 });
 
 // POST
-router.post('/', function (req, res, next) {
+router.post('/', async function (req, res, next) {
     //retrieve information
     var patientId = req.body.patientId;
     var studId = req.body.studentId;
@@ -62,21 +68,25 @@ router.post('/', function (req, res, next) {
     var retrieveStudentInfo_query =
         "SELECT * FROM public.student WHERE public.student.studid = $1";
 
-    pool.query(retrieveStudentInfo_query, [studId], 
+    let me = this;
+    await pool.query(retrieveStudentInfo_query, [studId],
         (err, data) => {
-        student = data.rows[0];
-        console.log(student + "************");
-    });
+            me.student = data.rows[0];
+            me.studentAddr = data.rows[0].address;
+        }
+    );
+
 
     try {
         //Update into Ethereum
         truffle_connect.allocatePatient(
             patientId,
-            student.address,
-            staff.address
+            this.studentAddr,
+            this.staffAddr
         );
         //update postgreSQL Database
-        //update allocatedStatus of patient
+
+        //1-update allocatedStatus of patient
         var allocatePatient = "UPDATE public.patient SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
         pool.query(allocatePatient, ['Allocated', studId, patientId], (err, data) => {
             console.log(err);
@@ -88,7 +98,7 @@ router.post('/', function (req, res, next) {
 
             //res.redirect('/allocatePatients');
         });
-        //update allocatedStatus of request
+        //2-update allocatedStatus of request (successful one)
         var successfulRequest_query =
             "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
         pool.query(
@@ -102,10 +112,9 @@ router.post('/', function (req, res, next) {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
 
-                res.redirect('/allocatePatients');
+                //res.redirect('/allocatePatients');
             });
-        //update allocatedStatus of request 
-        //or update to 'Rejected' if 'Not allocated' is unclear
+        //3-update allocatedStatus of request (unsuccessful ones)
         var failedRequest_query =
             "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId != $3";
         pool.query(

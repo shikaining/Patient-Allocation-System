@@ -162,7 +162,7 @@ app.get('/getPatient', (req, res) => {
     let patientOwner = answer[3];
     let resolved = answer[4];
     response = [patientName, patientContact,indications, patientOwner, resolved]
-    res.send(response);
+    // res.send(response);
   })
 });
 

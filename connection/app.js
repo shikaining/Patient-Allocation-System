@@ -27,14 +27,11 @@ module.exports = {
     //deploy Patient
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
-      //call send coin, must give receiver and amount and define sender acct
       return patientInstance.allocatePatient(patientId, studentAddr, { from: sender });
     });
   },
   getTotalPatients: function (callback) {
     var self = this;
-
-    // Bootstrap the MetaCoin abstraction for Use.
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
     Patient.deployed().then(function (instance) {
@@ -86,10 +83,8 @@ module.exports = {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
-    //deploy Patient
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
-      //call send coin, must give receiver and amount and define sender acct
       return patientInstance.studentTransfer(patientId, studentAddr, { from: sender });
     });
   },

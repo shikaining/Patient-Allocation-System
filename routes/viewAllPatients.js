@@ -23,9 +23,11 @@ router.get('/', function (req, res, next) {
     if (username === undefined) {
         res.redirect('/login');
     } else {
-        //retrieve all listed patients
-        var retreiveAllPatientInfo = "SELECT * FROM public.patient WHERE public.patient.listStatus = $1";
-        pool.query(retreiveAllPatientInfo, ['Listed'], (err, data) => {
+        //retrieve all listed patients from db
+        var retreiveAllPatientInfo = 
+        "SELECT * FROM public.patient WHERE public.patient.listStatus = $1"+
+        " AND public.patient.allocatedStatus != $2";
+        pool.query(retreiveAllPatientInfo, ['Listed','Allocated'], (err, data) => {
             console.log("Patient" + data.rowCount);
             res.render('viewAllPatients', { title: 'View All Patients', user: username, data: data.rows });
         });
@@ -79,9 +81,9 @@ router.post('/', async function (req, res, next) {
                     console.log("Error in query")
                     console.log(err)
                 } else {
-                    req.flash("info", "Requested Successfully");
+                    //req.flash("info", "Requested Successfully");
                 }
-                // res.redirect("/viewAllPatients");
+                //res.redirect("/viewAllPatients");
             }
         );
         //update patient's allocationstatus
