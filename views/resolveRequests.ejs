@@ -3,7 +3,7 @@
 
 <head>
     <!-- Page Title -->
-    <title>View Patients</title>
+    <title>View Request</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -26,6 +26,29 @@
         integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
 
+    <script type="text/javascript">
+        function resolve(e) {
+            var studentId = $(e).closest("tr").find("td:first-child").text();
+            //alert(id);
+            console.log(studentId);
+            document.getElementById("studentId").value = studentId;
+
+            var patientId = $(e).closest("tr").find("td:nth-child(2)").text();
+            //alert(id);
+            console.log(patientId);
+            document.getElementById("patientId").value = patientId;
+
+
+            var requestPatient = document.getElementById("resolvePatient_form");
+            if (requestPatient.style.display === 'none') {
+                requestPatient.style.display = 'block';
+            }
+            else {
+                requestPatient.style.display = 'none';
+            }
+        }
+    </script>
+
 </head>
 
 <body>
@@ -39,38 +62,48 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col">Student Id</th>
                     <th scope="col">Patient Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Contact No.</th>
                     <th scope="col">Indications</th>
-                    <th scope="col">Listing Status</th>
-                    <th scope="col">Allocation Status</th>
-                    <th scope="col">Cured Status</th>
-                    <th scope="col">Student ID</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
                 <% for(var i=0; i<data.length; i++) { %>
                 <tr>
-                    <td><%= data[i].pid%></td>
-                    <td><%= data[i].name%></td>
-                    <td><%= data[i].contactno%></td>
-                    <td><%= data[i].indications%></td>
-                    <td><%= data[i].liststatus%></td>
-                    <td><%= data[i].allocatedstatus%></td>
-                    <td><%= data[i].curedstatus%></td>
                     <td><%= data[i].studid%></td>
+                    <td><%= data[i].pid%></td>
+                    <td><%= data[i].indications%></td>
+                    <td><%= data[i].allocatedstatus%></td>
+                    <td><button type="button" class="btn btn-primary" onclick="resolve(this)">Resolve Patient</button></td>
                 </tr>
                 <% } %>
             </tbody>
         </table>
 
+        <form id="resolvePatient_form" action="resolveRequests" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Resolve Patient</h3>
+            <div class="form-group">
+                <label for="studentId">Student ID:</label>
+                <input type="text" class="form-control" id="studentId" name="studentId"
+                    required="required" readonly="true">
+            </div>
 
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="text" class="form-control" id="patientId" name="patientId"
+                    required="required" readonly="true">
+            </div>
+            <button type="submit" class="btn btn-primary">Resolve Patient</button>
+
+        </form>
     </div>
 
     <!-- /.container --><br />
     <% include footer.ejs %>
+
 
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>

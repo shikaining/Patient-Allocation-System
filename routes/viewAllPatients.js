@@ -1,16 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
+const db = require("../connection/queries");
+const truffle_connect = require("../connection/app");
 const { Pool } = require('pg')
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'api',
-  password: 'password',
-  port: 5432,
+    user: 'postgres',
+    host: 'localhost',
+    database: 'api',
+    password: 'password',
+    port: 5432,
 })
 
+var student;
 /* GET home page. */
 router.get('/', function (req, res, next) {
     var username = req.session.username;
@@ -20,41 +23,27 @@ router.get('/', function (req, res, next) {
     if (username === undefined) {
         res.redirect('/login');
     } else {
-        var retreiveAllPatientInfo = "SELECT * FROM public.patient WHERE public.patient.listStatus = $1";
-        pool.query(retreiveAllPatientInfo, ['Listed'], (err, data) => {
+        //retrieve all listed patients from db
+        var retreiveAllPatientInfo =
+        "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 OR public.patient.curedStatus = $2";
+        pool.query(retreiveAllPatientInfo, ['Listed', 'Cured'], (err, data) => {
             console.log("Patient" + data.rowCount);
             res.render('viewAllPatients', { title: 'View All Patients', user: username, data: data.rows });
+        });
+        //retrieve current student object
+        var sql_query =
+            "SELECT * FROM public.student WHERE public.student.email = $1";
+
+        pool.query(sql_query, [username], (err, data) => {
+            student = data.rows[0];
+            console.log(student)
         });
     }
 });
 
 // POST
-router.post('/', function (req, res, next) {
-    var username = req.session.username;
-    var patientId = req.body.patientId;
+router.post('/', async function (req, res, next) {
 
-    var listStatus = req.body.listStatus;
-    var allocatedStatus = req.body.allocationStatus;
-    console.log("Patient ID" + patientId);
-    console.log("List Status " + listStatus);
-        if (listStatus === 'Not Listed') {
-            var listPatient = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
-            pool.query(listPatient, ['Listed', patientId], (err, data) => {
-                console.log(err);
-                req.flash('info', 'Patient Listed');
-                res.redirect('/viewPatients');
-            });
-        } else if (listStatus === 'Listed' && allocatedStatus === 'Not Allocated'){
-            var unlistPatient = "UPDATE public.patient SET listStatus = $1 WHERE pid = $2";
-            pool.query(unlistPatient, ['Not Listed', patientId], (err, data) => {
-                console.log(err);
-                req.flash('info', 'Patient Unlisted');
-                res.redirect('/viewPatients');
-            });
-        } else {
-            req.flash('error', 'An error has occurred! Please try again');
-            res.redirect('/viewPatients');
-        }
 });
 
 module.exports = router;

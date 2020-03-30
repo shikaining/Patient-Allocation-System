@@ -110,7 +110,7 @@ contract Patient is ERC721Full {
 	
 	constructor(address[] memory _powerUsers, address[] memory _adminUsers) 
 	ERC721Full("Patient", "PAT") public {
-		patientCount = 1;
+		patientCount = 2;
 		totalPatients = 0;	
 		
 		for (uint i = 0; i < _powerUsers.length; i++) {

@@ -24,6 +24,7 @@
     "web3": "^0.20.0"
   },
   "dependencies": {
+    "ejs": "~2.5.7",
     "body-parser": "^1.18.2",
     "client-sessions": "^0.8.0",
     "connect-flash": "^0.1.1",

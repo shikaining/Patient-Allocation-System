@@ -1,0 +1,11 @@
+29/3/20 - 12:43AM
+=========================
+1. Edited Solidity file to start PatientId from '2' because its less messy 
+    compared to editing the init files with their references.
+2. Shifted query commands from createPatient.js into app.js instead
+    Reason: Had to first use contract.CALL method to retrieve patientId.
+            Then, using that PatientId insert it into DB. But, DB has its own constraints,
+            so i need to make sure it inserts into DB before i createPatient on Blockchain.
+            Or else, we will need a new method to unCreatePatient, which will create a whole
+            new mess.
+            
