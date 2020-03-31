@@ -39,12 +39,32 @@
             document.getElementById("patientId").value = patientId;
 
 
-            var requestPatient = document.getElementById("resolvePatient_form");
-            if (requestPatient.style.display === 'none') {
-                requestPatient.style.display = 'block';
+            var resolvePatient = document.getElementById("resolvePatient_form");
+            if (resolvePatient.style.display === 'none') {
+                resolvePatient.style.display = 'block';
             }
             else {
-                requestPatient.style.display = 'none';
+                resolvePatient.style.display = 'none';
+            }
+        }
+
+        function transfer(e) {
+            var trfstudentId = $(e).closest("tr").find("td:first-child").text();
+            //alert(id);
+            console.log(trfstudentId);
+            document.getElementById("trfstudentId").value = trfstudentId;
+            var patientId = $(e).closest("tr").find("td:nth-child(2)").text();
+            //alert(id);
+            console.log(patientId);
+            document.getElementById("transferPatientId").value = patientId;
+
+
+            var transferPatient = document.getElementById("transferPatient_form");
+            if (transferPatient.style.display === 'none') {
+                transferPatient.style.display = 'block';
+            }
+            else {
+                transferPatient.style.display = 'none';
             }
         }
     </script>
@@ -77,6 +97,7 @@
                     <td><%= data[i].pid%></td>
                     <td><%= data[i].indications%></td>
                     <td><%= data[i].allocatedstatus%></td>
+                    <td><button type="button" class="btn btn-primary" onclick="transfer(this)">Transfer Patient</button></td>
                     <td><button type="button" class="btn btn-primary" onclick="resolve(this)">Resolve Patient</button></td>
                 </tr>
                 <% } %>
@@ -97,8 +118,32 @@
                     required="required" readonly="true">
             </div>
             <button type="submit" class="btn btn-primary">Resolve Patient</button>
-
         </form>
+
+        <form id="transferPatient_form" action="resolveRequests" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Transfer Patient</h3>
+
+            <div class="form-group">
+                <label for="transferPatientId">Patient ID:</label>
+                <input type="text" class="form-control" id="transferPatientId" name="transferPatientId"
+                    required="required" readonly="true">
+            </div>
+
+            <div class="form-group">
+                <label for="transferStudentId">Transfer to Student ID:</label>
+                <input type="text" class="form-control" id="transferStudentId" name="transferStudentId"
+                    required="required" placeholder="Enter Student Id">
+            </div>
+            <button type="submit" class="btn btn-primary">Transfer Patient</button>
+
+            <!-- Hidden field to retrieve value -->
+            <div class="form-group" style="display:none">
+                <label for="trfstudentId">Student ID:</label>
+                <input type="text" class="form-control" id="trfstudentId" name="trfstudentId"
+                    required="required" readonly="true">
+            </div>
+        </form>
+
     </div>
 
     <!-- /.container --><br />
