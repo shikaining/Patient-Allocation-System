@@ -22,17 +22,17 @@ const pool = new Pool({
 });
 
 var indicationsArray = [
-  "CDExamCase",
-  "DentalPublicHealth",
+  "CD Exam Case",
+  "Dental Public Health",
   "Endodontics",
-  "FixedProsthodontics",
-  "OperativeDentistry",
-  "OralSurgery",
+  "Fixed Prosthodontics",
+  "Operative Dentistry",
+  "Oral Surgery",
   "Orthodontics",
   "Pedodontics",
   "Periodontics",
-  "RemovableProsthodontics"
-];
+  "Removable Prosthodontics"
+]; 
 
 var staff;
 
