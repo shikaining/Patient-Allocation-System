@@ -14,7 +14,6 @@ const pool = new Pool({
 /* GET home page. */
 router.get('/', function (req, res, next) {
     var username = req.session.username;
-
     console.log(username);
 
     if (username === undefined) {
@@ -36,31 +35,7 @@ router.get('/', function (req, res, next) {
 
 // POST
 router.post('/', function (req, res, next) {
-    var username = req.session.username;
-    var patientId = req.body.patientId;
 
-    var listStatus = req.body.listStatus;
-    var allocatedStatus = req.body.allocationStatus;
-    console.log("Patient ID" + patientId);
-    console.log("List Status " + listStatus);
-    if (listStatus === 'Not Listed') {
-        var listPatient = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
-        pool.query(listPatient, ['Listed', patientId], (err, data) => {
-            console.log(err);
-            req.flash('info', 'Patient Listed');
-            res.redirect('/viewPatients');
-        });
-    } else if (listStatus === 'Listed' && allocatedStatus === 'Not Allocated'){
-        var unlistPatient = "UPDATE public.patient SET listStatus = $1 WHERE pid = $2";
-        pool.query(unlistPatient, ['Not Listed', patientId], (err, data) => {
-            console.log(err);
-            req.flash('info', 'Patient Unlisted');
-            res.redirect('/viewPatients');
-        });
-    } else {
-        req.flash('error', 'An error has occurred! Please try again');
-        res.redirect('/viewPatients');
-    }
 });
 
 module.exports = router;

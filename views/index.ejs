@@ -28,7 +28,7 @@
 </head>
 
 <body>
-  <% include publicHeader.ejs %>
+  <%- include('publicHeader'); -%>
 
   <header>
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -115,7 +115,7 @@
   </div>
   <!-- /.container -->
 
- <% include footer.ejs %>
+ <%- include('footer'); -%>
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>

@@ -19,8 +19,10 @@ var viewPatientRouter = require('./routes/viewPatients');
 var allocatePatientRouter = require('./routes/allocatePatients');
 
 //Student pages
-var viewAllPatientRouter = require('./routes/viewAllPatients');
+var viewAllUnallocatedPatientsRouter = require('./routes/viewAllUnallocatedPatients');
+var viewAllPatientsRouter = require('./routes/viewAllPatients');
 var viewRequestRouter = require('./routes/viewRequests');
+var resolveRequestsRouter = require('./routes/resolveRequests');
 
 var indicationsArray = ["CDExamCase",
 "DentalPublicHealth",
@@ -76,8 +78,10 @@ app.use('/createPatient', createPatientRouter);
 app.use('/viewPatients', viewPatientRouter);
 app.use('/allocatePatients', allocatePatientRouter);
 
-app.use('/viewAllPatients', viewAllPatientRouter);
+app.use('/viewAllUnallocatedPatients', viewAllUnallocatedPatientsRouter);
 app.use('/viewRequests', viewRequestRouter);
+app.use('/viewAllPatients', viewAllPatientsRouter);
+app.use('/resolveRequests', resolveRequestsRouter);
 /*
 PATIENT CONTRACT
 */
@@ -120,7 +124,7 @@ app.post('/listPatient', (req, res) => {
   let sender = req.body.sender;
 
   truffle_connect.listPatient(patientId, sender, () => {
-    
+
   });
 });
 
@@ -132,7 +136,7 @@ app.post('/unlistPatient', (req, res) => {
   let sender = req.body.sender;
 
   truffle_connect.unlistPatient(patientId, sender, () => {
- 
+
   });
 });
 
@@ -149,7 +153,7 @@ app.post('/studentTransfer', (req, res) => {
   });
 });
 
-app.get('/getPatient', (req, res) => { 
+app.get('/getPatient', (req, res) => {
   console.log("**** GET /getPatient ****");
   console.log(req.body);
   let patientId = req.body.patientId;
@@ -178,14 +182,14 @@ app.post('/createPatient', (req, res) => {
     dbIndication += indicationsArray[indication]
   }
   dbIndication += "}"
-  
+
   //Testing dummy data, must change eventually
   let staffId = 1
   let patientNRIC = 1234
 
   // db.insert('Patient',
   //   'stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications',
-  //   staffId + "," + patientName + "," + patientNRIC + "," + patientContact + "," + "Not Listed"+ "," 
+  //   staffId + "," + patientName + "," + patientNRIC + "," + patientContact + "," + "Not Listed"+ ","
   //   + "Not Allocated" + "," + "Not Cured" + "," + dbIndication)
   // console.log("Indications passed to contract: " + indications);
   let sender = req.body.sender;
@@ -199,7 +203,7 @@ app.post('/createPatient', (req, res) => {
 app.listen(port, () => {
 
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
   truffle_connect.loadAddress();
   console.log("Express Listening at http://localhost:" + port);
 

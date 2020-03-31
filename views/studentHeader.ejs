@@ -6,8 +6,15 @@
    </button>
    <div class="collapse navbar-collapse" id="navbarResponsive">
      <ul class="navbar-nav ml-auto">
-       <li class="nav-item">
-         <a class="nav-link" href="http://localhost:3000/viewAllPatients">View All Patients</a>
+         <li class="nav-item dropdown">
+           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+               Patients
+           </a>
+           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
+               <a class="dropdown-item" href="http://localhost:3000/viewAllPatients">View All Patients</a>
+               <a class="dropdown-item" href="http://localhost:3000/viewAllUnallocatedPatients">View All Unallocated Patients</a>
+           </div>
        </li>
        <li class="nav-item dropdown">
          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPortfolio" data-toggle="dropdown"
@@ -16,6 +23,7 @@
          </a>
          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
              <a class="dropdown-item" href="http://localhost:3000/viewRequests">View my Requests</a>
+             <a class="dropdown-item" href="http://localhost:3000/resolveRequests">Resolve my Requests</a>
          </div>
      </li>
 
@@ -25,7 +33,7 @@
            Settings
        </a>
        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-           <a class="dropdown-item" href="http://localhost:3000/staffLogin">Logout</a>
+           <a class="dropdown-item" href="http://localhost:3000/login">Logout</a>
        </div>
    </li>
      </ul>

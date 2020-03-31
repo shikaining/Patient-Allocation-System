@@ -33,10 +33,15 @@
             console.log(patientId);
             document.getElementById("patientId").value = patientId;
             //
-            var allocationStatus = $(e).closest("tr").find("td:nth-child(5)").text();
+            var allocationStatus = $(e).closest("tr").find("td:nth-child(3)").text();
             //alert(id);
             console.log(allocationStatus);
             document.getElementById("allocationStatus").value = allocationStatus;
+
+            var studentId = $(e).closest("tr").find("td:nth-child(4)").text();
+            //alert(id);
+            console.log(studentId);
+            document.getElementById("studentId").value = studentId;
 
             var allocatePatient = document.getElementById("allocatePatient_form");
             if (allocatePatient.style.display === 'none') {
@@ -103,7 +108,7 @@
             <div class="form-group">
                 <label for="studentId">Student ID to Allocate:</label>
                 <input type="text" class="form-control" id="studentId" name="studentId"
-                     required="required" placeholder="Enter Student ID">
+                     required="required" readonly="true">
             </div>
             <button type="submit" class="btn btn-primary">Allocate</button>
         </form>
