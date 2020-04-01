@@ -90,7 +90,7 @@ router.post('/', async function (req, res, next) {
             (err, data) => {
                 console.log(err);
                 if (err === undefined) {
-                    req.flash('info', 'Request Resolved');
+                    req.flash('info', 'Patient Resolved');
                     res.redirect('/resolveRequests');
                 } else {
                     req.flash('error', 'An error has occurred! Please try again');
