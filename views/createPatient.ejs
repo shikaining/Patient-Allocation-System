@@ -3,7 +3,7 @@
 
 <head>
     <!-- Page Title -->
-    <title>Add a Patient</title>
+    <title>Create Patients</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -41,25 +41,25 @@
         <form id="addPatient_form" action="createPatient" role="form" method="post">
             <div class="form-group">
 
-                <label for="patientName">Please enter Patient Name:</label>
+                <label for="patientName">Please enter New Patient Name:</label>
                 <input type="text" class="form-control" id="patientName" name="patientName" placeholder="Enter Patient Name"
                     required="required">
             </div>
             <div class="form-group">
-                <label for="patientNRIC">Please enter Patient NRIC:</label>
+                <label for="patientNRIC">Please enter New Patient NRIC:</label>
                 <input type="text" class="form-control" id="patientNRIC" name="patientNRIC" placeholder="Enter Patient NRIC"
                     required="required">
 
             </div>
 
             <div class="form-group">
-                <label for="patientContact">Please enter Patient Contact Number:</label>
+                <label for="patientContact">Please enter New Patient Contact Number:</label>
                 <input type="text" class="form-control" id="patientContact" name="patientContact"
                     placeholder="Enter Patient Contact Number" required="required">
             </div>
 
             <div class="form-group">
-                <label for="patientContact">Please select Patient Indications:</label>
+                <label for="patientContact">Please select Patient's Indications:</label>
                 <br />
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" name="indications" type="checkbox" id="cDExamCase" value="1">
@@ -106,7 +106,7 @@
 
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Create Patient</button>
             </div>
 
 

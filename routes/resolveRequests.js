@@ -14,8 +14,13 @@ const pool = new Pool({
 })
 
 var student;
+var studentAddr;
+var transferStudentAddr;
+var patientInfo;
+var staffAddr;
+
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
     var username = req.session.username;
 
     console.log(username);
@@ -25,16 +30,17 @@ router.get('/', function (req, res, next) {
     } else {
 
         //retrieve current student object
+        let me = this;
         var sql_query =
             "SELECT * FROM public.student WHERE public.student.email = $1";
-        pool.query(sql_query, [username], (err, data) => {
-            student = data.rows[0];
-            console.log(student)
+        await pool.query(sql_query, [username], (err, data) => {
+            me.student = data.rows[0];
+            me.studentAddr = data.rows[0].address;
 
             //retrieve all listed patients from db
             var retreiveAllocatedRequest =
-            "SELECT * FROM public.request WHERE public.request.allocatedStatus = $1 AND public.request.studId = $2";
-            pool.query(retreiveAllocatedRequest, ['Allocated', student.studid], (err, data) => {
+                "SELECT * FROM public.request WHERE public.request.allocatedStatus = $1 AND public.request.studId = $2";
+            pool.query(retreiveAllocatedRequest, ['Allocated', this.student.studid], (err, data) => {
                 res.render('resolveRequests', { title: 'Operative Dentistry Course Record', user: username, data: data.rows });
             });
         });
@@ -50,10 +56,10 @@ router.post('/', async function (req, res, next) {
     var patientId;
     var studId;
 
-    if(transferStudentId === undefined){
+    if (transferStudentId === undefined) {
         studId = req.body.studentId;
         patientId = req.body.patientId;
-    } else{
+    } else {
         studId = req.body.trfstudentId;
         patientId = req.body.transferPatientId;
     }
@@ -62,20 +68,8 @@ router.post('/', async function (req, res, next) {
     console.log("Student ID" + studId);
     console.log("Transfer Student ID" + transferStudentId);
 
-    //retrieve student object
-    var retrieveStudentInfo_query =
-        "SELECT * FROM public.student WHERE public.student.studid = $1";
 
-    let me = this;
-    await pool.query(retrieveStudentInfo_query, [studId],
-        (err, data) => {
-            me.student = data.rows[0];
-            me.studentAddr = data.rows[0].address;
-        }
-    );
-
-
-    if(transferStudentId === undefined){
+    if (transferStudentId === undefined) {
         //resolve patients
         //update request table allocated status to 'Resolved'
         var resolveRequest = "UPDATE public.request SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
@@ -104,13 +98,27 @@ router.post('/', async function (req, res, next) {
             });
     } else {
         //transfer patient
+        //retrieve TRANSFER student object
+        var retrieveStudentInfo_query =
+            "SELECT * FROM public.student WHERE public.student.studid = $1";
+
+        let me = this;
+        await pool.query(retrieveStudentInfo_query, [transferStudentId],
+            (err, data) => {
+                me.transferStudentAddr = data.rows[0].address;
+               
+            }
+        );
+
+        console.log()
+
         try {
             //Update into Ethereum
-            // truffle_connect.studentTransfer(
-            //     patientId,
-            //     transferStudent,
-            //     currentStudent
-            // );
+            truffle_connect.studentTransfer(
+                patientId,
+                this.transferStudentAddr,
+                this.studentAddr
+            );
 
             //update student Id on request table
             var transferRequest = "UPDATE public.request SET studId = $1 WHERE pid = $2";
@@ -120,7 +128,6 @@ router.post('/', async function (req, res, next) {
                 } else {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
-                //res.redirect('/allocatePatients');
             });
 
             //update student Id on patient table
@@ -128,14 +135,26 @@ router.post('/', async function (req, res, next) {
             pool.query(transferPatient, [transferStudentId, patientId], (err, data) => {
                 console.log(err);
                 if (err === undefined) {
-                    req.flash('info', 'Request Transferred');
+                    req.flash('info', 'Patient Transferred');
                     res.redirect('/resolveRequests');
                 } else {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
-                //res.redirect('/allocatePatients');
             });
-        }
+            //get patient info after transfer to check if contract was indeed updated
+            var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+
+            await pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
+                me.staffAddr = data.rows[0].address;
+
+            });
+
+            // let me = this;
+            truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
+                me.patientInfo = answer;
+              
+            });
+        }//end try
         catch (error) {
             console.log("ERROR at transPatient: " + error);
             return;

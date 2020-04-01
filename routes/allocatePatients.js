@@ -37,7 +37,7 @@ router.get('/', async function (req, res, next) {
         //retrieve all request
         var retreiveAllRequests_query =
             "SELECT * FROM public.request WHERE public.request.allocatedStatus = $1";
-        pool.query(retreiveAllRequests_query,
+        await pool.query(retreiveAllRequests_query,
             ['Pending'],
             (err, data) => {
                 res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
@@ -73,17 +73,33 @@ router.post('/', async function (req, res, next) {
         (err, data) => {
             me.student = data.rows[0];
             me.studentAddr = data.rows[0].address;
+           
         }
     );
 
 
     try {
+      
         //Update into Ethereum
-        truffle_connect.allocatePatient(
-            patientId,
-            this.studentAddr,
-            this.staffAddr
+        let me = this;
+        await pool.query(retrieveStudentInfo_query, [studId],
+            (err, data) => {
+                me.student = data.rows[0];
+                me.studentAddr = data.rows[0].address;
+                
+                truffle_connect.allocatePatient(
+                    patientId,
+                    me.studentAddr,
+                    me.staffAddr
+                );
+                truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
+                    me.patientInfo = answer;
+
+                });
+            }
         );
+
+
         //update postgreSQL Database
 
         //1-update allocatedStatus of patient
@@ -130,6 +146,7 @@ router.post('/', async function (req, res, next) {
 
                 res.redirect('/allocatePatients');
             });
+
     } catch (error) {
         console.log("ERROR at allocatePatient: " + error);
         return;

@@ -42,9 +42,6 @@ router.get('/', async function (req, res, next) {
         // truffle_connect.getPatient(1, this.addr, (answer) => {
         //     let patientInfo = answer;
         //     //response = [account_balance, all_accounts]
-        //     console.log("*****************************");
-        //     console.log(patientInfo);
-        //     console.log("*****************************");
         // });
 
     }

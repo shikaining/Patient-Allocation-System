@@ -68,7 +68,7 @@ insert into Staff(name, nric, contactNo, email, password) values('Staff3', 'S942
 insert into Staff(name, nric, contactNo, email, password) values('Staff4', 'S9523459A', '94234567', 'staff4@gmail.com', 'asd');
 
 insert into Patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values(1, 1, 'Patient1', 'S9223451A', '91234568', 'Not Listed', 'Not Allocated', 'Not Cured','{"CDExamCase", "Endodontics"}');
--- update Patient set studId = 3;
+-- -- update Patient set studId = 3;
 
 insert into Request(studId, pId, allocatedStatus, indications) values(1, 1, 'Pending', '{"CDExamCase", "Endodontics"}');
 insert into Request(studId, pId, allocatedStatus, indications) values(2, 1, 'Pending', '{"CDExamCase", "Endodontics"}');
