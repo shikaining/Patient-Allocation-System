@@ -80,7 +80,7 @@ router.post('/', function (req, res, next) {
         }
     } else if (listStatus === 'Listed' && allocatedStatus === 'Not Allocated') {
         try {
-            //Update into Ethereum            
+            //Update into Ethereum
             truffle_connect.unlistPatient(
                 patientId,
                 staff.address

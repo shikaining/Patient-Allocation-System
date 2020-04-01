@@ -116,7 +116,7 @@ router.post("/", async function(req, res, next) {
     res.redirect("/createPatient");
   } catch (error) {
     console.log("ERROR: " + error);
-    req.flash("info", "Patient Failed to be Created");
+    req.flash("error", "Patient Failed to be Created");
     res.redirect("/createPatient");
   }
 });
