@@ -13,11 +13,11 @@ const pool = new Pool({
 });
 
 module.exports = {
-  loadAddress: function() {
+  loadAddress: function () {
     var self = this;
     // var listOfAccounts = await self.web3.eth.getAccounts()
 
-    self.web3.eth.getAccounts(function(err, accs) {
+    self.web3.eth.getAccounts(function (err, accs) {
       // console.log(accs)
       console.log("Initialising DB Address");
       db.init(accs);
@@ -28,103 +28,104 @@ module.exports = {
   /*
   CALLS PATIENT CONTRACT
   */
-  allocatePatient: function(patientId, studentAddr, sender) {
+  allocatePatient: function (patientId, studentAddr, sender) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
     //deploy Patient
-    Patient.deployed().then(function(instance) {
+    Patient.deployed().then(function (instance) {
       patientInstance = instance;
       return patientInstance.allocatePatient(patientId, studentAddr, {
-        from: sender
+        from: sender,
+        gas: "5000000"
       });
     });
   },
-  getTotalPatients: function(callback) {
+  getTotalPatients: function (callback) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
     Patient.deployed()
-      .then(function(instance) {
+      .then(function (instance) {
         patientInstance = instance;
         return patientInstance.getTotalPatients();
       })
-      .then(function(value) {
+      .then(function (value) {
         callback(value.valueOf());
       })
-      .catch(function(e) {
+      .catch(function (e) {
         console.log(e);
         callback("ERROR 404");
       });
   },
-  getOwner: function(callback) {
+  getOwner: function (callback) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
     Patient.deployed()
-      .then(function(instance) {
+      .then(function (instance) {
         patientInstance = instance;
         return patientInstance.getOwner.call(); //BigNumber Error thrown inside, not sure why, but it returns address fine.
       })
-      .then(function(value) {
+      .then(function (value) {
         callback(value.valueOf());
       })
-      .catch(function(e) {
+      .catch(function (e) {
         console.log("GetOWner Error: " + e);
         callback("ERROR 404");
       });
   },
-  listPatient: function(patientId, sender) {
+  listPatient: function (patientId, sender) {
     console.log("ListPatient Start");
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
-    Patient.deployed().then(function(instance) {
+    Patient.deployed().then(function (instance) {
       patientInstance = instance;
       console.log("ListPatient End");
       return patientInstance.listPatient(patientId, { from: sender });
     });
   },
-  unlistPatient: function(patientId, sender) {
+  unlistPatient: function (patientId, sender) {
     console.log("UnlistPatient Start");
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
-    Patient.deployed().then(function(instance) {
+    Patient.deployed().then(function (instance) {
       patientInstance = instance;
       console.log("UnlistPatient End");
       return patientInstance.unlistPatient(patientId, { from: sender });
     });
   },
-  studentTransfer: function(patientId, studentAddr, sender) {
+  studentTransfer: function (patientId, studentAddr, sender) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
-    Patient.deployed().then(function(instance) {
+    Patient.deployed().then(function (instance) {
       patientInstance = instance;
       return patientInstance.studentTransfer(patientId, studentAddr, {
         from: sender
       });
     });
   },
-  getPatient: function(patientId, sender, callback) {
+  getPatient: function (patientId, sender, callback) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
     Patient.deployed()
-      .then(function(instance) {
+      .then(function (instance) {
         patientInstance = instance;
         return patientInstance.getPatient(patientId, { from: sender });
       })
-      .then(function(value) {
+      .then(function (value) {
         callback(value.valueOf());
       })
-      .catch(function(e) {
+      .catch(function (e) {
         console.log(e);
         callback("ERROR 404");
       });
   },
-  createPatient: async function(
+  createPatient: async function (
     sql_query,
     stfId,
     patientName,
@@ -141,7 +142,7 @@ module.exports = {
       var self = this;
       Patient.setProvider(self.web3.currentProvider);
       var patientInstance;
-      Patient.deployed().then(function(instance) {
+      Patient.deployed().then(function (instance) {
         try {
           patientInstance = instance;
           patientInstance.createPatient
@@ -174,7 +175,7 @@ module.exports = {
                     return;
                   } else {
                     patientInstance
-                      .createPatient(patientName, patientContact, solidityIndication,{ from: sender, gas: "5000000" })
+                      .createPatient(patientName, patientContact, solidityIndication, { from: sender, gas: "5000000" })
                       .then(result => {
                         res(patientID);
                         return;

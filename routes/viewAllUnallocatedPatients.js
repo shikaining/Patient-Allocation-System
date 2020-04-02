@@ -68,7 +68,7 @@ router.post('/', async function (req, res, next) {
         pool.query(getRequestInfo, [stuId, patientId], (err, data) => {
             console.log("data for get request" + data.rowCount);
             if (data.rowCount !== 0){
-                req.flash("error", "There is already a request");
+                req.flash("error", "You have already made a request");
                 res.redirect("/viewAllUnallocatedPatients");
             } else {
                 //create new request
@@ -84,12 +84,12 @@ router.post('/', async function (req, res, next) {
                     ],
                     (err, data) => {
                         if (err) {
-                            req.flash("info", "Failed to create request");
+                            req.flash("error", "Failed to create request");
                             console.log("Error in query")
                             console.log(err)
                         } else {
                             req.flash("info", "Requested Successfully");
-                            res.redirect("/viewAllUnallocatedPatients");
+                            res.redirect("/viewRequests");
                         }
                         //res.redirect("/viewAllPatients");
                     }

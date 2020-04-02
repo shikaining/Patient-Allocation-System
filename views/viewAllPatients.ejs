@@ -3,7 +3,7 @@
 
 <head>
     <!-- Page Title -->
-    <title>View Patients</title>
+    <title>View All Patients</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -40,11 +40,11 @@
             <thead>
                 <tr>
                     <th scope="col">Patient Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Contact No.</th>
+                    <!-- <th scope="col">Name</th>
+                    <th scope="col">Contact No.</th> -->
                     <th scope="col">Indications</th>
-                    <th scope="col">Listing Status</th>
-                    <th scope="col">Allocation Status</th>
+                    <!-- <th scope="col">Listing Status</th>
+                    <th scope="col">Allocation Status</th> -->
                     <th scope="col">Cured Status</th>
                     <th scope="col">Student ID</th>
                     <th scope="col"></th>
@@ -54,11 +54,11 @@
                 <% for(var i=0; i<data.length; i++) { %>
                 <tr>
                     <td><%= data[i].pid%></td>
-                    <td><%= data[i].name%></td>
-                    <td><%= data[i].contactno%></td>
+                    <!-- <td><%= data[i].name%></td>
+                    <td><%= data[i].contactno%></td> -->
                     <td><%= data[i].indications%></td>
-                    <td><%= data[i].liststatus%></td>
-                    <td><%= data[i].allocatedstatus%></td>
+                    <!-- <td><%= data[i].liststatus%></td>
+                    <td><%= data[i].allocatedstatus%></td> -->
                     <td><%= data[i].curedstatus%></td>
                     <td><%= data[i].studid%></td>
                 </tr>

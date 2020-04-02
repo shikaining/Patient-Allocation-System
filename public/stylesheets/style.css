@@ -27,3 +27,8 @@ a {
   background-color:rgb(147, 172, 201);
   align-content: center;
 }
+
+
+.error {
+    color: red
+}

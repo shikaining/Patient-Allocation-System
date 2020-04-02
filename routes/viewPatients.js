@@ -42,9 +42,6 @@ router.get('/', async function (req, res, next) {
         // truffle_connect.getPatient(1, this.addr, (answer) => {
         //     let patientInfo = answer;
         //     //response = [account_balance, all_accounts]
-        //     console.log("*****************************");
-        //     console.log(patientInfo);
-        //     console.log("*****************************");
         // });
 
     }
@@ -80,7 +77,7 @@ router.post('/', function (req, res, next) {
         }
     } else if (listStatus === 'Listed' && allocatedStatus === 'Not Allocated') {
         try {
-            //Update into Ethereum            
+            //Update into Ethereum
             truffle_connect.unlistPatient(
                 patientId,
                 staff.address
