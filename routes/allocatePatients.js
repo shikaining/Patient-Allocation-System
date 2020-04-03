@@ -73,20 +73,20 @@ router.post('/', async function (req, res, next) {
         (err, data) => {
             me.student = data.rows[0];
             me.studentAddr = data.rows[0].address;
-           
+
         }
     );
 
 
     try {
-      
+
         //Update into Ethereum
         let me = this;
         await pool.query(retrieveStudentInfo_query, [studId],
             (err, data) => {
                 me.student = data.rows[0];
                 me.studentAddr = data.rows[0].address;
-                
+
                 truffle_connect.allocatePatient(
                     patientId,
                     me.studentAddr,

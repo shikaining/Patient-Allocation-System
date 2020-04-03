@@ -13,31 +13,62 @@ const pool = new Pool({
     port: 5432,
 })
 
-var student;
+var staffAddr;
+var patientIds = [];
+var unallocatedPatients = [];
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', async function (req, res, next) {
     var username = req.session.username;
-
     console.log(username);
+    this.patientIds = [];
+    this.unallocatedPatients = [];
 
     if (username === undefined) {
         res.redirect('/login');
     } else {
-        //retrieve all listed patients from db
+        let me = this;
+        //retrieve all listed and unallocated patients from db
         var retreiveAllPatientInfo =
-        "SELECT * FROM public.patient WHERE public.patient.listStatus = $1"+
-        " AND public.patient.allocatedStatus != $2";
-        pool.query(retreiveAllPatientInfo, ['Listed','Allocated'], (err, data) => {
-            console.log("Patient" + data.rowCount);
-            res.render('viewAllUnallocatedPatients', { title: 'View All Unallocated Patients', user: username, data: data.rows });
-        });
-        //retrieve current student object
-        var sql_query =
-            "SELECT * FROM public.student WHERE public.student.email = $1";
+            "SELECT * FROM public.patient WHERE public.patient.listStatus = $1" +
+            " AND public.patient.allocatedStatus != $2";
+        await pool.query(retreiveAllPatientInfo, ['Listed', 'Allocated'], (err, data) => {
 
-        pool.query(sql_query, [username], (err, data) => {
-            student = data.rows[0];
-            console.log(student)
+            //push required patientIds into patientIds array
+            for (var i = 0; i < data.rowCount; i++) {
+                me.patientIds.push({
+                    patientId: data.rows[i].pid
+                });
+            }
+
+            //retrieve staff1's address to call contract
+            var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+            pool.query(sql_query, ['staff1@gmail.com'], function (err, results) {
+                me.staffAddr = results.rows[0].address;
+
+                //retrieve patients from contract
+                var i;
+                for (i = 0; i < me.patientIds.length; i++) {
+                    let id = this.patientIds[i].patientId;
+                    let indications = data.rows[i].indications;
+                    truffle_connect.getPatient(id, this.staffAddr, (answer) => {
+
+                        me.unallocatedPatients.push({
+                            patientId: id,
+                            indications: indications
+                        });
+
+
+                    });
+                }
+
+                setTimeout(function () {
+                    res.render('viewAllUnallocatedPatients', { title: 'View All Unallocated Patients', user: username, data: me.unallocatedPatients });
+
+                }, 1000);
+
+
+            });
+
         });
     }
 });
@@ -67,7 +98,7 @@ router.post('/', async function (req, res, next) {
         var getRequestInfo = "SELECT * FROM public.request WHERE public.request.studId = $1 AND public.request.pId = $2";
         pool.query(getRequestInfo, [stuId, patientId], (err, data) => {
             console.log("data for get request" + data.rowCount);
-            if (data.rowCount !== 0){
+            if (data.rowCount !== 0) {
                 req.flash("error", "You have already made a request");
                 res.redirect("/viewAllUnallocatedPatients");
             } else {
