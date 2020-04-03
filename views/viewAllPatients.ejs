@@ -53,14 +53,15 @@
             <tbody>
                 <% for(var i=0; i<data.length; i++) { %>
                 <tr>
-                    <td><%= data[i].pid%></td>
+                    <td><%= data[i].patientId%></td>
                     <!-- <td><%= data[i].name%></td>
                     <td><%= data[i].contactno%></td> -->
                     <td><%= data[i].indications%></td>
                     <!-- <td><%= data[i].liststatus%></td>
                     <td><%= data[i].allocatedstatus%></td> -->
-                    <td><%= data[i].curedstatus%></td>
+                    <td><%= data[i].cured%></td>
                     <td><%= data[i].studid%></td>
+                    
                 </tr>
                 <% } %>
             </tbody>
