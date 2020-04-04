@@ -78,6 +78,7 @@
                     <!-- <th scope="col">Listing Status</th>
                     <th scope="col">Allocation Status</th>
                     <th scope="col">Student ID</th> -->
+                    <th scope="col">Listed Date/Time</th>
                     <th scope="col">Action</th>
                     <th scope="col"></th>
                 </tr>
@@ -92,6 +93,7 @@
                     <!-- <td><%= data[i].liststatus%></td>
                     <td><%= data[i].allocatedstatus%></td>
                     <td><%= data[i].studid%></td> -->
+                    <td><%= data[i].patientTimestamp%></td>
                     <td><button type="button" class="btn btn-primary" onclick="request(this)">Request</button></td>
                 </tr>
                 <% } %>

@@ -2,6 +2,7 @@ drop table if exists student cascade;
 drop table if exists staff cascade;
 drop table if exists patient cascade;
 drop table if exists request cascade;
+drop table if exists IndicationQuota cascade;
 
 CREATE TABLE Student (
 	studId Serial,
@@ -11,8 +12,9 @@ CREATE TABLE Student (
 	email varchar(128) unique not null,
 	password varchar(60),
 	address varchar(60),
+	enrolYear int not null,
+	indicationCount integer[10],
 	PRIMARY KEY (studId)
-
 );
 
 CREATE TABLE Staff (
@@ -37,6 +39,7 @@ CREATE TABLE Patient (
 	allocatedStatus varchar(20),
 	curedStatus varchar(20),
 	indications text[],
+	listedTimestamp timestamptz ,
 	PRIMARY KEY (pId),
 	FOREIGN KEY (stfId) REFERENCES Staff on delete cascade,
 	FOREIGN KEY (studId) REFERENCES Student on delete cascade
@@ -50,22 +53,50 @@ CREATE TABLE Request (
 	studId int not null,
 	allocatedStatus varchar(20),
 	indications text[],
+	score bigint not null,
+	requestTimestamp timestamptz,
 	PRIMARY KEY (rId),
 	FOREIGN KEY (stfId) REFERENCES Staff on delete cascade,
 	FOREIGN KEY (studId) REFERENCES Student on delete cascade,
 	FOREIGN KEY (pId) REFERENCES Patient on delete cascade
 );
 
-insert into Student(name, nric, contactNo, email, password) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'asd');
-insert into Student(name, nric, contactNo, email, password) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'asd');
-insert into Student(name, nric, contactNo, email, password) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'asd');
-insert into Student(name, nric, contactNo, email, password) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'asd');
+-- CREATE TABLE Indications (
+-- 	iId serial NOT NULL,
+-- 	cd_exam_case int NOT NULL,
+-- 	dental_public_health int NOT NULL,
+-- 	endodontics int NOT NULL,
+-- 	fixed_prosthodontics int NOT NULL,
+-- 	operative_dentistry int NOT NULL,
+-- 	oral_surgery int NOT NULL,
+-- 	orthodontics int NOT NULL,
+-- 	pedodontics int NOT NULL,
+-- 	periodontics int NOT NULL,
+-- 	removable_prosthodontics int NOT NULL,
+-- 	PRIMARY KEY(iId)
+-- );
+
+CREATE TABLE IndicationQuota (
+    iId serial NOT NULL,
+	indicationArray integer ARRAY[10],
+	PRIMARY KEY(iId)
+);
+
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'asd', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'asd', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'asd', 2018, '{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'asd', 2019, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 
 
 insert into Staff(name, nric, contactNo, email, password) values('Staff1', 'S9223456A', '91234567', 'staff1@gmail.com', 'asd');
 insert into Staff(name, nric, contactNo, email, password) values('Staff2', 'S9323457A', '92234567', 'staff2@gmail.com', 'asd');
 insert into Staff(name, nric, contactNo, email, password) values('Staff3', 'S9423458A', '93234567', 'staff3@gmail.com', 'asd');
 insert into Staff(name, nric, contactNo, email, password) values('Staff4', 'S9523459A', '94234567', 'staff4@gmail.com', 'asd');
+
+-- INSERT INTO indications(cd_exam_case, dental_public_health, endodontics, fixed_prosthodontics, operative_dentistry, oral_surgery, orthodontics, pedodontics, periodontics, removable_prosthodontics)
+-- VALUES(3, 5, 4, 3, 5, 4, 6, 2, 4, 3);
+
+INSERT INTO IndicationQuota(indicationArray) VALUES ('{3, 5, 4, 3, 5, 4, 6, 2, 4, 3}');
 
 -- insert into Patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values(1, 1, 'Patient1', 'S9223451A', '91234568', 'Not Listed', 'Not Allocated', 'Not Cured','{"CDExamCase", "Endodontics"}');
 -- -- -- update Patient set studId = 3;
