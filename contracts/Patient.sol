@@ -29,6 +29,7 @@ contract Patient is ERC721Full {
 
 	// == ROLES ==
 	
+	address requestAddress;
 	address owner = msg.sender;
 	mapping(address => bool) private powerUsers;
 	mapping(address => bool) private adminUsers;
@@ -67,14 +68,16 @@ contract Patient is ERC721Full {
 		_;
 	}
 	
-	modifier onlyPower() {
-		require(powerUsers[msg.sender] == true);
-		_;
-	}
-	
 	modifier onlyPowerAndUp() {
 		require(powerUsers[msg.sender] == true || 
 				msg.sender == owner);
+		_;
+	}
+	
+	modifier onlyPowerAndUpAndRequest() {
+		require(powerUsers[msg.sender] == true || 
+				msg.sender == owner ||
+				msg.sender == requestAddress);
 		_;
 	}
 	
@@ -82,6 +85,11 @@ contract Patient is ERC721Full {
 		require(adminUsers[msg.sender] == true || 
 				powerUsers[msg.sender] == true || 
 				msg.sender == owner);
+		_;
+	}
+	
+	modifier onlyStudent(uint patientID) {
+		require(ownerOf(patientID) == msg.sender);
 		_;
 	}
 	
@@ -95,14 +103,20 @@ contract Patient is ERC721Full {
 		_;
 	}
 	
+	modifier unresolved(uint patientID) {
+		require(patients[patientID].resolved == false);
+		_;
+	}
+	
 	// ===============
 	
 	// == EVENTS ==
-	
+
+	event Allocate(uint patientID, address from, address to, address allocater);	
 	event List(uint patientID, address lister);
-	event Unlist(uint patientID, address unlister);
-	event Allocate(uint patientID, address from, address to, address allocater);
+	event Resolve(uint patientID, address resolver);
 	event Transfer(uint patientID, address from, address to);
+	event Unlist(uint patientID, address unlister);
 	
 	// ============
 	
@@ -130,7 +144,7 @@ contract Patient is ERC721Full {
 	
 	// Allocate a patient to a student
 	function allocatePatient(uint patientID, address student) 
-	public onlyPowerAndUp patientListed(patientID) {		
+	public onlyPowerAndUpAndRequest patientListed(patientID) {		
 		// Allocate patient to student
 		patients[patientID].owner = student;
 		transferFrom(address(this), student, patientID);
@@ -138,7 +152,6 @@ contract Patient is ERC721Full {
 		// Remove patient from patient pool
 		delete patientPool[patientID];
 		
-		// Emit Allocate event
 		emit Allocate(patientID, address(this), student, msg.sender);
 	}
 	
@@ -147,7 +160,7 @@ contract Patient is ERC721Full {
 						   uint[] memory possessedIndications) 
 	public onlyPowerAndUp 
 	returns (uint) {
-		// Create patient if patient does not exist
+		// Create patient
 		_Patient memory _patient = _Patient(
 			patientCount, 
 			name, 
@@ -169,15 +182,30 @@ contract Patient is ERC721Full {
 	
 	// Register a patient in the patient pool
 	function listPatient(uint patientID) 
-	public onlyPowerAndUp patientUnlisted(patientID) {		
+	public onlyPowerAndUp patientUnlisted(patientID) unresolved(patientID) {		
 		// Register patient ID in patient pool
 		patientPool[patientID] = true;
 		
-		// Emit List event
 		emit List(patientCount, msg.sender);
 	}
 	
-	function studentTransfer(uint patientID, address student) public {
+	// Resolve a patient post-processing
+	function resolvePatient(uint patientID)
+	public onlyStudent(patientID) unresolved(patientID){
+		patients[patientID].resolved = true;
+		
+		emit Resolve(patientID, msg.sender);
+	}
+	
+	// Set request address for allocation permission
+	function setRequestAddress(address _requestAddress) 
+	public onlyOwner {
+		requestAddress = _requestAddress;
+	}
+	
+	// Transfer patient between students
+	function studentTransfer(uint patientID, address student) 
+	public unresolved(patientID) {
 		// Re-allocate patient to new student
 		transferFrom(msg.sender, student, patientID);
 		
@@ -193,7 +221,6 @@ contract Patient is ERC721Full {
 		// Remove patient from patient pool
 		delete patientPool[patientID];
 		
-		// Emit Unlist event
 		emit Unlist(patientCount, msg.sender);
 	}
 	
@@ -201,25 +228,11 @@ contract Patient is ERC721Full {
 	
 	// == GETTERS ==
 	
-	/*
-	// Return all listed indications
-	function getIndications() 
-	public returns (uint[] memory) {		
-		for (uint i = 1; i <= totalPatients; i++) {
-			ret.push(i);
-			
-			if (patients[i].resolved == false) {
-				for (uint j = 0; j < patients[i].possessedIndications.length; j++) {
-					ret.push(patients[i].possessedIndications[j]);
-				}
-			}
-			
-			ret.push(67108863);
-		}
-		
-		return ret;
+	// Return all indications from patient
+	function getIndications(uint patientID) 
+	public view returns (uint[] memory) {		
+		return patients[patientID].possessedIndications;
 	}
-	*/
 	
 	// Return contract owner
 	function getOwner() 
