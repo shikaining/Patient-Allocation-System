@@ -141,8 +141,11 @@ contract Request {
 	
 	function processRequest(uint requestID, uint patientID) 
 	public onlyPowerAndUp unresolved(requestID) matchingIndication(requestID, patientID) {
-		requests[requestID].allocatedPatientID = patientID;
+		// Allocate patient to request owner
 		patientContract.allocatePatient(patientID, requests[requestID].owner);
+		
+		// Update request records
+		requests[requestID].allocatedPatientID = patientID;
 		requests[requestID].resolved = true;
 		
 		emit Process(requestID, patientID);

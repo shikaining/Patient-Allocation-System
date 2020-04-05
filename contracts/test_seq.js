@@ -333,7 +333,7 @@ contract("Request", accounts => {
 	it("Total number of requests correct", () =>
 		request.getTotalRequests.call()
 		.then((rsl) => {
-			// Check if total patients is updated correctly
+			// Check if total requests is updated correctly
 			assert.equal(rsl.toNumber(), 1, "Total number of requests incorrect");
 		})
 	);
