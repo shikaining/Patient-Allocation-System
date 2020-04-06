@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Patient Allocation System</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/modern-business.css" rel="stylesheet">
+
+    <!-- CSS for Styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- JavaScript for Interactivity -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <%- include('staffHeader'); -%>
+
+    <!-- Page Content -->
+    <div class="container">
+        <h3 class="mt-4 mb-3"><%= title %></h3>
+        <%- messages('my_message_template', locals) %>
+        <form id="addStaffAccount_form" action="createStaffAccount" role="form" method="post">
+            <div class="form-group">
+
+                <label for="staffName">Please enter staff name:</label>
+                <input type="text" class="form-control" id="staffName" name="staffName" placeholder="Enter staff Name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="staffNRIC">Please enter staff NRIC:</label>
+                <input type="text" class="form-control" id="staffNRIC" name="staffNRIC" placeholder="Enter staff NRIC"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="staffContact">Please enter staff contact number:</label>
+                <input type="text" class="form-control" id="staffContact" name="staffContact"
+                placeholder="Enter staff Contact Number" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="staffAddress">Please enter staff account address:</label>
+                <input type="text" class="form-control" id="staffAddress" name="staffAddress" placeholder="Enter Account Address"
+                    required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="accountType">Please select staff account type:</label>
+                <select class="form-control" id="accountType" name="accountType">
+                    <option value="staff">Normal Staff</option>
+                    <option value="poweruser">Power User</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="staffEmail">Please enter staff email:</label>
+                <input type="text" class="form-control" id="staffEmail" name="staffEmail"
+                placeholder="Enter staff Email" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Please enter your password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
+                required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="verification">Please enter your verification:</label>
+                <input type="password" class="form-control" id="verification" name="verification"
+                placeholder="Enter your verification" required="required">
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Register Account</button>
+            </div>
+        </form>
+    </div>
+
+    <%- include('footer'); -%>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

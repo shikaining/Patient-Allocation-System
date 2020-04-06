@@ -12,11 +12,13 @@ var session = require('express-session');
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var staffLoginRouter = require('./routes/staffLogin');
+var registerStudentAccountRouter = require('./routes/registerStudentAccount');
 
 //Staff pages
 var createPatientRouter = require('./routes/createPatient');
 var viewPatientRouter = require('./routes/viewPatients');
 var allocatePatientRouter = require('./routes/allocatePatients');
+var createStaffAccountRouter = require('./routes/createStaffAccount');
 
 //Student pages
 var viewAllUnallocatedPatientsRouter = require('./routes/viewAllUnallocatedPatients');
@@ -73,7 +75,9 @@ app.use(express.static(path.join(__dirname, 'public_static')));
 app.use('/home', indexRouter);
 app.use('/login', loginRouter);
 app.use('/staffLogin', staffLoginRouter);
+app.use('/registerStudentAccount', registerStudentAccountRouter);
 
+app.use('/createStaffAccount', createStaffAccountRouter);
 app.use('/createPatient', createPatientRouter);
 app.use('/viewPatients', viewPatientRouter);
 app.use('/allocatePatients', allocatePatientRouter);
@@ -82,6 +86,7 @@ app.use('/viewAllUnallocatedPatients', viewAllUnallocatedPatientsRouter);
 app.use('/viewRequests', viewRequestRouter);
 app.use('/viewAllPatients', viewAllPatientsRouter);
 app.use('/resolveRequests', resolveRequestsRouter);
+
 /*
 PATIENT CONTRACT
 */
@@ -203,7 +208,7 @@ app.post('/createPatient', (req, res) => {
 app.listen(port, () => {
 
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+  truffle_connect.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
   truffle_connect.loadAddress();
   console.log("Express Listening at http://localhost:" + port);
 
