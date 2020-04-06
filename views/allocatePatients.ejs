@@ -71,7 +71,9 @@
                     <th scope="col">Indications</th>
                     <!-- <th scope="col">Listing Status</th> -->
                     <th scope="col">Allocation Status</th>
-                    <th scope="col">Student ID</th>
+                    <th scope="col">Allocated Student ID</th>
+                    <th scope="col">Leading Student ID</th>
+                    <th scope="col">Leading Student Name</th>
                     <th scope="col">Action</th>
                     <th scope="col"></th>
                 </tr>
@@ -85,6 +87,12 @@
                     <!-- <td><%= data[i].liststatus%></td> -->
                     <td><%= data[i].allocatedstatus%></td>
                     <td><%= data[i].studid%></td>
+                    <%if (data[i].leadingstudentid == 0) { %>
+                        <td>None</td>
+                    <% } else { %>
+                        <td><%= data[i].leadingstudentid%></td>
+                    <% } %>
+                    <td><%= data[i].leadingstudentname%></td>
                     <td><button type="button" class="btn btn-primary" onclick="allocatedPatient(this)">Allocate Patient</button></td>
                 </tr>
                 <% } %>

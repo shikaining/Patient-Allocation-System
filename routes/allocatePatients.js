@@ -34,11 +34,11 @@ router.get('/', async function (req, res, next) {
         //     res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
         // });
 
-        //retrieve all request
+        //retrieve all patients to be allocated
         var retreiveAllRequests_query =
-            "SELECT * FROM public.request WHERE public.request.allocatedStatus = $1";
+            "SELECT * FROM public.patient WHERE public.patient.allocatedStatus = $1 AND public.patient.listStatus = $2";
         await pool.query(retreiveAllRequests_query,
-            ['Pending'],
+            ['Not Allocated', 'Listed'],
             (err, data) => {
                 res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
             });

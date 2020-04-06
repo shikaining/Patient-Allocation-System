@@ -51,6 +51,8 @@ router.get('/', async function (req, res, next) {
                 for (i = 0; i < me.patientIds.length; i++) {
                     let id = this.patientIds[i].patientId;
                     let indications = data.rows[i].indications;
+                    let leadingStudentId = (data.rows[i].leadingstudentid == 0) ? 'None' : data.rows[i].leadingstudentid;
+                    let leadingStudentName = data.rows[i].leadingstudentname
                     truffle_connect.getPatient(id, this.staffAddr, (answer) => {
                         //add studentId attr 
                         let requiredId = 'None';
@@ -64,7 +66,9 @@ router.get('/', async function (req, res, next) {
                                 patientId: id,
                                 indications: indications,
                                 cured: answer[4],
-                                studid: requiredId
+                                studid: requiredId,
+                                leadingStudentId: leadingStudentId,
+                                leadingStudentName: leadingStudentName
                             });
                         });
 

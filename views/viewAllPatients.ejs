@@ -46,7 +46,9 @@
                     <!-- <th scope="col">Listing Status</th>
                     <th scope="col">Allocation Status</th> -->
                     <th scope="col">Cured Status</th>
-                    <th scope="col">Student ID</th>
+                    <th scope="col">Allocated Student ID</th>
+                    <th scope="col">Leading Student ID</th>
+                    <th scope="col">Leading Student Name</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -61,6 +63,8 @@
                     <td><%= data[i].allocatedstatus%></td> -->
                     <td><%= data[i].cured%></td>
                     <td><%= data[i].studid%></td>
+                    <td><%= data[i].leadingStudentId%></td>
+                    <td><%= data[i].leadingStudentName%></td>
                     
                 </tr>
                 <% } %>

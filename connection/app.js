@@ -1,6 +1,8 @@
 const contract = require("truffle-contract");
 const patient_artifact = require("../build/contracts/Patient.json");
+const request_artifact = require("../build/contracts/Request.json");
 var Patient = contract(patient_artifact);
+var Request = contract(request_artifact)
 var db = require("./queries");
 
 const Pool = require("pg").Pool;
@@ -28,14 +30,14 @@ module.exports = {
   /*
   CALLS PATIENT CONTRACT
   */
-  allocatePatient: function(patientId, studentAddr, sender) {
+  allocatePatient: function(requestId, patientId, sender) {
     var self = this;
-    Patient.setProvider(self.web3.currentProvider);
-    var patientInstance;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
     //deploy Patient
-    Patient.deployed().then(function(instance) {
-      patientInstance = instance;
-      return patientInstance.allocatePatient(patientId, studentAddr, {
+    Request.deployed().then(function(instance) {
+      requestInstance = instance;
+      return requestInstance.processRequest(requestId, patientId, {
         from: sender,
         gas: "5000000"
       });
@@ -214,5 +216,63 @@ module.exports = {
         }
       });
     });
-  }
+  },
+
+  createRequest: async function(studentScore, solidityIndications, sender, stuId, patientId, allocatedStatus, dbIndication, requestTimeStamp){
+    return new Promise((res, rej) => {
+      var self = this;
+      Request.setProvider(self.web3.currentProvider);
+      var requestInstance;
+      Request.deployed().then(instance => {
+        try {
+          requestInstance = instance;
+          requestInstance.createRequest.call(studentScore, solidityIndications, {from: sender})
+          .then(requestId => {
+            var rId = parseInt(requestId);
+            console.log("RequestId returned from Contract : " + rId);
+
+            var createRequest_query = "INSERT INTO public.request(rId, studId, pId, allocatedStatus, indications, score, requestTimestamp) values($1,$2,$3,$4,$5,$6,$7)"
+            pool.query(createRequest_query, [rId, stuId, patientId, allocatedStatus, dbIndication, studentScore, requestTimeStamp], (err, data) => {
+              if(err){
+                  req.flash("Error", "Failed to create request");
+                  console.log("Error in Insert Request Query");
+                  rej(err);
+                  return;
+              } else {
+                requestInstance.createRequest(studentScore, solidityIndications, {from: sender, gas: "5000000"})
+                  .then(result => {
+                    res(patientId);
+                    return;
+                  })
+              }
+          })
+
+          })
+        } catch (error) {
+          rej(error);
+          return;
+        }
+      })
+    })
+  },
+  getRequest: function(requestId, sender){
+    return new Promise((res,rej) => {
+      var self = this;
+      Request.setProvider(self.web3.currentProvider);
+      var requestInstance;
+      Request.deployed().then(instance =>{
+        try {
+          requestInstance = instance;
+          requestInstance.getRequest.call(requestId, {from: sender})
+          .then(result => {
+            res(result[3]);
+            return
+          })          
+        } catch (error) {
+          rej(error);
+          return;
+        }        
+      })
+    })
+  },
 };
