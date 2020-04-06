@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Patient Allocation System</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/modern-business.css" rel="stylesheet">
+
+    <!-- CSS for Styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- JavaScript for Interactivity -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <%- include('publicHeader'); -%>
+
+    <!-- Page Content -->
+    <div class="container">
+        <h3 class="mt-4 mb-3"><%= title %></h3>
+        <%- messages('my_message_template', locals) %>
+        <form id="addStudentAccount_form" action="registerStudentAccount" role="form" method="post">
+            <div class="form-group">
+
+                <label for="studentName">Please enter your name:</label>
+                <input type="text" class="form-control" id="studentName" name="studentName" placeholder="Enter your Name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="studentNRIC">Please enter your NRIC:</label>
+                <input type="text" class="form-control" id="studentNRIC" name="studentNRIC" placeholder="Enter your NRIC"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="studentContact">Please enter your contact number:</label>
+                <input type="text" class="form-control" id="studentContact" name="studentContact"
+                placeholder="Enter your Contact Number" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="studentAddress">Please enter your account address:</label>
+                <input type="text" class="form-control" id="studentAddress" name="studentAddress" placeholder="Enter Account Address"
+                    required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="studentYear">Please select your enrolment year</label>
+                <select class="form-control" id="studentYear" name="studentYear">
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="studentEmail">Please enter your email:</label>
+                <input type="text" class="form-control" id="studentEmail" name="studentEmail"
+                placeholder="Enter your Email" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Please enter your password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password"
+                required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="patientContact">Please Select Graduation Indications Requirement:</label>
+                <br />
+                <div class="form-group">
+                    <label for="cDExamCase">CD Exam Case:</label>
+                    <select class="form-control" id="cDExamCase" name="cDExamCase">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dentalPublicHealth">Dental Public Health:</label>
+                    <select class="form-control" id="dentalPublicHealth" name="dentalPublicHealth">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="endodontics">Endodontics:</label>
+                    <select class="form-control" id="endodontics" name="endodontics">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fixedProsthodontics">Fixed Prosthodontics:</label>
+                    <select class="form-control" id="fixedProsthodontics" name="fixedProsthodontics">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="operativeDentistry">Operative Dentistry:</label>
+                    <select class="form-control" id="operativeDentistry" name="operativeDentistry">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="oralSurgery">Oral Surgery:</label>
+                    <select class="form-control" id="oralSurgery" name="oralSurgery">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="orthodontics">Orthodontics:</label>
+                    <select class="form-control" id="orthodontics" name="orthodontics">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="pedodontics">Pedodontics:</label>
+                    <select class="form-control" id="pedodontics" name="pedodontics">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="periodontics">Periodontics:</label>
+                    <select class="form-control" id="periodontics" name="periodontics">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="removableProsthodontics">Removable Prosthodontics:</label>
+                    <select class="form-control" id="removableProsthodontics" name ="removableProsthodontics">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Register Account</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <%- include('footer'); -%>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
