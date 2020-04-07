@@ -13,26 +13,18 @@ const pool = new Pool({
 })
 
 var staff;
-var student;
 var staffAddr;
-var studentAddr;
+var username;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-    var username = req.session.username;
+    this.username = req.session.username;
 
-    console.log(username);
+    console.log(this.username);
 
-    if (username === undefined) {
+    if (this.username === undefined) {
         res.redirect('/staffLogin');
     } else {
-        //retrieve all patients
-        // var retreiveAllPatientInfo =
-        //     "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 AND public.patient.allocatedStatus = $2";
-        // pool.query(retreiveAllPatientInfo, ['Listed', 'Pending'], (err, data) => {
-        //     console.log("Patient" + data.rowCount);
-        //     res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
-        // });
 
         //retrieve all patients to be allocated
         var retreiveAllRequests_query =
@@ -40,26 +32,17 @@ router.get('/', async function (req, res, next) {
         await pool.query(retreiveAllRequests_query,
             ['Not Allocated', 'Listed'],
             (err, data) => {
-                res.render('allocatePatients', { title: 'Allocate Patients', user: username, data: data.rows });
+                res.render('allocatePatients', { title: 'Allocate Patients', user: this.username, data: data.rows });
             });
-        //retrieve current staff object
-        let me = this;
-        var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
-
-        await pool.query(sql_query, [username], (err, data) => {
-            me.staff = data.rows[0];
-            me.staffAddr = data.rows[0].address;
-
-        });
-
     }
 });
 
 // POST
 router.post('/', async function (req, res, next) {
-    //retrieve information
+    //retrieve information frmo frontend
     var patientId = req.body.patientId;
     var studId = req.body.studentId;
+    var requestId;
 
     console.log("Patient ID" + patientId);
     console.log("Student ID" + studId);
@@ -69,43 +52,33 @@ router.post('/', async function (req, res, next) {
         "SELECT * FROM public.student WHERE public.student.studid = $1";
 
     let me = this;
-    await pool.query(retrieveStudentInfo_query, [studId],
-        (err, data) => {
-            me.student = data.rows[0];
-            me.studentAddr = data.rows[0].address;
-
-        }
-    );
-
-
     try {
 
         //Update into Ethereum
-        let me = this;
-        await pool.query(retrieveStudentInfo_query, [studId],
-            (err, data) => {
-                me.student = data.rows[0];
-                me.studentAddr = data.rows[0].address;
-
+        //retrieve current staff object
+        var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+        await pool.query(sql_query, [me.username], (err, data) => {
+            me.staff = data.rows[0];
+            me.staffAddr = data.rows[0].address;
+            console.log("querying staff address...");
+            var requesId_query =
+                "SELECT * FROM public.request WHERE public.request.pid = $1"
+                + " AND public.request.studid = $2";
+            pool.query(requesId_query, [patientId, studId], (err, data) => {
+                requestId = data.rows[0].rid;
+                console.log("querying request id...");
                 truffle_connect.allocatePatient(
+                    requestId,
                     patientId,
-                    me.studentAddr,
                     me.staffAddr
                 );
-                truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-                    me.patientInfo = answer;
-
-                });
-            }
-        );
-
-
+            });
+        });
         //update postgreSQL Database
 
         //1-update allocatedStatus of patient
         var allocatePatient = "UPDATE public.patient SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
         pool.query(allocatePatient, ['Allocated', studId, patientId], (err, data) => {
-            console.log(err);
             if (err === undefined) {
                 req.flash('info', 'Patient Allocated');
             } else {
@@ -121,7 +94,6 @@ router.post('/', async function (req, res, next) {
             successfulRequest_query,
             ['Allocated', patientId, studId],
             (err, data) => {
-                console.log(err);
                 if (err === undefined) {
                     // req.flash('info', 'Request Updated');
                 } else {
@@ -137,7 +109,6 @@ router.post('/', async function (req, res, next) {
             failedRequest_query,
             ['Not Allocated', patientId, studId],
             (err, data) => {
-                console.log(err);
                 if (err === undefined) {
                     req.flash('info', 'Request Updated');
                 } else {
@@ -147,10 +118,17 @@ router.post('/', async function (req, res, next) {
                 res.redirect('/allocatePatients');
             });
 
+
+
     } catch (error) {
         console.log("ERROR at allocatePatient: " + error);
         return;
     }
+    // truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
+    //     console.log("getting patient info ...")
+    //     console.log(answer);
+
+    // });
 
 });
 

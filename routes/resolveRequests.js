@@ -18,6 +18,7 @@ var studentAddr;
 var transferStudentAddr;
 var patientInfo;
 var staffAddr;
+var success;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -106,19 +107,13 @@ router.post('/', async function (req, res, next) {
         await pool.query(retrieveStudentInfo_query, [transferStudentId],
             (err, data) => {
                 me.transferStudentAddr = data.rows[0].address;
-               
+
             }
         );
 
         console.log()
 
         try {
-            //Update into Ethereum
-            truffle_connect.studentTransfer(
-                patientId,
-                this.transferStudentAddr,
-                this.studentAddr
-            );
 
             //update student Id on request table
             var transferRequest = "UPDATE public.request SET studId = $1 WHERE pid = $2";
@@ -148,16 +143,26 @@ router.post('/', async function (req, res, next) {
                 me.staffAddr = data.rows[0].address;
 
             });
+            success = true;
+        }//end try
+        catch (error) {
+            success = false;
+            console.log("ERROR at transPatient: " + error);
+            return;
+        }
+        if (success === true) {
+            //Update into Ethereum
+            truffle_connect.studentTransfer(
+                patientId,
+                this.transferStudentAddr,
+                this.studentAddr
+            );
 
             // let me = this;
             truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-                me.patientInfo = answer;
-              
+                console.log(answer);
+
             });
-        }//end try
-        catch (error) {
-            console.log("ERROR at transPatient: " + error);
-            return;
         }
     }
 });

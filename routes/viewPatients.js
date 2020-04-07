@@ -100,75 +100,75 @@ router.post('/', async function (req, res, next) {
     console.log("List Status " + listStatus);
     if (listStatus === 'Not Listed') {
         console.log("Listing...")
-            //Update into Ethereum
-           await truffle_connect.listPatient(
-                patientId,
-                staff.address
-            ).then(() => {
-                //update postgreSQL Database
-                //Includes timestamp when it was LISTED to assist in First Come First Serve points calculation when student makes request.
-                var listedTimestamp = new Date();
-                console.log("TimeStamp : " + listedTimestamp);
-                var listPatient = "UPDATE public.patient SET liststatus = $1, listedTimestamp = $2 WHERE pid = $3";
-                pool.query(listPatient, ['Listed', listedTimestamp, patientId], async (err, data) => {
-                    if(err){
-                        console.log(err)
-                        /* Error on Database side, so need to unlist again the patient or else mismatch between
-                        Database and Contract */
-                        await truffle_connect.unlistPatient(
-                            patientId,
-                            staff.address
-                        )
-                        console.log("ERROR at ListPatient in ViewPatients FOR PostgreSQL");
-                        req.flash('info', 'Patient Fail to be Listed');
-                        res.redirect('/viewPatients');
-                        return;   
-                    } else {
-                        req.flash('info', 'Patient Listed');
-                        res.redirect('/viewPatients');
-                    }
-                });
-            }).catch(error => {
-                //Error when listing patient on Contract side.
-                console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: " + error);
-                req.flash('info', 'Patient Fail to be Listed');
-                res.redirect('/viewPatients');
-                return;
+        //Update into Ethereum
+        await truffle_connect.listPatient(
+            patientId,
+            staff.address
+        ).then(() => {
+            //update postgreSQL Database
+            //Includes timestamp when it was LISTED to assist in First Come First Serve points calculation when student makes request.
+            var listedTimestamp = new Date();
+            console.log("TimeStamp : " + listedTimestamp);
+            var listPatient = "UPDATE public.patient SET liststatus = $1, listedTimestamp = $2 WHERE pid = $3";
+            pool.query(listPatient, ['Listed', listedTimestamp, patientId], async (err, data) => {
+                if (err) {
+                    console.log(err)
+                    /* Error on Database side, so need to unlist again the patient or else mismatch between
+                    Database and Contract */
+                    await truffle_connect.unlistPatient(
+                        patientId,
+                        staff.address
+                    )
+                    console.log("ERROR at ListPatient in ViewPatients FOR PostgreSQL");
+                    req.flash('info', 'Patient Fail to be Listed');
+                    res.redirect('/viewPatients');
+                    return;
+                } else {
+                    req.flash('info', 'Patient Listed');
+                    res.redirect('/viewPatients');
+                }
             });
+        }).catch(error => {
+            //Error when listing patient on Contract side.
+            console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: " + error);
+            req.flash('info', 'Patient Fail to be Listed');
+            res.redirect('/viewPatients');
+            return;
+        });
     } else if (listStatus === 'Listed' && allocatedStatus === 'Not Allocated') {
         console.log("Unlisting...")
-            //Update into Ethereum
-            await truffle_connect.unlistPatient(
-                patientId,
-                staff.address
-            ).then(() => {
-                //update postgreSQL Database
-                var unlistPatient = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
-                pool.query(unlistPatient, ['Not Listed',patientId], async (err, data) => {
-                    if(err) {
-                        console.log(err);
-                        /* Error on Database side, so need to relist the patient or else mismatch between
-                        Database and Contract */
-                        await truffle_connect.listPatient(
-                            patientId,
-                            staff.address
-                        )
-                        console.log("ERROR at UnlistPatient in ViewPatients FOR PostgreSQL");
-                        req.flash('info', 'Patient Fail to be Unlisted');
-                        res.redirect('/viewPatients');
-                        return;
-                    } else {
-                        req.flash('info', 'Patient Unlisted');
-                        res.redirect('/viewPatients');
-                    }
-                })
-            }).catch(error => {
-                //Error when Unlisting patient on Contract side.
-                console.log("ERROR at UnlistPatient in ViewPatients FOR *Contract*: " + error);
-                req.flash('info', 'Patient Fail to be Unlisted');
-                res.redirect('/viewPatients');
-                return;
-            });
+        //Update into Ethereum
+        await truffle_connect.unlistPatient(
+            patientId,
+            staff.address
+        ).then(() => {
+            //update postgreSQL Database
+            var unlistPatient = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
+            pool.query(unlistPatient, ['Not Listed', patientId], async (err, data) => {
+                if (err) {
+                    console.log(err);
+                    /* Error on Database side, so need to relist the patient or else mismatch between
+                    Database and Contract */
+                    await truffle_connect.listPatient(
+                        patientId,
+                        staff.address
+                    )
+                    console.log("ERROR at UnlistPatient in ViewPatients FOR PostgreSQL");
+                    req.flash('info', 'Patient Fail to be Unlisted');
+                    res.redirect('/viewPatients');
+                    return;
+                } else {
+                    req.flash('info', 'Patient Unlisted');
+                    res.redirect('/viewPatients');
+                }
+            })
+        }).catch(error => {
+            //Error when Unlisting patient on Contract side.
+            console.log("ERROR at UnlistPatient in ViewPatients FOR *Contract*: " + error);
+            req.flash('info', 'Patient Fail to be Unlisted');
+            res.redirect('/viewPatients');
+            return;
+        });
     } else {
         req.flash('error', 'An error has occurred! Please try again');
         res.redirect('/viewPatients');
