@@ -98,18 +98,25 @@
                     <td><%= data[i].leadingStudentId%></td>
                     <td><%= data[i].leadingStudentName%></td>
                     <td><%= data[i].patientTimestamp%></td>
+
+                    <% if (data[i].alreadyRequested == false) {%>
                     <td><button type="button" class="btn btn-primary" onclick="request(this)">Request</button></td>
+                    <% } else { %>
+
+                    <% } %>
+
                 </tr>
                 <% } %>
             </tbody>
         </table>
 
-        <form id="requestPatient_form" action="viewAllUnallocatedPatients" role="form" method="post" style="display:none">
+        <form id="requestPatient_form" action="viewAllUnallocatedPatients" role="form" method="post"
+            style="display:none">
             <h3 class="mt-4 mb-3">Request for Patient</h3>
             <div class="form-group">
                 <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId"
-                    required="required" readonly="true">
+                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
+                    readonly="true">
             </div>
 
             <!-- <div class="form-group">
@@ -127,8 +134,8 @@
 
             <div class="form-group" style="display:none">
                 <label for="indications">Indications of Patient:</label>
-                <input type="text" class="form-control" id="indications" name="indications"
-                     required="required" readonly="true">
+                <input type="text" class="form-control" id="indications" name="indications" required="required"
+                    readonly="true">
             </div>
         </form>
     </div>

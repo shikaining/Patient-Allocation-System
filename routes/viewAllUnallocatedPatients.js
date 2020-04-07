@@ -29,7 +29,7 @@ var indicationsArray = [
     "Pedodontics",
     "Periodontics",
     "Removable Prosthodontics"
-  ]; 
+];
 /* GET home page. */
 router.get('/', async function (req, res, next) {
     var username = req.session.username;
@@ -56,7 +56,7 @@ router.get('/', async function (req, res, next) {
 
             //retrieve staff1's address to call contract
             var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
-            pool.query(sql_query, ['staff1@gmail.com'], function (err, results) {
+            pool.query(sql_query, ['staff1@gmail.com'], async function (err, results) {
                 me.staffAddr = results.rows[0].address;
 
                 //retrieve patients from contract
@@ -67,18 +67,37 @@ router.get('/', async function (req, res, next) {
                     let leadingStudentId = (data.rows[i].leadingstudentid == 0) ? 'None' : data.rows[i].leadingstudentid;
                     let leadingStudentName = data.rows[i].leadingstudentname
                     let patientTimestamp = moment(data.rows[i].listedtimestamp).format('do MMM YYYY, HH:mm');
-                    truffle_connect.getPatient(id, this.staffAddr, (answer) => {
+                    //check if already requested so we don't display request button
+                    let alreadyRequested = false;
+                    rawStudent = await db.select(
+                        "public.student",
+                        "*",
+                        `public.student.email='` + username + `'`
+                    );
 
-                        me.unallocatedPatients.push({
-                            patientId: id,
-                            indications: indications,
-                            patientTimestamp : patientTimestamp,
-                            leadingStudentId: leadingStudentId,
-                            leadingStudentName: leadingStudentName
+                    var stuId = rawStudent.rows[0].studid;
+                    console.log(stuId);
+                    var checkRequested_query = "SELECT * FROM public.request WHERE public.request.pid = $1 "
+                        + "AND public.request.studid = $2";
+                    pool.query(checkRequested_query, [id, stuId], function (err, results) {
+                        if (results.rowCount > 0) {
+                            alreadyRequested = true;
+                        }
+
+                        truffle_connect.getPatient(id, this.staffAddr, (answer) => {
+
+                            me.unallocatedPatients.push({
+                                patientId: id,
+                                indications: indications,
+                                patientTimestamp: patientTimestamp,
+                                leadingStudentId: leadingStudentId,
+                                leadingStudentName: leadingStudentName,
+                                alreadyRequested: alreadyRequested
+
+                            });
+
 
                         });
-
-
                     });
                 }
 
@@ -105,14 +124,14 @@ router.post('/', async function (req, res, next) {
         "*",
         `public.student.email='` + username + `'`
     );
-    
+
     var stuId = rawStudent.rows[0].studid;
     var indications = req.body.indications;
     let dbIndication = "{";
     dbIndication += indications;
     dbIndication += "}";
     var solidityIndications = [];
-    
+
     indications = indications.split(",")
     console.log(indications)
 
@@ -152,77 +171,77 @@ router.post('/', async function (req, res, next) {
                         studentScore = 0;
                         var quota;
                         var maxQuota = 0;
-                        
+
                         console.log(rawStudent.rows[0].indicationcount)
                         indications.forEach(indication => {
                             console.log(indication);
-                            switch(indication){
-                                    //Add to student score, but if student number of cases done is MORE than the quota, take it as 0 points
-                                    //Don't deduct points. Therefore students aren't at a disadvantage if lets say 
-                                    //a patient has indication A, B, C but student need fulfil B, C but already max out A. 
-                                    //This set of students also require this patient too but maybe not as well suited for them.
+                            switch (indication) {
+                                //Add to student score, but if student number of cases done is MORE than the quota, take it as 0 points
+                                //Don't deduct points. Therefore students aren't at a disadvantage if lets say 
+                                //a patient has indication A, B, C but student need fulfil B, C but already max out A. 
+                                //This set of students also require this patient too but maybe not as well suited for them.
                                 case "CD Exam Case":
                                     console.log("CD Exam Case")
                                     quota = data.rows[0].indicationarray[0]
                                     maxQuota += quota;
-                                    studentScore +=  Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[0]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[0]), 0);
                                     solidityIndications.push(0)
                                     break;
                                 case "Dental Public Health":
                                     console.log("Dental Public Health")
                                     quota = data.rows[0].indicationarray[1]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[1]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[1]), 0);
                                     solidityIndications.push(1)
                                     break;
                                 case "Endodontics":
                                     console.log("Endodontics")
                                     quota = data.rows[0].indicationarray[2]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[2]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[2]), 0);
                                     solidityIndications.push(2)
                                     break;
                                 case "Fixed Prosthodontics":
                                     console.log("Fixed Prosthodontics")
                                     quota = data.rows[0].indicationarray[3]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[3]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[3]), 0);
                                     solidityIndications.push(3)
                                     break;
                                 case "Operative Dentistry":
                                     quota = data.rows[0].indicationarray[4]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[4]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[4]), 0);
                                     solidityIndications.push(4)
                                     break;
                                 case "Oral Surgery":
                                     quota = data.rows[0].indicationarray[5]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[5]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[5]), 0);
                                     solidityIndications.push(5)
                                     break;
                                 case "Orthodontics":
                                     quota = data.rows[0].indicationarray[6]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[6]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[6]), 0);
                                     solidityIndications.push(6)
                                     break;
                                 case "Pedodontics":
                                     quota = data.rows[0].indicationarray[7]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[7]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[7]), 0);
                                     solidityIndications.push(7)
                                     break;
                                 case "Periodontics":
                                     quota = data.rows[0].indicationarray[8]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[8]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[8]), 0);
                                     solidityIndications.push(8)
                                     break;
                                 case "Removable Prosthodontics":
                                     quota = data.rows[0].indicationarray[9]
                                     maxQuota += quota;
-                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[9]),0);
+                                    studentScore += Math.max(quota - parseInt(rawStudent.rows[0].indicationcount[9]), 0);
                                     solidityIndications.push(9)
                                     break;
                             }
@@ -235,14 +254,14 @@ router.post('/', async function (req, res, next) {
                         //Calculate using Patient's listed date. A fixed date. MINUS Student Enrolled Year
                         // Can't use the date 'today' incase someone sends a request 
                         //on 31st Dec will have lower points than someone sending on 1st Jan.
-                        
+
                         //Assuming no students will graduate later than 6years later OR
                         // No Patient listed more than 6 years without allocating.
-                        var randomConstantNumber = 6; 
+                        var randomConstantNumber = 6;
 
                         var tempScore = parseInt(moment(data.rows[0].listedtimestamp).year()) - parseInt(rawStudent.rows[0].enrolyear);
                         console.log("Seniority Score : " + tempScore)
-                        studentScore += (tempScore / randomConstantNumber)*0.5
+                        studentScore += (tempScore / randomConstantNumber) * 0.5
 
                         //Calculate score by FCFS, Weightage 0.2
                         //using the difference of the request and timestamp patient was listed
@@ -254,7 +273,7 @@ router.post('/', async function (req, res, next) {
                         studentScore += tempScore * 0.2
 
                         //conver studentScore into an integer
-                        studentScore = Math.round(studentScore * Math.pow(10,12));
+                        studentScore = Math.round(studentScore * Math.pow(10, 12));
                         console.log(studentScore)
 
                         //Insert into Ethereum smart contract + local DB
@@ -267,19 +286,19 @@ router.post('/', async function (req, res, next) {
                         // } else {
                         //     console.log("Request was not created in Ethereum")
                         // }
-                        
+
                         //After creating Request, update the HIGHEST score for patient and current Student so that it can be displayed.
                         var highestScore_query = "select request.studId, student.name from public.request natural join public.student where pId = $1 ORDER BY score DESC LIMIT 1;"
                         pool.query(highestScore_query, [patientId], (err, highestScoreStudent) => {
-                            if(err){
+                            if (err) {
                                 //should NOT happen
                                 console.log("Error in updating highest score");
                                 console.log(err);
                                 return;
                             }
                             var updateRequest = "UPDATE public.patient SET leadingStudentId = $1, leadingStudentName = $2 WHERE pId = $3";
-                            pool.query(updateRequest,[highestScoreStudent.rows[0].studid, highestScoreStudent.rows[0].name, patientId], (err, result) =>{
-                                if(err){
+                            pool.query(updateRequest, [highestScoreStudent.rows[0].studid, highestScoreStudent.rows[0].name, patientId], (err, result) => {
+                                if (err) {
                                     //should NOT happen
                                     console.log("Error in updating highest score");
                                     console.log(err);
@@ -289,7 +308,7 @@ router.post('/', async function (req, res, next) {
                                 res.redirect('/viewRequests');
                             })
                         })
-                        
+
                     }
                 })
             }
