@@ -36,6 +36,19 @@ router.get('/', function (req, res, next) {
 // POST
 router.post('/', function (req, res, next) {
 
+    var requestId = req.body.requestId;
+
+    var editPatient = "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
+    pool.query(editPatient, ['Withdrawn', requestId], async (err, data) => {
+        console.log(err);
+        if (err === undefined) {
+            req.flash('info', 'Request withdrawn');
+            res.redirect('/viewRequests');
+        } else {
+            req.flash('error', 'An error has occurred! Please try again');
+            res.redirect('/viewRequests');
+        }
+    });
 });
 
 module.exports = router;

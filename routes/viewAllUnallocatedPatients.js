@@ -29,7 +29,7 @@ var indicationsArray = [
     "Pedodontics",
     "Periodontics",
     "Removable Prosthodontics"
-  ]; 
+  ];
 /* GET home page. */
 router.get('/', async function (req, res, next) {
     var username = req.session.username;
@@ -101,18 +101,18 @@ router.post('/', async function (req, res, next) {
         "*",
         `public.student.email='` + username + `'`
     );
-    
+
     var stuId = rawStudent.rows[0].studid;
     var indications = req.body.indications;
     let dbIndication = "{";
     dbIndication += indications;
     dbIndication += "}";
-    
+
     indications = indications.split(",")
     console.log(indications)
 
     try {
-        //update into ethereum -- waiting for contract 
+        //update into ethereum -- waiting for contract
         // Only update after calculating score below.
         //
         //update postgreSQL database
@@ -136,7 +136,7 @@ router.post('/', async function (req, res, next) {
                         console.log(err)
                     } else {
                         // 3 Components to calculate, Each component will have a constant comparing factor / score between all students.
-                        // Following that, the [weightage] and the type of components are 
+                        // Following that, the [weightage] and the type of components are
                         // 1. [0.3] Number of lacking cases before graduation. The more lacking cases, the higher score student gets.
                         // 2. [0.5] Seniority of student
                         // 3. [0.2] First-Come-First-Serve (FCFS) of students.
@@ -147,14 +147,14 @@ router.post('/', async function (req, res, next) {
                         studentScore = 0;
                         var quota;
                         var maxQuota = 0;
-                        
+
                         console.log(rawStudent.rows[0].indicationcount)
                         indications.forEach(indication => {
                             console.log(indication);
                             switch(indication){
                                     //Add to student score, but if student number of cases done is MORE than the quota, take it as 0 points
-                                    //Don't deduct points. Therefore students aren't at a disadvantage if lets say 
-                                    //a patient has indication A, B, C but student need fulfil B, C but already max out A. 
+                                    //Don't deduct points. Therefore students aren't at a disadvantage if lets say
+                                    //a patient has indication A, B, C but student need fulfil B, C but already max out A.
                                     //This set of students also require this patient too but maybe not as well suited for them.
                                 case "CD Exam Case":
                                     console.log("CD Exam Case")
@@ -218,12 +218,12 @@ router.post('/', async function (req, res, next) {
 
                         //Calculate score by SENIORITY, Weightage 0.5
                         //Calculate using Patient's listed date. A fixed date. MINUS Student Enrolled Year
-                        // Can't use the date 'today' incase someone sends a request 
+                        // Can't use the date 'today' incase someone sends a request
                         //on 31st Dec will have lower points than someone sending on 1st Jan.
-                        
+
                         //Assuming no students will graduate later than 6years later OR
                         // No Patient listed more than 6 years without allocating.
-                        var randomConstantNumber = 6; 
+                        var randomConstantNumber = 6;
 
                         var tempScore = parseInt(moment(data.rows[0].listedtimestamp).year()) - parseInt(rawStudent.rows[0].enrolyear);
                         console.log("Seniority Score : " + tempScore)

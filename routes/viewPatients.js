@@ -16,6 +16,18 @@ var staff;
 var addr;
 var patients = [];
 var patientIds = [];
+var indicationsArray = [
+  "CD Exam Case",
+  "Dental Public Health",
+  "Endodontics",
+  "Fixed Prosthodontics",
+  "Operative Dentistry",
+  "Oral Surgery",
+  "Orthodontics",
+  "Pedodontics",
+  "Periodontics",
+  "Removable Prosthodontics"
+];
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -55,7 +67,7 @@ router.get('/', async function (req, res, next) {
                     let allocationStatus = data.rows[i].allocatedstatus;
                     truffle_connect.getPatient(id, this.addr, (answer) => {
 
-                        //add studentId attr 
+                        //add studentId attr
                         let requiredId = 'None';
                         var retrieveStudentId_query = "SELECT * FROM public.student WHERE public.student.address = '";
                         retrieveStudentId_query = retrieveStudentId_query + answer[3] + "' ";
@@ -85,7 +97,7 @@ router.get('/', async function (req, res, next) {
             });
         });
     }
-    //end of else 
+    //end of else
 });
 
 // POST
@@ -96,6 +108,12 @@ router.post('/', async function (req, res, next) {
 
     var listStatus = req.body.listStatus;
     var allocatedStatus = req.body.allocationStatus;
+    var patientName = req.body.patientName;
+    var patientContact = req.body.patientContact;
+
+    var patientIdToEdit = req.body.patientIdToEdit;
+
+
     console.log("Patient ID" + patientId);
     console.log("List Status " + listStatus);
     if (listStatus === 'Not Listed') {
@@ -122,7 +140,7 @@ router.post('/', async function (req, res, next) {
                         console.log("ERROR at ListPatient in ViewPatients FOR PostgreSQL");
                         req.flash('info', 'Patient Fail to be Listed');
                         res.redirect('/viewPatients');
-                        return;   
+                        return;
                     } else {
                         req.flash('info', 'Patient Listed');
                         res.redirect('/viewPatients');
@@ -169,6 +187,34 @@ router.post('/', async function (req, res, next) {
                 res.redirect('/viewPatients');
                 return;
             });
+    } else if (patientIdToEdit !== undefined) {
+        let rawIndications = req.body.indications;
+        let solidityIndication = [];
+        let dbIndication = "{";
+        for (i = 0; i <= rawIndications.length - 1; i++) {
+          if (i > 0) {
+            dbIndication += ",";
+          }
+          dbIndication += '"' + indicationsArray[parseInt(rawIndications[i])] + '"';
+          solidityIndication.push(parseInt(rawIndications[i]));
+        }
+        dbIndication += "}";
+        
+        //update patient db
+        console.log(dbIndication);
+        console.log(patientName);
+        var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
+        pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
+            console.log(err);
+            if (err === undefined) {
+                req.flash('info', 'Patient details updated');
+                res.redirect('/viewPatients');
+            } else {
+                req.flash('error', 'An error has occurred! Please try again');
+                res.redirect('/viewPatients');
+            }
+            //res.redirect('/allocatePatients');
+        });
     } else {
         req.flash('error', 'An error has occurred! Please try again');
         res.redirect('/viewPatients');

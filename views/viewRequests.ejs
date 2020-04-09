@@ -27,28 +27,17 @@
         crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-        function request(e) {
-            var patientId = $(e).closest("tr").find("td:first-child").text();
+        function withdraw(e) {
+            var requestId = $(e).closest("tr").find("td:first-child").text();
             //alert(id);
-            console.log(patientId);
-            document.getElementById("patientId").value = patientId;
+            document.getElementById("requestId").value = requestId;
 
-            var listStatus = $(e).closest("tr").find("td:nth-child(5)").text();
-            //alert(id);
-            console.log(listStatus);
-            document.getElementById("listStatus").value = listStatus;
-
-            var allocatedStatus = $(e).closest("tr").find("td:nth-child(6)").text();
-            //alert(id);
-            console.log(allocatedStatus);
-            document.getElementById("allocationStatus").value = allocatedStatus;
-
-            var requestPatient = document.getElementById("requestPatient_form");
-            if (requestPatient.style.display === 'none') {
-                requestPatient.style.display = 'block';
+            var withdrawRequest = document.getElementById("withdrawRequest_form");
+            if (withdrawRequest.style.display === 'none') {
+                withdrawRequest.style.display = 'block';
             }
             else {
-                requestPatient.style.display = 'none';
+                withdrawRequest.style.display = 'none';
             }
         }
     </script>
@@ -66,6 +55,7 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col">Request Id</th>
                     <th scope="col">Student Id</th>
                     <th scope="col">Patient Id</th>
                     <th scope="col">Indications</th>
@@ -76,35 +66,26 @@
             <tbody>
                 <% for(var i=0; i<data.length; i++) { %>
                 <tr>
+                    <td><%= data[i].rid%></td>
                     <td><%= data[i].studid%></td>
                     <td><%= data[i].pid%></td>
                     <td><%= data[i].indications%></td>
                     <td><%= data[i].allocatedstatus%></td>
+                    <td><button type="button" class="btn btn-primary" onclick="withdraw(this)">Withdraw Request</button></td>
                 </tr>
                 <% } %>
             </tbody>
         </table>
 
-        <form id="requestPatient_form" action="viewPatients" role="form" method="post" style="display:none">
-            <h3 class="mt-4 mb-3">Request for Patient</h3>
+        <form id="withdrawRequest_form" action="viewRequests" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Withdraw Request</h3>
             <div class="form-group">
-                <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId"
+                <label for="requestId">Request ID:</label>
+                <input type="text" class="form-control" id="requestId" name="requestId"
                     required="required" readonly="true">
             </div>
 
-            <div class="form-group">
-                <label for="listStatus">Listing Status:</label>
-                <input type="text" class="form-control" id="listStatus" name="listStatus"
-                     required="required" readonly="true">
-            </div>
-            <button type="submit" class="btn btn-primary">Request Patient</button>
-
-            <div class="form-group" style="display:none">
-                <label for="allocationStatus">Allocation Status:</label>
-                <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
-                     required="required" readonly="true">
-            </div>
+            <button type="submit" class="btn btn-primary">Withdraw Request</button>
         </form>
     </div>
 

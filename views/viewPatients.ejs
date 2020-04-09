@@ -51,6 +51,31 @@
                 listUnlistPatient.style.display = 'none';
             }
         }
+
+        function editPatient(e) {
+            var patientId = $(e).closest("tr").find("td:first-child").text();
+            //alert(id);
+            console.log(patientId);
+            document.getElementById("patientIdToEdit").value = patientId;
+
+            var name = $(e).closest("tr").find("td:nth-child(2)").text();
+            //alert(id);
+            document.getElementById("patientName").value = name;
+
+            var contact = $(e).closest("tr").find("td:nth-child(3)").text();
+            //alert(id);
+            document.getElementById("patientContact").value = contact;
+
+
+
+            var editPatient = document.getElementById("editPatient_form");
+            if (editPatient.style.display === 'none') {
+                editPatient.style.display = 'block';
+            }
+            else {
+                editPatient.style.display = 'none';
+            }
+        }
     </script>
 
 </head>
@@ -88,6 +113,7 @@
                     <td><%= data[i].allocationStatus%></td>
                     <td><%= data[i].studid%></td>
                     <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List/Unlist</button></td>
+                    <td><button type="button" class="btn btn-primary" onclick="editPatient(this)">Edit</button></td>
                 </tr>
                 <% } %>
             </tbody>
@@ -114,6 +140,79 @@
                      required="required" readonly="true">
             </div>
         </form>
+
+        <form id="editPatient_form" action="viewPatients" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Edit Patient</h3>
+            <div class="form-group">
+                <label for="patientIdToEdit">Patient ID:</label>
+                <input type="text" class="form-control" id="patientIdToEdit" name="patientIdToEdit"
+                    required="required" readonly="true">
+            </div>
+
+            <div class="form-group">
+
+                <label for="patientName">Please enter Patient Name:</label>
+                <input type="text" class="form-control" id="patientName" name="patientName" placeholder="Enter Patient Name"
+                    required="required">
+            </div>
+            <div class="form-group">
+                <label for="patientContact">Please enter Patient Contact Number:</label>
+                <input type="text" class="form-control" id="patientContact" name="patientContact"
+                    placeholder="Enter Patient Contact Number" required="required">
+            </div>
+
+            <div class="form-group">
+                <label for="patientContact">Please select Patient's Indications:</label>
+                <br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="cDExamCase" value="0">
+                    <label class="form-check-label" for="cDExamCase">CD Exam Case</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="dentalPublicHealth" value="1">
+                    <label class="form-check-label" for="dentalPublicHealth">Dental Public Health</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="endodontics" value="2">
+                    <label class="form-check-label" for="endodontics">Endodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="fixedProsthodontics" value="3">
+                    <label class="form-check-label" for="fixedProsthodontics">Fixed Prosthodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="operativeDentistry" value="4">
+                    <label class="form-check-label" for="operativeDentistry">Operative Dentistry</label>
+                </div>
+                <br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="oralSurgery" value="5">
+                    <label class="form-check-label" for="oralSurgery">Oral Surgery</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="orthodontics" value="6">
+                    <label class="form-check-label" for="orthodontics">Orthodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="pedodontics" value="7">
+                    <label class="form-check-label" for="pedodontics">Pedodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="periodontics" value="8">
+                    <label class="form-check-label" for="periodontics">Periodontics</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" name="indications" type="checkbox" id="removableProsthodontics" value="9">
+                    <label class="form-check-label" for="removableProsthodontics">Removable Prosthodontics</label>
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Update Patient</button>
+
+
+        </form>
+
     </div>
 
     <!-- /.container --><br />
