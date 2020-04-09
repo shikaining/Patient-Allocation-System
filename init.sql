@@ -59,9 +59,9 @@ CREATE TABLE Request (
 	score bigint not null,
 	requestTimestamp timestamptz,
 	PRIMARY KEY (rId),
-	FOREIGN KEY (stfId) REFERENCES Staff on delete cascade,
-	FOREIGN KEY (studId) REFERENCES Student on delete cascade,
-	FOREIGN KEY (pId) REFERENCES Patient on delete cascade
+	FOREIGN KEY (stfId) REFERENCES Staff(stfId) on delete cascade,
+	FOREIGN KEY (studId) REFERENCES Student(studId) on delete cascade,
+	FOREIGN KEY (pId) REFERENCES Patient(pId) on delete cascade
 );
 
 -- CREATE TABLE Indications (

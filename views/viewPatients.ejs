@@ -122,8 +122,12 @@
                     <td><%= data[i].listingStatus%></td>
                     <td><%= data[i].allocationStatus%></td>
                     <td><%= data[i].studid%></td>
-                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List/Unlist</button></td>
-                    <td><button type="button" class="btn btn-primary" onclick="editPatient(this)">Edit</button></td>
+                    <% if (data[i].listingStatus == 'Listed') {%>
+                        <td><button type="button" class="btn btn-danger" style="width: 65px;" onclick="listUnlistPatient(this)">Unlist</button></td>
+                    <%} else { %>
+                        <td><button type="button" class="btn btn-primary" style="width: 65px;" onclick="listUnlistPatient(this)">List</button></td>
+                    <% } %>
+                    <td><button type="button" class="btn btn-info" onclick="editPatient(this)">Edit</button></td>
                 </tr>
                 <% } %>
             </tbody>

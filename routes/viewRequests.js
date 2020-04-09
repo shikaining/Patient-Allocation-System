@@ -31,8 +31,8 @@ router.get('/', function (req, res, next) {
             // console.log(user);
             me.studId = user.rows[0].studid;
             me.ownAddr = user.rows[0].address;
-
-            var retreiveAllRequestInfo = "SELECT * FROM public.request WHERE public.request.studId = $1";
+            
+            var retreiveAllRequestInfo = "SELECT * FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.studId = $1";
             pool.query(retreiveAllRequestInfo, [me.studId], (err, data) => {
                 // console.log("rowCount" + data.rowCount);
                 var i;
@@ -45,6 +45,8 @@ router.get('/', function (req, res, next) {
                     if (status === 'Withdrawn'){
                         isWithdrawn = true;
                     }
+                    let listStatus = data.rows[i].liststatus;
+                    console.log(listStatus);
                     let patientId = data.rows[i].pid;
                     truffle_connect.getRequest(requestId, me.ownAddr, (answer) => {
                         let pid = answer[2];
@@ -59,7 +61,8 @@ router.get('/', function (req, res, next) {
                             pid: patientId,
                             indications: indications,
                             allocatedstatus: status,
-                            isWithdrawn : isWithdrawn
+                            isWithdrawn : isWithdrawn,
+                            listStatus : listStatus
                         });
 
                     });

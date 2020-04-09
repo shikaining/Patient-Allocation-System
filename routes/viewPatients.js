@@ -42,7 +42,7 @@ router.get('/', async function (req, res, next) {
         let me = this;
         //retrieve all patients from db
         var retreiveAllPatientInfo =
-            "SELECT * FROM public.patient";
+            "select * from public.patient ORDER BY liststatus desc, pId asc;";
         await pool.query(retreiveAllPatientInfo, (err, data) => {
 
             //push listed patientIds into patientIds array
@@ -127,25 +127,50 @@ router.post('/', async function (req, res, next) {
             //Includes timestamp when it was LISTED to assist in First Come First Serve points calculation when student makes request.
             var listedTimestamp = new Date();
             console.log("TimeStamp : " + listedTimestamp);
-            var listPatient = "UPDATE public.patient SET liststatus = $1, listedTimestamp = $2 WHERE pid = $3";
-            pool.query(listPatient, ['Listed', listedTimestamp, patientId], async (err, data) => {
-                if (err) {
+            var retrievePatient_query = "select * from public.patient where pid = $1";
+            pool.query(retrievePatient_query, [patientId], (err,data) => {
+                if(err){
                     console.log(err)
-                    /* Error on Database side, so need to unlist again the patient or else mismatch between
-                    Database and Contract */
-                    await truffle_connect.unlistPatient(
-                        patientId,
-                        staff.address
-                    )
-                    console.log("ERROR at ListPatient in ViewPatients FOR PostgreSQL");
                     req.flash('info', 'Patient Fail to be Listed');
                     res.redirect('/viewPatients');
-                    return;
-                } else {
-                    req.flash('info', 'Patient Listed');
-                    res.redirect('/viewPatients');
                 }
-            });
+                if(data.rows[0].listedTimestamp == null){
+                    var listPatient_query = "UPDATE public.patient SET liststatus = $1, listedTimestamp = $2 WHERE pid = $3";
+                    pool.query(listPatient_query, ['Listed', listedTimestamp, patientId], async (err, data) => {
+                        if (err) {
+                            console.log(err)
+                            /* Error on Database side, so need to unlist again the patient or else mismatch between
+                            Database and Contract */
+                            await truffle_connect.unlistPatient(
+                                patientId,
+                                staff.address
+                            )
+                            console.log("ERROR at ListPatient in ViewPatients FOR PostgreSQL");
+                            req.flash('info', 'Patient Fail to be Listed');
+                            res.redirect('/viewPatients');
+                            return;
+                        } else {
+                            req.flash('info', 'Patient Listed');
+                            res.redirect('/viewPatients');
+                        }
+                    });
+                } else {
+                    //patient has been listed before
+                    var listOldPatient_query = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
+                    pool.query(listOldPatient_query, ['Listed', patientId], (err,data) => {
+                        if(err){
+                            console.log(err)
+                            req.flash('info', 'Patient Fail to be Listed');
+                            res.redirect('/viewPatients');
+                        } else {
+                            req.flash('info', 'Patient Listed');
+                            res.redirect('/viewPatients');
+                        }
+                        
+                    })
+                }
+            })
+            
         }).catch(error => {
             //Error when listing patient on Contract side.
             console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: " + error);
