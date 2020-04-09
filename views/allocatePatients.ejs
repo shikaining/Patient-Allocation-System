@@ -38,7 +38,7 @@
             console.log(allocationStatus);
             document.getElementById("allocationStatus").value = allocationStatus;
 
-            var studentId = $(e).closest("tr").find("td:nth-child(4)").text();
+            var studentId = $(e).closest("tr").find("td:nth-child(5)").text();
             //alert(id);
             console.log(studentId);
             document.getElementById("studentId").value = studentId;
@@ -71,7 +71,9 @@
                     <th scope="col">Indications</th>
                     <!-- <th scope="col">Listing Status</th> -->
                     <th scope="col">Allocation Status</th>
-                    <th scope="col">Student ID</th>
+                    <th scope="col">Allocated Student ID</th>
+                    <th scope="col">Leading Student ID</th>
+                    <th scope="col">Leading Student Name</th>
                     <th scope="col">Action</th>
                     <th scope="col"></th>
                 </tr>
@@ -84,8 +86,21 @@
                     <td><%= data[i].indications%></td>
                     <!-- <td><%= data[i].liststatus%></td> -->
                     <td><%= data[i].allocatedstatus%></td>
+                    
+                    <%if (data[i].studid == undefined) { %>
+                    <td>None</td>
+                    <% } else { %>
                     <td><%= data[i].studid%></td>
-                    <td><button type="button" class="btn btn-primary" onclick="allocatedPatient(this)">Allocate Patient</button></td>
+                    <% } %>
+
+                    <%if (data[i].leadingstudentid == 0) { %>
+                    <td>None</td>
+                    <% } else { %>
+                    <td><%= data[i].leadingstudentid%></td>
+                    <% } %>
+                    <td><%= data[i].leadingstudentname%></td>
+                    <td><button type="button" class="btn btn-primary" onclick="allocatedPatient(this)">Allocate
+                            Patient</button></td>
                 </tr>
                 <% } %>
             </tbody>
@@ -95,20 +110,20 @@
             <h3 class="mt-4 mb-3">Allocate Patient</h3>
             <div class="form-group">
                 <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId"
-                    required="required" readonly="true">
+                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
+                    readonly="true">
             </div>
 
             <div class="form-group">
                 <label for="allocationStatus">Allocation Status:</label>
                 <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
-                     required="required" readonly="true">
+                    required="required" readonly="true">
             </div>
 
             <div class="form-group">
                 <label for="studentId">Student ID to Allocate:</label>
-                <input type="text" class="form-control" id="studentId" name="studentId"
-                     required="required" readonly="true">
+                <input type="text" class="form-control" id="studentId" name="studentId" required="required"
+                    readonly="true">
             </div>
             <button type="submit" class="btn btn-primary">Allocate</button>
         </form>

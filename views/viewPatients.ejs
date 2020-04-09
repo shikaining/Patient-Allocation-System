@@ -50,6 +50,16 @@
             else {
                 listUnlistPatient.style.display = 'none';
             }
+
+            var button;
+            if (listStatus === 'listed') {
+                button = 'Unlist Patient';
+            } else {
+                button = 'List Patient';
+
+            }
+            document.getElementById("listOrUnlist").innerHTML = button;
+
         }
 
         function editPatient(e) {
@@ -123,21 +133,22 @@
             <h3 class="mt-4 mb-3">List/Unlist Patient</h3>
             <div class="form-group">
                 <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId"
-                    required="required" readonly="true">
+                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
+                    readonly="true">
             </div>
 
             <div class="form-group">
                 <label for="listStatus">Listing Status:</label>
-                <input type="text" class="form-control" id="listStatus" name="listStatus"
-                     required="required" readonly="true">
+                <input type="text" class="form-control" id="listStatus" name="listStatus" required="required"
+                    readonly="true">
             </div>
-            <button type="submit" class="btn btn-primary">List/Unlist Patient</button>
+
+            <button type="submit" class="btn btn-primary" id="listOrUnlist"></button>
 
             <div class="form-group" style="display:none">
                 <label for="allocationStatus">Allocation Status:</label>
                 <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
-                     required="required" readonly="true">
+                    required="required" readonly="true">
             </div>
         </form>
 

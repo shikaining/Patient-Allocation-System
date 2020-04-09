@@ -41,6 +41,8 @@ CREATE TABLE Patient (
 	curedStatus varchar(20),
 	indications text[],
 	listedTimestamp timestamptz ,
+	leadingStudentId integer DEFAULT 0,
+	leadingStudentName varchar(60) DEFAULT 'No Request Yet',
 	PRIMARY KEY (pId),
 	FOREIGN KEY (stfId) REFERENCES Staff on delete cascade,
 	FOREIGN KEY (studId) REFERENCES Student on delete cascade
@@ -48,7 +50,7 @@ CREATE TABLE Patient (
 
 
 CREATE TABLE Request (
-	rId Serial,
+	rId integer not null,
 	stfId integer,
 	pId integer not null,
 	studId int not null,

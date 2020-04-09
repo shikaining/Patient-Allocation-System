@@ -28,7 +28,7 @@ module.exports = {
       //Add address to student
       pool.query("SELECT email FROM public.student", (err, res) => {
         var updateStudent = "UPDATE public.student SET address = $1 WHERE email = $2"
-        for(i = 0; i < 2; i++){
+        for(i = 0; i < 4; i++){
           address = accounts[i+5];
           email = res.rows[i].email;
           // console.log("Address : " + address);

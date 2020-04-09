@@ -9,3 +9,15 @@
             Or else, we will need a new method to unCreatePatient, which will create a whole
             new mess.
             
+06/04/20 - 4:50pm
+=======================
+1. Finished up Create Request by students to merge with Request contract
+    a. Calculated the score based on # of indications left to be completed before graduation [0.3 Weightage], 
+        Seniority [0.5 Weightage], First Come First Serve [0.2 Weightage]
+    b. After request is created, I updated the current student with the highest scoring request for this particular patient into the DB.
+        So that it can be displayed when viewing this patient by other students / staff while it is still being listed, before allocation.
+
+2. Updated the front end to display current highest scoring student. 
+    So that students know where they stand, if they are likely to get this patient.
+
+3. Edited allocatePatient.js as it is retrieveing REQUESTS when it should be retrieving Patients to be allocated.
