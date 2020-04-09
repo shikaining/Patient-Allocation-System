@@ -71,7 +71,11 @@
                     <td><%= data[i].pid%></td>
                     <td><%= data[i].indications%></td>
                     <td><%= data[i].allocatedstatus%></td>
+                    <% if (data[i].isWithdrawn == false) {%>
                     <td><button type="button" class="btn btn-primary" onclick="withdraw(this)">Withdraw Request</button></td>
+                    <% } else { %>
+
+                    <% } %>
                 </tr>
                 <% } %>
             </tbody>

@@ -77,8 +77,8 @@ router.get('/', async function (req, res, next) {
                     var stuId = rawStudent.rows[0].studid;
                     console.log(stuId);
                     var checkRequested_query = "SELECT * FROM public.request WHERE public.request.pid = $1 "
-                        + "AND public.request.studid = $2";
-                    pool.query(checkRequested_query, [id, stuId], function (err, results) {
+                        + "AND public.request.studid = $2 AND public.request.allocatedStatus != $3";
+                    pool.query(checkRequested_query, [id, stuId, 'Withdrawn'], function (err, results) {
                         if (results.rowCount > 0) {
                             alreadyRequested = true;
                         }
@@ -139,8 +139,8 @@ router.post('/', async function (req, res, next) {
         // Only update DB and Ethereum after calculating score below.
         //
         //update postgreSQL database
-        var getRequestInfo = "SELECT * FROM public.request WHERE public.request.studId = $1 AND public.request.pId = $2";
-        pool.query(getRequestInfo, [stuId, patientId], (err, data) => {
+        var getRequestInfo = "SELECT * FROM public.request WHERE public.request.studId = $1 AND public.request.pId = $2 AND public.request.allocatedStatus != $3";
+        pool.query(getRequestInfo, [stuId, patientId, 'Withdrawn'], (err, data) => {
             console.log("data for get request" + data.rowCount);
             if (data.rowCount !== 0) {
                 //Request is already present by this student, for this patient.

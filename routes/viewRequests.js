@@ -41,6 +41,10 @@ router.get('/', function (req, res, next) {
                     let requestId = data.rows[i].rid;
                     let indications = data.rows[i].indications;
                     let status = data.rows[i].allocatedstatus;
+                    let isWithdrawn = false;
+                    if (status === 'Withdrawn'){
+                        isWithdrawn = true;
+                    }
                     let patientId = data.rows[i].pid;
                     truffle_connect.getRequest(requestId, me.ownAddr, (answer) => {
                         let pid = answer[2];
@@ -54,7 +58,8 @@ router.get('/', function (req, res, next) {
                             studid: me.studId,
                             pid: patientId,
                             indications: indications,
-                            allocatedstatus: status
+                            allocatedstatus: status,
+                            isWithdrawn : isWithdrawn
                         });
 
                     });
