@@ -95,6 +95,7 @@ router.post('/', async function (req, res, next) {
             patientId,
             this.studentAddr
         );
+
     } else {
         //transfer patient
         //retrieve TRANSFER student object
@@ -140,6 +141,7 @@ router.post('/', async function (req, res, next) {
                 this.transferStudentAddr,
                 this.studentAddr
             );
+
         }//end try
         catch (error) {
             console.log("ERROR at transPatient: " + error);

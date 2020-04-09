@@ -51,15 +51,6 @@
                 listUnlistPatient.style.display = 'none';
             }
 
-            var button;
-            if (listStatus === 'listed') {
-                button = 'Unlist Patient';
-            } else {
-                button = 'List Patient';
-
-            }
-            document.getElementById("listOrUnlist").innerHTML = button;
-
         }
 
         function editPatient(e) {
@@ -122,13 +113,13 @@
                     <td><%= data[i].listingStatus%></td>
                     <td><%= data[i].allocationStatus%></td>
                     <td><%= data[i].studid%></td>
-                    <% if (data[i].listingStatus == 'Listed') {%>
+                    <% if (data[i].listingStatus == 'Listed' && data[i].allocationStatus != 'Allocated') {%>
                     <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">Unlist
-                            Patient</button>
+                        </button>
                     </td>
-                    <% } else { %>
+                    <% } else if (data[i].listingStatus == 'Not Listed' && data[i].allocationStatus != 'Allocated'){ %>
                     <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List
-                            Patient</button>
+                        </button>
                     </td>
                     <% } %>
                     <td><button type="button" class="btn btn-primary" onclick="editPatient(this)">Edit</button></td>
