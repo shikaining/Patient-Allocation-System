@@ -129,6 +129,17 @@ module.exports = {
       });
     });
   },
+  resolvePatient: function (patientId, sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.resolvePatient(patientId, {
+        from: sender
+      });
+    });
+  },
   getPatient: function (patientId, sender, callback) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);

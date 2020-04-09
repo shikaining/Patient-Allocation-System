@@ -18,7 +18,6 @@ var studentAddr;
 var transferStudentAddr;
 var patientInfo;
 var staffAddr;
-var success;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -65,11 +64,6 @@ router.post('/', async function (req, res, next) {
         patientId = req.body.transferPatientId;
     }
 
-    console.log("Patient ID" + patientId);
-    console.log("Student ID" + studId);
-    console.log("Transfer Student ID" + transferStudentId);
-
-
     if (transferStudentId === undefined) {
         //resolve patients
         //update request table allocated status to 'Resolved'
@@ -97,6 +91,10 @@ router.post('/', async function (req, res, next) {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
             });
+        truffle_connect.resolvePatient(
+            patientId,
+            this.studentAddr
+        );
     } else {
         //transfer patient
         //retrieve TRANSFER student object
@@ -136,34 +134,18 @@ router.post('/', async function (req, res, next) {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
             });
-            //get patient info after transfer to check if contract was indeed updated
-            var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
 
-            await pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
-                me.staffAddr = data.rows[0].address;
-
-            });
-            success = true;
-        }//end try
-        catch (error) {
-            success = false;
-            console.log("ERROR at transPatient: " + error);
-            return;
-        }
-        if (success === true) {
-            //Update into Ethereum
             truffle_connect.studentTransfer(
                 patientId,
                 this.transferStudentAddr,
                 this.studentAddr
             );
-
-            // let me = this;
-            truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-                console.log(answer);
-
-            });
+        }//end try
+        catch (error) {
+            console.log("ERROR at transPatient: " + error);
+            return;
         }
+
     }
 });
 
