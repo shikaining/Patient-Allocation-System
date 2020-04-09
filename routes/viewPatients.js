@@ -134,7 +134,9 @@ router.post('/', async function (req, res, next) {
                     req.flash('info', 'Patient Fail to be Listed');
                     res.redirect('/viewPatients');
                 }
-                if(data.rows[0].listedTimestamp == null){
+                console.log("Timestamp: " + data.rows[0].listedtimestamp)
+                if(data.rows[0].listedtimestamp == null){
+                    //Patient has never been listed before, so have to update Timestamp
                     var listPatient_query = "UPDATE public.patient SET liststatus = $1, listedTimestamp = $2 WHERE pid = $3";
                     pool.query(listPatient_query, ['Listed', listedTimestamp, patientId], async (err, data) => {
                         if (err) {
@@ -154,8 +156,11 @@ router.post('/', async function (req, res, next) {
                             res.redirect('/viewPatients');
                         }
                     });
+                    
                 } else {
-                    //patient has been listed before
+                    //patient has been listed before, so we will keep the old listed Timestamp 
+                    //since there might be cases where other students already submitted request.
+                    console.log("REEEE-listing")
                     var listOldPatient_query = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
                     pool.query(listOldPatient_query, ['Listed', patientId], (err,data) => {
                         if(err){
