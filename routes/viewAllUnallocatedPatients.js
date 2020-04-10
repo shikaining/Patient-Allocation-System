@@ -134,7 +134,6 @@ router.post('/', async function (req, res, next) {
     indications = indications.split(",")
     console.log(indications)
 
-    try {
         // Calculate the score of this request
         // Only update DB and Ethereum after calculating score below.
         //
@@ -277,6 +276,12 @@ router.post('/', async function (req, res, next) {
 
                         //Insert into Ethereum smart contract + local DB
                         let requestId = await truffle_connect.createRequest(studentScore, solidityIndications, rawStudent.rows[0].address, stuId, patientId, "Pending", dbIndication, requestTimeStamp)
+                            .catch(error => {
+                                console.log("CAUGHT Error within Create Request: " + error);
+                                req.flash("Error", "Request failed to be created");
+                                res.redirect("/viewRequests");
+                                return;
+                            })
                         ////Just a method to check that Ethereum did store the request.
                         ////Uncomment below if you want the check to happen.
                         // let verifyScore = await truffle_connect.getRequest(requestId,rawStudent.rows[0].address)
@@ -312,14 +317,6 @@ router.post('/', async function (req, res, next) {
                 })
             }
         });
-
-    } catch (error) {
-        // console.log("ERROR at RequestPatient: " + error);
-        console.log("CAUGHT Error : " + error);
-        req.flash("Error", "Request failed to be created");
-        res.redirect("/viewRequests");
-        return;
-    }
 
 });
 
