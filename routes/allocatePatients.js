@@ -57,7 +57,7 @@ router.post('/', async function (req, res, next) {
         //Update into Ethereum
         //retrieve current staff object
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
-        await pool.query(sql_query, [me.username], (err, data) => {
+        pool.query(sql_query, [me.username], (err, data) => {
             me.staff = data.rows[0];
             me.staffAddr = data.rows[0].address;
             console.log("querying staff address...");
@@ -71,7 +71,11 @@ router.post('/', async function (req, res, next) {
                     requestId,
                     patientId,
                     me.staffAddr
-                );
+                ).catch(error => {
+                    console.log("Caught error within AllocatePatient.js")
+                    req.flash('error', 'Failed to Allocate Patient due to - ' + error)
+                    return;
+                });
             });
         });
         //update postgreSQL Database

@@ -44,7 +44,7 @@ router.get("/", function(req, res, next) {
   // console.log(username);
 
   if (username === undefined) {
-    res.redirect("/login");
+    res.redirect("/staffLogin");
   } else {
     var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
 

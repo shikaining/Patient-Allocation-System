@@ -31,17 +31,32 @@ module.exports = {
   CALLS PATIENT CONTRACT
   */
   allocatePatient: function (requestId, patientId, sender) {
-    var self = this;
-    Request.setProvider(self.web3.currentProvider);
-    var requestInstance;
-    //deploy Patient
-    Request.deployed().then(function (instance) {
-      requestInstance = instance;
-      return requestInstance.processRequest(requestId, patientId, {
-        from: sender,
-        gas: "5000000"
+    return new Promise((res,rej) => {
+      var self = this;
+      Request.setProvider(self.web3.currentProvider);
+      var requestInstance;
+      //deploy Patient
+      Request.deployed().then(function (instance) {
+        requestInstance = instance;
+
+        console.log(requestId)
+        console.log(patientId)
+        console.log(sender);
+        requestInstance.processRequest(requestId, patientId, {
+          from: sender,
+          gas: "5000000"
+        }).then(result => {
+          res(result);
+          return;
+        }).catch(error => {
+          console.log('Contract Error!!')
+          console.log(error)
+          rej("Error in Contract");
+          return;
+        });
       });
-    });
+    })
+    
   },
   getTotalPatients: function (callback) {
     var self = this;
