@@ -50,10 +50,11 @@ router.get("/", function(req, res, next) {
 
     pool.query(sql_query, [username], (err, data) => {
       staff = data.rows[0];
+      res.render("createPatient", { title: "Create a Patient", user: username });
     });
   }
 
-  res.render("createPatient", { title: "Create a Patient", user: username });
+  
 });
 
 // POST
@@ -89,16 +90,16 @@ router.post("/", async function(req, res, next) {
   var allocatedStatus = "Not Allocated";
   var curedStatus = "Not Cured";
 
-  try {
+  // try {
     //Update into Ethereum
     // console.log(staff.address);
-    // console.log(patientName);
-    // console.log(patientContact);
-    // console.log(solidityIndication);
+    console.log(patientName);
+    console.log(patientContact);
+    console.log(solidityIndication);
     var sql_query =
       "INSERT INTO public.patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
 
-    var patientId = await truffle_connect.createPatient(
+    await truffle_connect.createPatient(
       sql_query,
       stfId,
       patientName,
@@ -110,15 +111,22 @@ router.post("/", async function(req, res, next) {
       dbIndication,
       solidityIndication,
       staff.address
-    );
+    ).then( x => {
+      req.flash("info", "Patient Created");
+      res.redirect("/createPatient");
+    }).catch(err => {
+      console.log("Caught Error in Create Patient")
+      console.log("Error Caught : " + err)
+      req.flash("error", "Patient Failed to be Created");
+      res.redirect("/createPatient");
+    })
 
-    req.flash("info", "Patient Created");
-    res.redirect("/createPatient");
-  } catch (error) {
-    console.log("ERROR: " + error);
-    req.flash("error", "Patient Failed to be Created");
-    res.redirect("/createPatient");
-  }
+    
+  // } catch (error) {
+  //   console.log("ERROR: " + error);
+  //   req.flash("error", "Patient Failed to be Created");
+  //   res.redirect("/createPatient");
+  // }
 });
 
 module.exports = router;

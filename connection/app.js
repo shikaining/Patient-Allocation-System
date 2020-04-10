@@ -164,7 +164,6 @@ module.exports = {
       Patient.setProvider(self.web3.currentProvider);
       var patientInstance;
       Patient.deployed().then(function (instance) {
-        try {
           patientInstance = instance;
           patientInstance.createPatient
             .call(patientName, patientContact, solidityIndication, {
@@ -174,7 +173,7 @@ module.exports = {
             .then(patientID => {
               var pId = parseInt(patientID);
               console.log("PatientId : " + pId);
-
+            
               pool.query(
                 sql_query,
                 [
@@ -209,11 +208,12 @@ module.exports = {
                   }
                 }
               );
+            })
+            .catch(testErr => {
+              console.log("Contract Error!")
+              rej(testErr);
+              return;
             });
-        } catch (error) {
-          rej(error);
-          return;
-        }
       });
     });
   },
@@ -224,34 +224,31 @@ module.exports = {
       Request.setProvider(self.web3.currentProvider);
       var requestInstance;
       Request.deployed().then(instance => {
-        try {
-          requestInstance = instance;
-          requestInstance.createRequest.call(studentScore, solidityIndications, { from: sender })
-            .then(requestId => {
-              var rId = parseInt(requestId);
-              console.log("RequestId returned from Contract : " + rId);
+        requestInstance = instance;
+        requestInstance.createRequest.call(studentScore, solidityIndications, { from: sender })
+          .then(requestId => {
+            var rId = parseInt(requestId);
+            console.log("RequestId returned from Contract : " + rId);
 
-              var createRequest_query = "INSERT INTO public.request(rId, studId, pId, allocatedStatus, indications, score, requestTimestamp) values($1,$2,$3,$4,$5,$6,$7)"
-              pool.query(createRequest_query, [rId, stuId, patientId, allocatedStatus, dbIndication, studentScore, requestTimeStamp], (err, data) => {
-                if (err) {
-                  req.flash("Error", "Failed to create request");
-                  console.log("Error in Insert Request Query");
-                  rej(err);
-                  return;
-                } else {
-                  requestInstance.createRequest(studentScore, solidityIndications, { from: sender, gas: "5000000" })
-                    .then(result => {
-                      res(patientId);
-                      return;
-                    })
-                }
-              })
-
+            var createRequest_query = "INSERT INTO public.request(rId, studId, pId, allocatedStatus, indications, score, requestTimestamp) values($1,$2,$3,$4,$5,$6,$7)"
+            pool.query(createRequest_query, [rId, stuId, patientId, allocatedStatus, dbIndication, studentScore, requestTimeStamp], (err, data) => {
+              if (err) {
+                req.flash("Error", "Failed to create request");
+                console.log("Error in Insert Request Query");
+                rej(err);
+                return;
+              } else {
+                requestInstance.createRequest(studentScore, solidityIndications, { from: sender, gas: "5000000" })
+                  .then(result => {
+                    res(patientId);
+                    return;
+                  })
+              }
             })
-        } catch (error) {
-          rej(error);
-          return;
-        }
+          }).catch(error => {
+            rej(error);
+            return;
+          })
       })
     })
   },
