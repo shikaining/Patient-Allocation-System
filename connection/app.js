@@ -379,6 +379,17 @@ module.exports = {
         from: sender
       });
     });
+  },
+  getPowerUser: function (powerUserAddr, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.getPowerUser(powerUserAddr, {
+        from: sender
+      });
+    });
   }
 
 };

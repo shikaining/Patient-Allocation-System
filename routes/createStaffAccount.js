@@ -71,7 +71,7 @@ router.post('/', function (req, res, next) {
                 var sql_query = "INSERT into Staff(name, nric, contactNo, email, password, address, verification) values($1,$2,$3,$4,$5,$6,$7)";
                 pool.query(sql_query, [name, nric, contactNo, email, password, address, accountType], (err, data) => {
                     if (err === undefined) {
-                        if (accountType === 'Normal Staff') {
+                        if (accountType === 'staff') {
                             truffle_connect.createAdminUserInPatient(
                                 address,
                                 this.currAddr
@@ -81,7 +81,7 @@ router.post('/', function (req, res, next) {
                                 this.currAddr
                             );
                         }
-                        else if (accountType === 'Power User') {
+                        else if (accountType === 'poweruser') {
                             truffle_connect.createPowerUserInPatient(
                                 address,
                                 this.currAddr
@@ -90,6 +90,7 @@ router.post('/', function (req, res, next) {
                                 address,
                                 this.currAddr
                             );
+
                         }
 
                         req.flash('info', 'Account successfully created');
@@ -101,6 +102,7 @@ router.post('/', function (req, res, next) {
                     }
 
                 });
+
             } catch (error) {
                 console.log("ERROR at create: " + error);
                 return;

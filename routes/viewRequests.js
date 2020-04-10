@@ -65,6 +65,8 @@ router.get('/', function (req, res, next) {
                             listStatus: listStatus
                         });
 
+                        console.log(me.displayedRequests);
+
                     });
                     // setTimeout(function () {
 
@@ -83,14 +85,15 @@ router.post('/', function (req, res, next) {
     try {
         var requestId = req.body.requestId;
 
-        var withdrawReq_query = "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
-        pool.query(withdrawReq_query, ['Withdrawn', requestId], async (err, data) => {
+        var withdrawReq_query = "UPDATE public.request SET allocatedStatus = $1 AND WHERE rid = $2";
+        pool.query(withdrawReq_query, ['Withdrawn', requestId], (err, data) => {
             console.log(err);
             if (err === undefined) {
                 truffle_connect.withdrawRequest(
                     requestId,
                     this.ownAddr
                 );
+
                 req.flash('info', 'Request withdrawn');
                 res.redirect('/viewRequests');
             } else {

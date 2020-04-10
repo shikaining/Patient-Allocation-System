@@ -122,11 +122,6 @@ router.post('/', async function (req, res, next) {
         console.log("ERROR at allocatePatient: " + error);
         return;
     }
-    // truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-    //     console.log("getting patient info ...")
-    //     console.log(answer);
-
-    // });
 
 });
 

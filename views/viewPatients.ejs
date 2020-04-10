@@ -51,6 +51,15 @@
                 listUnlistPatient.style.display = 'none';
             }
 
+            var button;
+            if (listStatus === 'listed') {
+                button = 'Unlist Patient';
+            } else {
+                button = 'List Patient';
+                
+            }
+            document.getElementById("listOrUnlist").innerHTML = button;
+
         }
 
         function editPatient(e) {
@@ -122,7 +131,12 @@
                         </button>
                     </td>
                     <% } %>
+
+                    <% if (data[i].allocationStatus != 'Allocated') {%>
                     <td><button type="button" class="btn btn-primary" onclick="editPatient(this)">Edit</button></td>
+                    <% } else { %>
+
+                    <% } %>
                 </tr>
                 <% } %>
             </tbody>
