@@ -303,5 +303,40 @@ module.exports = {
         console.log(e);
         callback("ERROR 404");
       });
+  },
+  withdrawRequest: function (requestId, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.withdrawRequest(patientId, {
+        from: sender
+      });
+    });
+  },
+  updatePatient: function (
+    patientId,
+    patientName,
+    patientContact,
+    solidityIndications,
+    owner,
+    resolution,
+    sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.updatePatient(
+        patientId,
+        patientName,
+        patientContact,
+        solidityIndications,
+        owner,
+        resolution, {
+        from: sender
+      });
+    });
   }
 };

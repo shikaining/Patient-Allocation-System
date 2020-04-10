@@ -17,7 +17,7 @@ module.exports = {
       // console.log(result.rows);
       var updateStaff = "UPDATE public.staff SET address = $1 WHERE email = $2"
       for(i = 0; i < 4; i++){
-        address = accounts[i+1];
+        address = accounts[i];
         email = result.rows[i].email;
         // console.log("Address : " + address);
         // console.log("Email : " + email)

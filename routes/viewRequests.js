@@ -31,7 +31,7 @@ router.get('/', function (req, res, next) {
             // console.log(user);
             me.studId = user.rows[0].studid;
             me.ownAddr = user.rows[0].address;
-            
+
             var retreiveAllRequestInfo = "SELECT * FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.studId = $1";
             pool.query(retreiveAllRequestInfo, [me.studId], (err, data) => {
                 // console.log("rowCount" + data.rowCount);
@@ -42,7 +42,7 @@ router.get('/', function (req, res, next) {
                     let indications = data.rows[i].indications;
                     let status = data.rows[i].allocatedstatus;
                     let isWithdrawn = false;
-                    if (status === 'Withdrawn'){
+                    if (status === 'Withdrawn') {
                         isWithdrawn = true;
                     }
                     let listStatus = data.rows[i].liststatus;
@@ -56,13 +56,13 @@ router.get('/', function (req, res, next) {
                             pid = 'None';
                         }
                         me.displayedRequests.push({
-                            rid : requestId,
+                            rid: requestId,
                             studid: me.studId,
                             pid: patientId,
                             indications: indications,
                             allocatedstatus: status,
-                            isWithdrawn : isWithdrawn,
-                            listStatus : listStatus
+                            isWithdrawn: isWithdrawn,
+                            listStatus: listStatus
                         });
 
                     });
@@ -80,20 +80,29 @@ router.get('/', function (req, res, next) {
 
 // POST
 router.post('/', function (req, res, next) {
+    try {
+        var requestId = req.body.requestId;
 
-    var requestId = req.body.requestId;
+        var withdrawReq_query = "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
+        pool.query(withdrawReq_query, ['Withdrawn', requestId], async (err, data) => {
+            console.log(err);
+            if (err === undefined) {
+                truffle_connect.withdrawRequest(
+                    requestId,
+                    this.ownAddr
+                );
+                req.flash('info', 'Request withdrawn');
+                res.redirect('/viewRequests');
+            } else {
+                req.flash('error', 'An error has occurred! Please try again');
+                res.redirect('/viewRequests');
+            }
+        });
+    } catch (error) {
+        console.log("ERROR at withdrawReq: " + error);
+        return;
+    }
 
-    var editPatient = "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
-    pool.query(editPatient, ['Withdrawn', requestId], async (err, data) => {
-        console.log(err);
-        if (err === undefined) {
-            req.flash('info', 'Request withdrawn');
-            res.redirect('/viewRequests');
-        } else {
-            req.flash('error', 'An error has occurred! Please try again');
-            res.redirect('/viewRequests');
-        }
-    });
 });
 
 module.exports = router;
