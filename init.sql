@@ -91,10 +91,13 @@ insert into Student(name, nric, contactNo, email, password,enrolYear,indicationC
 insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'asd', 2019, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 
 
-insert into Staff(name, nric, contactNo, email, password, verification) values('Staff1', 'S9223456A', '91234567', 'staff1@gmail.com', 'asd', 'staff');
-insert into Staff(name, nric, contactNo, email, password, verification) values('Staff2', 'S9323457A', '92234567', 'staff2@gmail.com', 'asd', 'staff');
+--systemadmin is system admin
+
+insert into Staff(name, nric, contactNo, email, password, verification) values('SystemAdmin', 'S9223456A', '91234567', 'staff0@gmail.com', 'asd', 'systemadmin');
+insert into Staff(name, nric, contactNo, email, password, verification) values('Staff1', 'S9223456A', '91234567', 'staff1@gmail.com', 'asd', 'poweruser');
+insert into Staff(name, nric, contactNo, email, password, verification) values('Staff2', 'S9323457A', '92234567', 'staff2@gmail.com', 'asd', 'poweruser');
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff3', 'S9423458A', '93234567', 'staff3@gmail.com', 'asd', 'staff');
-insert into Staff(name, nric, contactNo, email, password, verification) values('Staff4', 'S9523459A', '94234567', 'staff4@gmail.com', 'asd', 'poweruser');
+insert into Staff(name, nric, contactNo, email, password, verification) values('Staff4', 'S9523459A', '94234567', 'staff4@gmail.com', 'asd', 'staff');
 
 -- INSERT INTO indications(cd_exam_case, dental_public_health, endodontics, fixed_prosthodontics, operative_dentistry, oral_surgery, orthodontics, pedodontics, periodontics, removable_prosthodontics)
 -- VALUES(3, 5, 4, 3, 5, 4, 6, 2, 4, 3);
