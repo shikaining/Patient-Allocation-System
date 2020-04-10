@@ -112,10 +112,16 @@ contract Patient is ERC721Full {
 	
 	// == EVENTS ==
 
+	// Administration 
+	event CreatePowerUser(address user);
+	event CreateAdminUser(address user);
+
+	// Functions
 	event Allocate(uint patientID, address from, address to, address allocater);	
 	event List(uint patientID, address lister);
 	event Resolve(uint patientID, address resolver);
 	event Transfer(uint patientID, address from, address to);
+	event Update(uint patientID, address updater);
 	event Unlist(uint patientID, address unlister);
 	
 	// ============
@@ -139,6 +145,40 @@ contract Patient is ERC721Full {
 	}
 	
 	// =================
+	
+	// == ADMINISTRATION ==
+	
+	// Create power user
+	function createPowerUser(address user) 
+	public onlyOwner {
+		powerUsers[user] = true;
+		
+		emit CreatePowerUser(user);
+	}
+	
+	// Check power user
+	function getPowerUser(address user) 
+	public view onlyOwner
+	returns (bool) {
+		return powerUsers[user];
+	}
+	
+	// Create admin user
+	function createAdminUser(address user) 
+	public onlyOwner {
+		adminUsers[user] = true;
+		
+		emit CreateAdminUser(user);
+	}
+	
+	// Check admin user
+	function getAdminUser(address user) 
+	public view onlyOwner
+	returns (bool) {
+		return adminUsers[user];
+	}
+	
+	// ====================
 	
 	// == FUNCTIONS ==
 	
@@ -215,6 +255,21 @@ contract Patient is ERC721Full {
 		emit Transfer(patientID, msg.sender, student);
 	}
 	
+	// Update patient information
+	function updatePatient(uint patientID, string memory _name,
+						   string memory _contactNum,
+						   uint[] memory _possessedIndications,
+						   address _owner, bool resolution)
+	public onlyPowerAndUp {
+		patients[patientID].name = _name;
+		patients[patientID].contactNum = _contactNum;
+		patients[patientID].possessedIndications = _possessedIndications;
+		patients[patientID].owner = _owner;
+		patients[patientID].resolved = resolution;
+		
+		emit Update(patientID, msg.sender);
+	}	
+		
 	// Unlist a patient in the patient pool
 	function unlistPatient(uint patientID) 
 	public onlyPowerAndUp patientListed(patientID) {		

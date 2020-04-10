@@ -18,10 +18,12 @@ let owner;
 // Power Users
 let powerUser1;
 let powerUser2;
+let powerUser3;
 
 // Admin Users
 let adminUser1;
 let adminUser2;
+let adminUser3;
 
 // Students
 let student1;
@@ -32,7 +34,8 @@ let patient1; // 'Kai Ning', '999', [1, 2]
 let patient2; // 'Jason Teo', '919', [3, 4]
 
 // == REQUESTS ==
-let request1; // 99, [4, 5, 6]
+let request1; // 99, [3, 4, 5], student2 owner
+let request2; // 98, [6], student1 owner
 	
 contract("Patient", accounts => {
 	
@@ -64,6 +67,40 @@ contract("Patient", accounts => {
 		.then((rsl) => {
 			// Check contract owner
 			assert.equal(rsl, owner, "Contract owner is incorrect");
+		})
+	);
+	
+	it("Power User 3 is created", () =>
+		patient.createPowerUser(accounts[7], {from: owner})
+		.then((evt) => {
+			// Check for CreatePowerUser event
+			assert.equal(evt.logs[0].event, 'CreatePowerUser', "Power User 3 not created successfully");
+			powerUser3 = accounts[7];
+		})
+	);
+	
+	it("Power User 3 is verified", () =>
+		patient.getPowerUser.call(powerUser3, {from: owner})
+		.then((rsl) => {
+			// Check if Power User 3 is registered
+			assert.equal(rsl, true, "Power User 3 not registered successfully");
+		})
+	);
+	
+	it("Admin User 3 is created", () =>
+		patient.createAdminUser(accounts[8], {from: owner})
+		.then((evt) => {
+			// Check for CreatePowerUser event
+			assert.equal(evt.logs[0].event, 'CreateAdminUser', "Admin User 3 not created successfully");
+			adminUser3 = accounts[8];
+		})
+	);
+	
+	it("Admin User 3 is verified", () =>
+		patient.getAdminUser.call(adminUser3, {from: owner})
+		.then((rsl) => {
+			// Check if Admin User 3 is registered
+			assert.equal(rsl, true, "Admin User 3 not registered successfully");
 		})
 	);
 	
@@ -172,6 +209,32 @@ contract("Patient", accounts => {
 		})
 	);
 	
+	it("Patient 1 information is updated", () =>
+		patient.updatePatient(patient1, "Kai Ningg", "998", [1, 2, 3], 
+							  student2, false, {from: powerUser1})
+		.then((evt) => {
+			// Check for update event
+			assert.equal(evt.logs[0].event, 'Update', "Patient 1 failed to be updated");
+		})
+	);
+	
+	it("Patient 1 updated records are accurate", () =>
+		patient.getPatient.call(patient1, {from: adminUser1})
+		.then((rsl) => {
+			// Check for all Patient 1 credentials
+			assert.equal(rsl[0], 'Kai Ningg', "Patient 1's name incorrect");
+			assert.equal(rsl[1], '998', "Patient 1's contact number incorrect");
+			
+			let indications = [1, 2, 3];
+			for (let i = 0; i < rsl[2].length; i++) {
+				assert.equal(rsl[2][i], indications[i], "Patient 1's indications incorrect");
+			}
+			
+			assert.equal(rsl[3], student2, "Patient 1's dentist incorrect");
+			assert.equal(rsl[4], false, "Patient 1's resolution incorrect");
+		})
+	);
+	
 	it("Total number of patients correct", () =>
 		patient.getTotalPatients.call()
 		.then((rsl) => {
@@ -179,15 +242,6 @@ contract("Patient", accounts => {
 			assert.equal(rsl.toNumber(), 1, "Total number of patients incorrect");
 		})
 	);
-	
-	/*
-	it("Initiating indication consolidation", () =>
-		patient.getIndications.call()
-		.then((rsl) => {
-			console.log(rsl);
-		})
-	);
-	*/
 });
 
 contract("Request", accounts => {
@@ -205,6 +259,40 @@ contract("Request", accounts => {
 		request.getOwner.call()
 		.then((rsl) => {
 			assert.equal(rsl, owner, "Contract owner is incorrect");
+		})
+	);
+	
+	it("Power User 3 is created", () =>
+		request.createPowerUser(accounts[7], {from: owner})
+		.then((evt) => {
+			// Check for CreatePowerUser event
+			assert.equal(evt.logs[0].event, 'CreatePowerUser', "Power User 3 not created successfully");
+			powerUser3 = accounts[7];
+		})
+	);
+	
+	it("Power User 3 is verified", () =>
+		request.getPowerUser.call(powerUser3, {from: owner})
+		.then((rsl) => {
+			// Check if Power User 3 is registered
+			assert.equal(rsl, true, "Power User 3 not registered successfully");
+		})
+	);
+	
+	it("Admin User 3 is created", () =>
+		request.createAdminUser(accounts[8], {from: owner})
+		.then((evt) => {
+			// Check for CreatePowerUser event
+			assert.equal(evt.logs[0].event, 'CreateAdminUser', "Admin User 3 not created successfully");
+			adminUser3 = accounts[8];
+		})
+	);
+	
+	it("Admin User 3 is verified", () =>
+		request.getAdminUser.call(adminUser3, {from: owner})
+		.then((rsl) => {
+			// Check if Admin User 3 is registered
+			assert.equal(rsl, true, "Admin User 3 not registered successfully");
 		})
 	);
 	
@@ -329,12 +417,40 @@ contract("Request", accounts => {
 			assert.equal(rsl[5], true, "Request 1's resolution incorrect");
 		})
 	);
+	
+	it("Request 2 is created", () =>
+		request.createRequest.call(98, [6], {from: student2})
+		.then((requestID) => {
+			// Check for returned request ID
+			assert.equal(requestID.toNumber(), 2, "Request 2 not created successfully");
+			request2 = requestID.toNumber();
+		}).then(() => {
+			// Create Request 2
+			request.createRequest(98, [6], {from: student1});
+		})
+	);
+	
+	it("Request 2 is withdrawn", () =>
+		request.withdrawRequest(request2, {from: student1})
+		.then((evt) => {
+			// Check for withdrawal event
+			assert.equal(evt.logs[0].event, 'Withdraw', "Patient 2 not withdrawn successfully");
+		})
+	);
+	
+	it("Request 2 is resolved via withdrawal", () =>
+		request.getRequest.call(request2, {from: powerUser1})
+		.then((rsl) => {
+			// Check resolution
+			assert.equal(rsl[5], true, "Request 2's resolution incorrect");
+		})
+	);
 		
 	it("Total number of requests correct", () =>
 		request.getTotalRequests.call()
 		.then((rsl) => {
 			// Check if total requests is updated correctly
-			assert.equal(rsl.toNumber(), 1, "Total number of requests incorrect");
+			assert.equal(rsl.toNumber(), 2, "Total number of requests incorrect");
 		})
 	);
 });
