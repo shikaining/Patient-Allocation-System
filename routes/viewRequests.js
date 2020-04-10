@@ -57,7 +57,7 @@ router.get('/', function (req, res, next) {
                             pid = 'None';
                         }
                         me.displayedRequests.push({
-                            rid : requestId,
+                            rid: requestId,
                             studid: me.studId,
                             pid: patientId,
                             indications: indications,
@@ -66,6 +66,8 @@ router.get('/', function (req, res, next) {
                             isWithdrawn : isWithdrawn,
                             listStatus : listStatus
                         });
+
+                        console.log(me.displayedRequests);
 
                     });
                     // setTimeout(function () {
@@ -82,20 +84,30 @@ router.get('/', function (req, res, next) {
 
 // POST
 router.post('/', function (req, res, next) {
+    try {
+        var requestId = req.body.requestId;
 
-    var requestId = req.body.requestId;
+        var withdrawReq_query = "UPDATE public.request SET allocatedStatus = $1 AND WHERE rid = $2";
+        pool.query(withdrawReq_query, ['Withdrawn', requestId], (err, data) => {
+            console.log(err);
+            if (err === undefined) {
+                truffle_connect.withdrawRequest(
+                    requestId,
+                    this.ownAddr
+                );
 
-    var editPatient = "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
-    pool.query(editPatient, ['Withdrawn', requestId], async (err, data) => {
-        console.log(err);
-        if (err === undefined) {
-            req.flash('info', 'Request withdrawn');
-            res.redirect('/viewRequests');
-        } else {
-            req.flash('error', 'An error has occurred! Please try again');
-            res.redirect('/viewRequests');
-        }
-    });
+                req.flash('info', 'Request withdrawn');
+                res.redirect('/viewRequests');
+            } else {
+                req.flash('error', 'An error has occurred! Please try again');
+                res.redirect('/viewRequests');
+            }
+        });
+    } catch (error) {
+        console.log("ERROR at withdrawReq: " + error);
+        return;
+    }
+
 });
 
 module.exports = router;

@@ -18,7 +18,6 @@ var studentAddr;
 var transferStudentAddr;
 var patientInfo;
 var staffAddr;
-var success;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -65,38 +64,44 @@ router.post('/', async function (req, res, next) {
         patientId = req.body.transferPatientId;
     }
 
-    console.log("Patient ID" + patientId);
-    console.log("Student ID" + studId);
-    console.log("Transfer Student ID" + transferStudentId);
-
-
     if (transferStudentId === undefined) {
-        //resolve patients
-        //update request table allocated status to 'Resolved'
-        var resolveRequest = "UPDATE public.request SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
-        pool.query(resolveRequest, ['Resolved', studId, patientId], (err, data) => {
-            console.log(err);
-            if (err === undefined) {
-            } else {
-                req.flash('error', 'An error has occurred! Please try again');
-            }
-            //res.redirect('/allocatePatients');
-        });
-        //update patient table liststatus to 'unlisted' and curedStatus to 'cured'
-        var successfulRequest_query =
-            "UPDATE public.patient SET allocatedStatus = $1, listStatus = $2, curedStatus = $3 WHERE pid = $4 AND studId = $5";
-        pool.query(
-            successfulRequest_query,
-            ['Allocated', 'Unlisted', 'Cured', patientId, studId],
-            (err, data) => {
+        try {
+            //resolve patients
+            //update request table allocated status to 'Resolved'
+            var resolveRequest = "UPDATE public.request SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
+            pool.query(resolveRequest, ['Resolved', studId, patientId], (err, data) => {
                 console.log(err);
                 if (err === undefined) {
-                    req.flash('info', 'Patient Resolved');
-                    res.redirect('/resolveRequests');
                 } else {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
+                //res.redirect('/allocatePatients');
             });
+            //update patient table liststatus to 'unlisted' and curedStatus to 'cured'
+            var successfulRequest_query =
+                "UPDATE public.patient SET allocatedStatus = $1, listStatus = $2, curedStatus = $3 WHERE pid = $4 AND studId = $5";
+            pool.query(
+                successfulRequest_query,
+                ['Allocated', 'Unlisted', 'Cured', patientId, studId],
+                (err, data) => {
+                    console.log(err);
+                    if (err === undefined) {
+                        truffle_connect.resolvePatient(
+                            patientId,
+                            this.studentAddr
+                        );
+                        req.flash('info', 'Patient Resolved');
+                        res.redirect('/resolveRequests');
+                    } else {
+                        req.flash('error', 'An error has occurred! Please try again');
+                    }
+                });
+
+        } catch (error) {
+            console.log("ERROR at resolvePatient: " + error);
+            return;
+        }
+
     } else {
         //transfer patient
         //retrieve TRANSFER student object
@@ -136,34 +141,19 @@ router.post('/', async function (req, res, next) {
                     req.flash('error', 'An error has occurred! Please try again');
                 }
             });
-            //get patient info after transfer to check if contract was indeed updated
-            var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
 
-            await pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
-                me.staffAddr = data.rows[0].address;
-
-            });
-            success = true;
-        }//end try
-        catch (error) {
-            success = false;
-            console.log("ERROR at transPatient: " + error);
-            return;
-        }
-        if (success === true) {
-            //Update into Ethereum
             truffle_connect.studentTransfer(
                 patientId,
                 this.transferStudentAddr,
                 this.studentAddr
             );
 
-            // let me = this;
-            truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-                console.log(answer);
-
-            });
+        }//end try
+        catch (error) {
+            console.log("ERROR at transPatient: " + error);
+            return;
         }
+
     }
 });
 
