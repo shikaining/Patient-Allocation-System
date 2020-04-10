@@ -24,6 +24,7 @@ const pool = new Pool({
 
 var staff;
 var verification;
+var currAddr;
 
 router.get('/', async function (req, res, next) {
     var username = req.session.username;
@@ -39,6 +40,7 @@ router.get('/', async function (req, res, next) {
 
         await pool.query(sql_query, [username], (err, data) => {
             verification = data.rows[0].verification;
+            me.currAddr = data.rows[0].address;
             res.render('createStaffAccount', { title: 'Create Staff Account', user: username, data: data.rows });
         });
     }
@@ -59,26 +61,53 @@ router.post('/', function (req, res, next) {
     console.log("post verification " + verification);
     console.log("post staffVerification" + staffVerification);
 
-    if(verification === staffVerification){
+    if (verification === staffVerification) {
         console.log("here");
-        if (verification !== 'systemadmin'){
+        if (verification !== 'systemadmin') {
             req.flash('error', 'An error has occurred. You do not have permission to create a staff account');
             res.redirect('/createStaffAccount');
-        } else if (staffVerification === 'systemadmin'){
-            var sql_query = "INSERT into Staff(name, nric, contactNo, email, password, address, verification) values($1,$2,$3,$4,$5,$6,$7)";
-            pool.query(sql_query, [name, nric, contactNo, email, password, address, accountType], (err, data) => {
-                if (err === undefined) {
-                    req.flash('info', 'Account successfully created');
-                    res.redirect('/createStaffAccount');
-                } else {
-                    req.flash('error', 'An error has occurred! Please try again');
-                    console.log(err);
-                    res.redirect('/createStaffAccount');
-                }
+        } else if (staffVerification === 'systemadmin') {
+            try {
+                var sql_query = "INSERT into Staff(name, nric, contactNo, email, password, address, verification) values($1,$2,$3,$4,$5,$6,$7)";
+                pool.query(sql_query, [name, nric, contactNo, email, password, address, accountType], (err, data) => {
+                    if (err === undefined) {
+                        if (accountType === 'Normal Staff') {
+                            truffle_connect.createAdminUserInPatient(
+                                address,
+                                this.currAddr
+                            );
+                            truffle_connect.createAdminUserInReq(
+                                address,
+                                this.currAddr
+                            );
+                        }
+                        else if (accountType === 'Power User') {
+                            truffle_connect.createPowerUserInPatient(
+                                address,
+                                this.currAddr
+                            );
+                            truffle_connect.createPowerUserInReq(
+                                address,
+                                this.currAddr
+                            );
+                        }
 
-            });
+                        req.flash('info', 'Account successfully created');
+                        res.redirect('/createStaffAccount');
+                    } else {
+                        req.flash('error', 'An error has occurred! Please try again');
+                        console.log(err);
+                        res.redirect('/createStaffAccount');
+                    }
+
+                });
+            } catch (error) {
+                console.log("ERROR at create: " + error);
+                return;
+            }
+
         }
-    }  else {
+    } else {
         req.flash('error', 'An error has occurred. You do not have the correct verification to create a staff account');
         res.redirect('/createStaffAccount');
     }

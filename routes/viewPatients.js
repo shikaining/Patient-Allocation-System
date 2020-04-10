@@ -230,9 +230,26 @@ router.post('/', async function (req, res, next) {
         //update patient db
         console.log(dbIndication);
         console.log(patientName);
-        var owner;
-        var resolution;
+
         try {
+            var owner;
+            var resolution;
+
+            var retrievePatient_query = "select * from public.patient where pid = $1";
+            await pool.query(retrievePatient_query, [patientIdToEdit], (err, data) => {
+                owner = data.rows[0].studid;
+                resolution = data.rows[0].curedstatus;
+                if (resolution === 'Not Cured') {
+                    resolution = false;
+                }
+                else {
+                    resolution = true;
+                }
+            });
+            var retrievePatient_query = "select * from public.student where studid = $1";
+            await pool.query(retrievePatient_query, [owner], (err, data) => {
+                owner = data.rows[0].address;
+            });
             var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
             pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
                 console.log(err);

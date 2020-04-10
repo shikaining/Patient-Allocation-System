@@ -338,5 +338,50 @@ module.exports = {
         from: sender
       });
     });
+  },
+  createPowerUserInPatient: function (powerUserAddr, sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.createPowerUser(powerUserAddr, {
+        from: sender
+      });
+    });
+  },
+  createPowerUserInReq: function (powerUserAddr, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.createPowerUser(powerUserAddr, {
+        from: sender
+      });
+    });
+  },
+  createAdminUserInPatient: function (adminUserAddr, sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.createAdminUser(adminUserAddr, {
+        from: sender
+      });
+    });
+  },
+  createAdminUserInReq: function (adminUserAddr, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.createAdminUser(adminUserAddr, {
+        from: sender
+      });
+    });
   }
+
 };
