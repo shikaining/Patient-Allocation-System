@@ -93,7 +93,7 @@ insert into Student(name, nric, contactNo, email, password,enrolYear,indicationC
 
 --systemadmin is system admin
 
-insert into Staff(name, nric, contactNo, email, password, verification) values('SystemAdmin', 'S9223456A', '91234567', 'staff0@gmail.com', 'asd', 'systemadmin');
+-- insert into Staff(name, nric, contactNo, email, password, verification) values('SystemAdmin', 'S9223456A', '91234567', 'staff0@gmail.com', 'asd', 'systemadmin');
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff1', 'S9223456A', '91234567', 'staff1@gmail.com', 'asd', 'poweruser');
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff2', 'S9323457A', '92234567', 'staff2@gmail.com', 'asd', 'poweruser');
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff3', 'S9423458A', '93234567', 'staff3@gmail.com', 'asd', 'staff');
