@@ -87,7 +87,7 @@ router.post('/', function (req, res, next) {
     try {
         var requestId = req.body.requestId;
 
-        var withdrawReq_query = "UPDATE public.request SET allocatedStatus = $1 AND WHERE rid = $2";
+        var withdrawReq_query = "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
         pool.query(withdrawReq_query, ['Withdrawn', requestId], (err, data) => {
             console.log(err);
             if (err === undefined) {
