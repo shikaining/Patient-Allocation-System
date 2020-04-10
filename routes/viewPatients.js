@@ -175,8 +175,8 @@ router.post('/', async function (req, res, next) {
 
         }).catch(error => {
             //Error when listing patient on Contract side.
-            console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: " + error);
-            req.flash('info', 'Patient Fail to be Listed');
+            console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: ");
+            req.flash('error', 'Patient Fail to be Listed due to - ' + error);
             res.redirect('/viewPatients');
             return;
         });
@@ -209,8 +209,8 @@ router.post('/', async function (req, res, next) {
             })
         }).catch(error => {
             //Error when Unlisting patient on Contract side.
-            console.log("ERROR at UnlistPatient in ViewPatients FOR *Contract*: " + error);
-            req.flash('info', 'Patient Fail to be Unlisted');
+            console.log("ERROR at UnlistPatient in ViewPatients FOR *Contract*: ");
+            req.flash('error', 'Patient Fail to be Unlisted due to - ' + error);
             res.redirect('/viewPatients');
             return;
         });

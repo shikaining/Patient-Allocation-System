@@ -44,7 +44,7 @@ router.get('/', async function (req, res, next) {
         var retreiveAllPatientInfo =
             "SELECT * FROM public.patient WHERE public.patient.listStatus = $1" +
             " AND public.patient.allocatedStatus != $2";
-        await pool.query(retreiveAllPatientInfo, ['Listed', 'Allocated'], (err, data) => {
+        pool.query(retreiveAllPatientInfo, ['Listed', 'Allocated'], (err, data) => {
 
             //push required patientIds into patientIds array
             for (var i = 0; i < data.rowCount; i++) {
@@ -277,8 +277,8 @@ router.post('/', async function (req, res, next) {
                         //Insert into Ethereum smart contract + local DB
                         let requestId = await truffle_connect.createRequest(studentScore, solidityIndications, rawStudent.rows[0].address, stuId, patientId, "Pending", dbIndication, requestTimeStamp)
                             .catch(error => {
-                                console.log("CAUGHT Error within Create Request: " + error);
-                                req.flash("Error", "Request failed to be created");
+                                console.log("CAUGHT Error within Create Request: ");
+                                req.flash("Error", "Request failed to be created due to - " + error);
                                 res.redirect("/viewRequests");
                                 return;
                             })
