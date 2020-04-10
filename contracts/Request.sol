@@ -60,6 +60,11 @@ contract Request {
 		
 	// == MODIFIERS ==
 	
+	modifier onlyOwner() {
+		require(msg.sender == owner);
+		_;
+	}
+	
 	modifier matchingIndication(uint requestID, uint patientID) {
 		for (uint i = 0; i < patientContract.getIndications(patientID).length; i++) {
 			require(patientContract.getIndications(patientID)[i] == requests[requestID].indications[i]);
@@ -90,8 +95,14 @@ contract Request {
 	
 	// == EVENTS ==
 	
+	// Administration 
+	event CreatePowerUser(address user);
+	event CreateAdminUser(address user);
+
+	// Functions 
 	event Update(uint requestID, address student);
 	event Process(uint requestID, uint patientID);
+	event Withdraw(uint requestID, address withdrawer);
 	
 	// ============
 	
@@ -115,6 +126,40 @@ contract Request {
 	}
 	
 	// =================
+	
+	// == ADMINISTRATION ==
+	
+	// Create power user
+	function createPowerUser(address user) 
+	public onlyOwner {
+		powerUsers[user] = true;
+		
+		emit CreatePowerUser(user);
+	}
+	
+	// Check power user
+	function getPowerUser(address user) 
+	public view onlyOwner
+	returns (bool) {
+		return powerUsers[user];
+	}
+	
+	// Create admin user
+	function createAdminUser(address user) 
+	public onlyOwner {
+		adminUsers[user] = true;
+		
+		emit CreateAdminUser(user);
+	}
+	
+	// Check admin user
+	function getAdminUser(address user) 
+	public view onlyOwner
+	returns (bool) {
+		return adminUsers[user];
+	}
+	
+	// ====================
 	
 	// == FUNCTIONS ==
 	
@@ -162,6 +207,14 @@ contract Request {
 		requests[requestID].resolved = resolution;
 
 		emit Update(requestID, msg.sender);
+	}
+	
+	// Withdraw the request
+	function withdrawRequest(uint requestID) 
+	public onlyRequestOwnerAndUp(requestID) unresolved(requestID) {
+		requests[requestID].resolved = true;
+		
+		emit Withdraw(requestID, msg.sender);
 	}
 	
 	// ===============
