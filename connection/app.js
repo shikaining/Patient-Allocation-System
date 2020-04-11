@@ -136,15 +136,25 @@ module.exports = {
     },
 
   studentTransfer: function (patientId, studentAddr, sender) {
-    var self = this;
-    Patient.setProvider(self.web3.currentProvider);
-    var patientInstance;
-    Patient.deployed().then(function (instance) {
-      patientInstance = instance;
-      return patientInstance.studentTransfer(patientId, studentAddr, {
-        from: sender
+    return new Promise((res, rej) => {
+      var self = this;
+      Patient.setProvider(self.web3.currentProvider);
+      var patientInstance;
+      Patient.deployed().then(function (instance) {
+        patientInstance = instance;
+        return patientInstance.studentTransfer(patientId, studentAddr, {
+          from: sender
+        }).then(result => {
+          res(result);
+          return;
+        }).catch(error =>{
+          console.log('Contrat Error within Student Transfer');
+          console.log(error);
+          rej('Contract Error');
+          return;
+        });
       });
-    });
+    })
   },
   resolvePatient: function (patientId, sender) {
     var self = this;

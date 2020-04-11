@@ -292,7 +292,7 @@ router.post('/', async function (req, res, next) {
                         // }
 
                         //After creating Request, update the HIGHEST score for patient and current Student so that it can be displayed.
-                        var highestScore_query = "select request.studId, student.name from public.request natural join public.student where pId = $1 ORDER BY score DESC LIMIT 1;"
+                        var highestScore_query = "select request.studId, student.name from public.request natural join public.student where pId = $1 and allocatedstatus != 'Withdrawn' ORDER BY score DESC LIMIT 1;"
                         pool.query(highestScore_query, [patientId], (err, highestScoreStudent) => {
                             if (err) {
                                 //should NOT happen
