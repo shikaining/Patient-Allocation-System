@@ -56,7 +56,7 @@ module.exports = {
         });
       });
     })
-    
+
   },
   getTotalPatients: function (callback) {
     var self = this;
@@ -136,6 +136,27 @@ module.exports = {
     },
 
   studentTransfer: function (patientId, studentAddr, sender) {
+    return new Promise((res, rej) => {
+      var self = this;
+      Patient.setProvider(self.web3.currentProvider);
+      var patientInstance;
+      Patient.deployed().then(function (instance) {
+        patientInstance = instance;
+        return patientInstance.studentTransfer(patientId, studentAddr, {
+          from: sender
+        }).then(result => {
+          res(result);
+          return;
+        }).catch(error =>{
+          console.log('Contrat Error within Student Transfer');
+          console.log(error);
+          rej('Contract Error');
+          return;
+        });
+      });
+    })
+  },
+  resolvePatient: function (patientId, sender) {
     var self = this;
     Patient.setProvider(self.web3.currentProvider);
     var patientInstance;
@@ -204,7 +225,7 @@ module.exports = {
             .then(patientID => {
               var pId = parseInt(patientID);
               console.log("PatientId : " + pId);
-            
+
               pool.query(
                 sql_query,
                 [
@@ -298,11 +319,11 @@ module.exports = {
   //         .then(result => {
   //           res(result);
   //           return
-  //         })          
+  //         })
   //       } catch (error) {
   //         rej(error);
   //         return;
-  //       }        
+  //       }
   //     })
   //   })
   // }
@@ -325,15 +346,24 @@ module.exports = {
       });
   },
   withdrawRequest: function (requestId, sender) {
-    var self = this;
-    Request.setProvider(self.web3.currentProvider);
-    var requestInstance;
-    Request.deployed().then(function (instance) {
-      requestInstance = instance;
-      return requestInstance.withdrawRequest(patientId, {
-        from: sender
+    return new Promise((res, rej) => {
+      var self = this;
+      Request.setProvider(self.web3.currentProvider);
+      var requestInstance;
+      Request.deployed().then(function (instance) {
+        requestInstance = instance;
+        requestInstance.withdrawRequest(requestId, {
+          from: sender
+        }).then(pass => {
+          res(pass)
+          return;
+        }).catch(error => {
+          rej(error);
+          return;
+        });
       });
-    });
+    })
+
   },
   updatePatient: function (
     patientId,
