@@ -324,15 +324,24 @@ module.exports = {
       });
   },
   withdrawRequest: function (requestId, sender) {
-    var self = this;
-    Request.setProvider(self.web3.currentProvider);
-    var requestInstance;
-    Request.deployed().then(function (instance) {
-      requestInstance = instance;
-      return requestInstance.withdrawRequest(patientId, {
-        from: sender
+    return new Promise((res, rej) => {
+      var self = this;
+      Request.setProvider(self.web3.currentProvider);
+      var requestInstance;
+      Request.deployed().then(function (instance) {
+        requestInstance = instance;
+        requestInstance.withdrawRequest(requestId, {
+          from: sender
+        }).then(pass => {
+          res(pass)
+          return;
+        }).catch(error => {
+          rej(error);
+          return;
+        });
       });
-    });
+    })
+    
   },
   updatePatient: function (
     patientId,
