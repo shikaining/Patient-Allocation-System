@@ -32,3 +32,7 @@ a {
 .error {
     color: red
 }
+
+.info {
+    color: green;
+}

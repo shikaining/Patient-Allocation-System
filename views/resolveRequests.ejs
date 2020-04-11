@@ -77,7 +77,27 @@
     <!-- Page Content -->
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
-        <h5>Current Indications Record: <%= indicationRecords %></h5>
+        <h5>Current Indications Record:</h5>
+        <table class="table table-sm" width="50%">
+            <thead>
+                <tr>
+                    <th scope="col">Indications</th>
+                    <th scope="col">Indication Count</th>
+                    <th scope="col">Graduation Requirements</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i<indicationsArray.length; i++) { %>
+                <tr>
+                    <td><%= indicationsArray[i]%></td>
+                    <td><%= studentRecords[i]%></td>
+                    <td><%= indicationRecords[i]%></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+
         <br/>
         <h3 class="mt-4 mb-3"><%= title %></h3>
 

@@ -19,7 +19,21 @@ var transferStudentAddr;
 var patientInfo;
 var staffAddr;
 var name;
-var indicationRecords;
+
+
+var indicationsArray = [
+  "CD Exam Case",
+  "Dental Public Health",
+  "Endodontics",
+  "Fixed Prosthodontics",
+  "Operative Dentistry",
+  "Oral Surgery",
+  "Orthodontics",
+  "Pedodontics",
+  "Periodontics",
+  "Removable Prosthodontics"
+];
+
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
@@ -59,6 +73,7 @@ router.get("/", async function (req, res, next) {
             res.render("resolveRequests", {
               title: "Operative Dentistry Course Record",
               user: name,
+              indicationsArray: indicationsArray,
               indicationRecords: indicationRecords,
               studentRecords : studentIndication,
               data: data.rows,
@@ -89,10 +104,10 @@ router.post("/", async function (req, res, next) {
       //resolve patients
       //update request table allocated status to 'Resolved'
       var resolveRequest =
-        "UPDATE public.request SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
+        "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2";
       pool.query(
         resolveRequest,
-        ["Resolved", studId, patientId],
+        ["Resolved", patientId],
         (err, data) => {
           console.log(err);
           if (err === undefined) {

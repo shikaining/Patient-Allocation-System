@@ -19,19 +19,20 @@ var name;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
+    this.username = req.session.username;
+
     username = req.session.username;
+    console.log(this.username);
 
-    console.log(username);
-
-    if (username === undefined) {
+    if (this.username === undefined) {
         res.redirect('/staffLogin');
     } else {
 
-        var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
-        pool.query(sql_query, [username], (err, data) => {
+        var sql_query1 = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+        pool.query(sql_query1, [username], (err, data) => {
           name = data.rows[0].name;
+          console.log("name " + name);
         });
-
 
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
         pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
