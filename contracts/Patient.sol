@@ -165,7 +165,7 @@ contract Patient is ERC721Full {
 	
 	// Create admin user
 	function createAdminUser(address user) 
-	public onlyOwner {
+	public onlyPowerAndUp {
 		adminUsers[user] = true;
 		
 		emit CreateAdminUser(user);
@@ -173,7 +173,7 @@ contract Patient is ERC721Full {
 	
 	// Check admin user
 	function getAdminUser(address user) 
-	public view onlyOwner
+	public view onlyPowerAndUp
 	returns (bool) {
 		return adminUsers[user];
 	}
@@ -231,7 +231,7 @@ contract Patient is ERC721Full {
 	
 	// Resolve a patient post-processing
 	function resolvePatient(uint patientID)
-	public onlyStudent(patientID) unresolved(patientID){
+	public onlyStudent(patientID) unresolved(patientID) {
 		patients[patientID].resolved = true;
 		
 		emit Resolve(patientID, msg.sender);

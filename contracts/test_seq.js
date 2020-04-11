@@ -37,8 +37,8 @@ let patient2; // 'Jason Teo', '919', [3, 4]
 let request1; // 99, [3, 4, 5], student2 owner
 let request2; // 98, [6], student1 owner
 	
-contract("Patient", accounts => {
-	
+contract("Patient [Workflow Test]", accounts => {
+		
 	owner = accounts[0];
 
 	// Power Users
@@ -56,6 +56,10 @@ contract("Patient", accounts => {
 	it("Patient contract is deployed", () =>
 		Patient.deployed()
 		.then((inst) => {
+			console.log("\n>> TEST BEGIN <<");
+			console.log("\nContract Deployment");
+			console.log("-------------------");
+			
 			patient = inst;
 			// Check for contract deployment
 			assert.ok(patient, "Contract not deployed successfully");
@@ -73,6 +77,9 @@ contract("Patient", accounts => {
 	it("Power User 3 is created", () =>
 		patient.createPowerUser(accounts[7], {from: owner})
 		.then((evt) => {
+			console.log("Administrative Functions");
+			console.log("------------------------");
+			
 			// Check for CreatePowerUser event
 			assert.equal(evt.logs[0].event, 'CreatePowerUser', "Power User 3 not created successfully");
 			powerUser3 = accounts[7];
@@ -107,6 +114,9 @@ contract("Patient", accounts => {
 	it("Patient 1 is created", () =>
 		patient.createPatient.call('Kai Ning', '999', [1, 2], {from: powerUser1})
 		.then((patientID) => {
+			console.log("Patient Creation");
+			console.log("----------------");
+			
 			// Check for returned patient ID
 			assert.equal(patientID.toNumber(), 1, "Patient 1 not created successfully");
 			patient1 = patientID.toNumber();
@@ -136,6 +146,9 @@ contract("Patient", accounts => {
 	it("Patient 1 is registered into patient pool", () =>
 		patient.listPatient(patient1, {from: powerUser2})
 		.then((evt) => {
+			console.log("Patient Registration");
+			console.log("--------------------");
+			
 			// Check for List event
 			assert.equal(evt.logs[0].event, 'List', "Patient 1 not listed successfully");
 		})
@@ -152,6 +165,9 @@ contract("Patient", accounts => {
 	it("Patient 1 is allocated to Student 1", () =>
 		patient.listPatient(patient1, {from: powerUser2})
 		.then(() => {
+			console.log("Patient Allocation");
+			console.log("------------------");
+			
 			return patient.allocatePatient(patient1, student1);
 		}).then((evt) => {
 			// Check for Unlist event
@@ -175,6 +191,9 @@ contract("Patient", accounts => {
 	it("Student 1 transferred patient to Student 2", () =>
 		patient.studentTransfer(patient1, student2, {from: student1})
 		.then((evt) => {
+			console.log("Patient Transfer");
+			console.log("----------------");
+			
 			// Check for transfer event
 			assert.equal(evt.logs[1].event, 'Transfer', "Student 1 failed to transfer patient");
 		})
@@ -196,6 +215,9 @@ contract("Patient", accounts => {
 	it("Student 2 resolved Patient 1", () =>
 		patient.resolvePatient(patient1, {from: student2})
 		.then((evt) => {
+			console.log("Patient Resolution");
+			console.log("------------------");
+			
 			// Check for resolution event
 			assert.equal(evt.logs[0].event, 'Resolve', "Patient 1 failed to be resolved");
 		})
@@ -213,6 +235,9 @@ contract("Patient", accounts => {
 		patient.updatePatient(patient1, "Kai Ningg", "998", [1, 2, 3], 
 							  student2, false, {from: powerUser1})
 		.then((evt) => {
+			console.log("Patient Update");
+			console.log("--------------");
+			
 			// Check for update event
 			assert.equal(evt.logs[0].event, 'Update', "Patient 1 failed to be updated");
 		})
@@ -244,12 +269,562 @@ contract("Patient", accounts => {
 	);
 });
 
-contract("Request", accounts => {
+contract("Patient [Failure Tests]", accounts => {
+	
+	let tempPatient;
+	
+	it("Power User unable to create power user", async() =>		
+		{
+			console.log("\n>> TEST BEGIN <<");
+			console.log("\nAdministrative Functions");
+			console.log("------------------------");
+			
+			let err = null;
+		
+			try {
+				await patient.createPowerUser.call(accounts[9], {from: powerUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Power user creation should have failed");
+		}
+	);
+	
+	it("Admin User unable to create power user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.createPowerUser.call(accounts[9], {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Power user creation should have failed");
+		}
+	);
+	
+	it("Student unable to create power user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.createPowerUser.call(accounts[9], {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Power user creation should have failed");
+		}
+	);
+	
+	it("Admin User unable to create admin user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.createAdminUser.call(accounts[9], {from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Admin user creation should have failed");
+		}
+	);
+	
+	it("Student unable to create admin user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.createAdminUser.call(accounts[9], {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Admin user creation should have failed");
+		}
+	);
+	
+	it("Admin User unable to create patients", async() =>		
+		{
+			console.log("Patient Registration");
+			console.log("--------------------");
+			
+			let err = null;
+		
+			try {
+				await patient.createPatient.call('Kai Ning', '999', [1, 2], {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient creation should have failed");
+		}
+	);
+	
+	it("Student unable to create patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.createPatient.call('Kai Ning', '999', [1, 2], {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient creation should have failed");
+		}
+	);
+	
+	it("Admin User unable to register patients into patient pool", async() =>		
+		{
+			console.log("Patient Registration");
+			console.log("--------------------");
+			
+			tempPatient = await patient.createPatient.call('Temp', '911', [2], 
+															  {from: powerUser2});
+			await patient.createPatient('Temp', '911', [2], {from: powerUser2});
+						
+			let err = null;
+		
+			try {
+				await patient.listPatient.call(tempPatient.toNumber(), {from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient registration should have failed");
+		}
+	);
+	
+	it("Student unable to register patients into patient pool", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.listPatient.call(tempPatient.toNumber(), {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient registration should have failed");
+		}
+	);
+	
+	it("Unable to list currently-listed patients", async() =>		
+		{
+			await patient.listPatient(tempPatient.toNumber(), {from: powerUser2});
+			
+			let err = null;
+		
+			try {
+				await patient.listPatient.call(tempPatient.toNumber(), {from: powerUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient registration should have failed");
+		}
+	);
+	
+	it("Admin User unable to unregister patients from patient pool", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.unlistPatient.call(tempPatient.toNumber(), {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient unregistration should have failed");
+		}
+	);
+	
+	it("Student unable to unregister patients from patient pool", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.unlistPatient.call(tempPatient.toNumber(), {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient unregistration should have failed");
+		}
+	);
+	
+	it("Unable to unlist currently-unlisted patients", async() =>		
+		{
+			await patient.unlistPatient(tempPatient.toNumber(), {from: powerUser1});
+			
+			let err = null;
+		
+			try {
+				await patient.unlistPatient.call(tempPatient.toNumber(), {from: powerUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient unregistration should have failed");
+		}
+	);
+	
+	it("Unable to list resolved patients", async() =>		
+		{
+			await patient.listPatient(tempPatient.toNumber(), {from: powerUser2});
+			await patient.allocatePatient(tempPatient.toNumber(), student2, 
+										 {from: powerUser2});
+			await patient.resolvePatient(tempPatient.toNumber(), {from: student2});
+										 
+			let err = null;
+		
+			try {
+				await patient.listPatient.call(tempPatient.toNumber(), {from: powerUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient registration should have failed");
+		}
+	);
+	
+	it("Unable to allocate unlisted patients", async() =>		
+		{
+			console.log("Patient Allocation");
+			console.log("------------------");
+			
+			tempPatient = await patient.createPatient.call('Temp2', '912', [2], 
+														  {from: powerUser1});
+			await patient.createPatient('Temp2', '912', [2], {from: powerUser1});
+						
+			let err = null;
+		
+			try {
+				await patient.allocatePatient.call(tempPatient.toNumber(), student1, 
+												  {from: powerUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Admin User unable to allocate patients", async() =>		
+		{
+			await patient.listPatient(tempPatient.toNumber(), {from: powerUser2});
+						
+			let err = null;
+		
+			try {
+				await patient.allocatePatient.call(tempPatient.toNumber(), student2, 
+												  {from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Normal User unable to allocate patients", async() =>		
+		{		
+			let err = null;
+		
+			try {
+				await patient.allocatePatient.call(tempPatient.toNumber(), student1, 
+												  {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Owner of contract unable to transfer patients", async() =>		
+		{
+			console.log("Patient Transfer");
+			console.log("----------------");
+			
+			await patient.allocatePatient(tempPatient.toNumber(), student1,
+										 {from: powerUser2});
+		
+			let err = null;
+		
+			try {
+				await patient.studentTransfer.call(tempPatient.toNumber(), student2,
+												  {from: owner});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient transfer should have failed");
+		}
+	);
+	
+	it("Power User unable to transfer patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.studentTransfer.call(tempPatient.toNumber(), student2,
+												  {from: powerUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient transfer should have failed");
+		}
+	);
+	
+	it("Admin User unable to transfer patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.studentTransfer.call(tempPatient.toNumber(), student2,
+												  {from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient transfer should have failed");
+		}
+	);
+	
+	it("Student unable to transfer un-owned patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.studentTransfer.call(tempPatient.toNumber(), student2,
+												  {from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient transfer should have failed");
+		}
+	);
+	
+	it("Unable to transfer resolved patients", async() =>		
+		{
+			await patient.resolvePatient(tempPatient.toNumber(), {from: student1});
+												  
+			let err = null;
+		
+			try {
+				await patient.studentTransfer.call(tempPatient.toNumber(), student2,
+												  {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient transfer should have failed");
+		}
+	);
+	
+	it("Owner of contract unable to resolve patients", async() =>		
+		{
+			console.log("Patient Resolution");
+			console.log("------------------");
+			
+			tempPatient = await patient.createPatient.call('Temp3', '913', [2], 
+														  {from: powerUser1});
+			await patient.createPatient('Temp3', '913', [2], {from: powerUser1});
+			await patient.listPatient(tempPatient.toNumber(), {from: powerUser1});
+			await patient.allocatePatient(tempPatient.toNumber(), student1, 
+										 {from: powerUser1});
+											  
+			let err = null;
+		
+			try {
+				await patient.resolvePatient.call(tempPatient.toNumber(),
+												 {from: owner});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Power User unable to resolve patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.resolvePatient.call(tempPatient.toNumber(),
+												 {from: powerUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Admin User unable to resolve patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.resolvePatient.call(tempPatient.toNumber(),
+												 {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Student unable to resolve un-owned patients", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.resolvePatient.call(tempPatient.toNumber(),
+												 {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Unable to resolve resolved patients", async() =>		
+		{
+			await patient.resolvePatient(tempPatient.toNumber(),
+										{from: student1});
+			let err = null;
+		
+			try {
+				await patient.resolvePatient.call(tempPatient.toNumber(),
+												 {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient allocation should have failed");
+		}
+	);
+	
+	it("Admin User unable to update patient information", async() =>		
+		{
+			console.log("Patient Update");
+			console.log("--------------");
+			
+			tempPatient = await patient.createPatient.call('Temp4', '914', [2], 
+														  {from: powerUser2});
+			await patient.createPatient('Temp4', '914', [2], {from: powerUser2});
+
+			let err = null;
+		
+			try {
+				await patient.updatePatient.call(tempPatient.toNumber(), 'Temp5',
+												 '915', [3], owner, false,
+												{from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient information update should have failed");
+		}
+	);
+	
+	it("Student unable to update patient information", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await patient.updatePatient.call(tempPatient.toNumber(), 'Temp5',
+												 '915', [3], owner, false,
+												{from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Patient information update should have failed");
+		}
+	);
+});
+
+contract("Request [Workflow Test]", accounts => {
 	
 	it("Request contract is deployed", () =>
 		Request.deployed()
 		.then((inst) => {
+			console.log("\n>> TEST BEGIN <<");
+			console.log("\nContract Deployment");
+			console.log("-------------------");
+			
 			request = inst;
+			
 			// Check for contract deployment
 			assert.ok(request, "Contract not deployed successfully");
 		})
@@ -265,6 +840,9 @@ contract("Request", accounts => {
 	it("Power User 3 is created", () =>
 		request.createPowerUser(accounts[7], {from: owner})
 		.then((evt) => {
+			console.log("Administrative Functions");
+			console.log("------------------------");
+			
 			// Check for CreatePowerUser event
 			assert.equal(evt.logs[0].event, 'CreatePowerUser', "Power User 3 not created successfully");
 			powerUser3 = accounts[7];
@@ -299,6 +877,9 @@ contract("Request", accounts => {
 	it("Request 1 is created", () =>
 		request.createRequest.call(99, [3, 4, 5], {from: powerUser1})
 		.then((requestID) => {
+			console.log("Request Creation");
+			console.log("----------------");
+			
 			// Check for returned request ID
 			assert.equal(requestID.toNumber(), 1, "Request 1 not created successfully");
 			request1 = requestID.toNumber();
@@ -325,42 +906,19 @@ contract("Request", accounts => {
 			assert.equal(rsl[5], false, "Request 1's resolution incorrect");
 		})
 	);
-	
-	it("Request 1 is updated", () =>
-		request.updateRequest(request1, 0, 89, [3, 4], false, {from: powerUser1})
-		.then((evt) => {
-			// Check for update event
-			assert.equal(evt.logs[0].event, 'Update', "Request 1 failed to update successfully");
-		})
-	);
-	
-	it("Request 1 records are updated", () =>
-		request.getRequest.call(request1, {from: powerUser2})
-		.then((rsl) => {
-			// Check for all Patient 1 credentials
-			assert.equal(rsl[0], student2, "Request 1's owner incorrect");
-			assert.equal(rsl[1], request1, "Request 1's ID incorrect");
-			assert.equal(rsl[2], 0, "Request 1's default allocated patient ID incorrect");
-			assert.equal(rsl[3], 89, "Request 1's score incorrect");
-			
-			let indications = [3, 4];
-			for (let i = 0; i < rsl[4].length; i++) {
-				assert.equal(rsl[4][i], indications[i], "Request 1's indications incorrect");
-			}
 
-			assert.equal(rsl[5], false, "Request 1's resolution incorrect");
-		})
-	);
-	
 	it("Patient 2 is created", () =>
-		patient.createPatient.call('Jason Teo', '919', [3, 4], {from: powerUser1})
+		patient.createPatient.call('Jason Teo', '919', [3, 4, 5], {from: powerUser1})
 		.then((patientID) => {
+			console.log("Request Processing");
+			console.log("------------------");
+			
 			// Check for returned patient ID
 			assert.equal(patientID.toNumber(), 1, "Patient 2 not created successfully");
 			patient2 = patientID.toNumber();
 		}).then(() => {
 			// Create Patient 2
-			patient.createPatient('Jason Teo', '919', [3, 4], {from: powerUser2});
+			patient.createPatient('Jason Teo', '919', [3, 4, 5], {from: powerUser2});
 		})
 	);
 	
@@ -371,7 +929,7 @@ contract("Request", accounts => {
 			assert.equal(rsl[0], 'Jason Teo', "Patient 1's name incorrect");
 			assert.equal(rsl[1], '919', "Patient 1's contact number incorrect");
 			
-			let indications = [3, 4];
+			let indications = [3, 4, 5];
 			for (let i = 0; i < rsl[2].length; i++) {
 				assert.equal(rsl[2][i], indications[i], "Patient 1's indications incorrect");
 			}
@@ -413,6 +971,9 @@ contract("Request", accounts => {
 	it("Request 1 is resolved", () =>
 		request.getRequest.call(request1, {from: powerUser2})
 		.then((rsl) => {
+			console.log("Request Resolution");
+			console.log("------------------");
+			
 			// Check resolution
 			assert.equal(rsl[5], true, "Request 1's resolution incorrect");
 		})
@@ -421,6 +982,9 @@ contract("Request", accounts => {
 	it("Request 2 is created", () =>
 		request.createRequest.call(98, [6], {from: student2})
 		.then((requestID) => {
+			console.log("Request Withdrawal");
+			console.log("------------------");
+			
 			// Check for returned request ID
 			assert.equal(requestID.toNumber(), 2, "Request 2 not created successfully");
 			request2 = requestID.toNumber();
@@ -453,4 +1017,225 @@ contract("Request", accounts => {
 			assert.equal(rsl.toNumber(), 2, "Total number of requests incorrect");
 		})
 	);
+});
+
+contract("Request [Failure Tests]", accounts => {
+	
+	let tempPatient;
+	let tempRequest1;
+	let tempRequest2;
+	
+	it("Power User unable to create power user", async() =>		
+		{
+			console.log("\n>> TEST BEGIN <<");
+			console.log("\nAdministrative Functions");
+			console.log("------------------------");
+			
+			let err = null;
+		
+			try {
+				await request.createPowerUser.call(accounts[9], {from: powerUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Power user creation should have failed");
+		}
+	);
+	
+	it("Admin User unable to create power user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await request.createPowerUser.call(accounts[9], {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Power user creation should have failed");
+		}
+	);
+	
+	it("Student unable to create power user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await request.createPowerUser.call(accounts[9], {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Power user creation should have failed");
+		}
+	);
+	
+	it("Admin User unable to create admin user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await request.createAdminUser.call(accounts[9], {from: adminUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Admin user creation should have failed");
+		}
+	);
+	
+	it("Student unable to create admin user", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await request.createAdminUser.call(accounts[9], {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Admin user creation should have failed");
+		}
+	);
+
+	it("Admin User unable to process requests", async() =>		
+		{
+			console.log("Request Processing");
+			console.log("------------------");
+
+			tempPatient = await patient.createPatient.call('Temp6', '916', [2], 
+														  {from: powerUser1});
+			await patient.createPatient('Temp6', '916', [2], {from: powerUser1});
+			await patient.listPatient(tempPatient.toNumber(), {from: powerUser1});
+			
+			tempRequest1 = await request.createRequest.call(22, [2], {from: student1});
+			await request.createRequest(22, [2], {from: student1});
+			tempRequest2 = await request.createRequest.call(22, [2, 3], {from: student1});
+			await request.createRequest(22, [2, 3], {from: student1});
+
+			let err = null;
+		
+			try {
+				await request.processRequest.call(tempRequest1.toNumber(), 
+												  tempPatient.toNumber(), 
+												 {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request processing should have failed");
+		}
+	);
+	
+	it("Student unable to process requests", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await request.processRequest.call(tempRequest1.toNumber(), 
+												  tempPatient.toNumber(), 
+												 {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request processing should have failed");
+		}
+	);
+	
+	it("Unable to process request with unmatching indications", async() =>		
+		{
+			let err = null;
+		
+			try {
+				await request.processRequest.call(tempRequest2.toNumber(), 
+												  tempPatient.toNumber(), 
+												 {from: powerUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request processing should have failed");
+		}
+	);
+	
+	it("Unable to process resolved requests", async() =>		
+		{
+			await request.processRequest(tempRequest1.toNumber(), 
+										 tempPatient.toNumber(), 
+										{from: powerUser2});
+												 
+			let err = null;
+		
+			try {
+				await request.processRequest.call(tempRequest1.toNumber(), 
+												  tempPatient.toNumber(), 
+												 {from: powerUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request processing should have failed");
+		}
+	);
+	
+	it("Student unable to withdraw un-owned requests", async() =>		
+		{
+			console.log("Request Withdrawal");
+			console.log("------------------");
+			
+			let err = null;
+		
+			try {
+				await request.withdrawRequest.call(tempRequest2.toNumber(), 
+												  {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request withdrawal should have failed");
+		}
+	);
+	
+	it("Student unable to withdraw resolved requests", async() =>		
+		{
+			await request.withdrawRequest(tempRequest2.toNumber(), 
+										 {from: student1});
+			
+			let err = null;
+		
+			try {
+				await request.withdrawRequest.call(tempRequest2.toNumber(), 
+												  {from: student1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request withdrawal should have failed");
+		}
+	);
+	
 });

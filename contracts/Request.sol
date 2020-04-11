@@ -66,9 +66,16 @@ contract Request {
 	}
 	
 	modifier matchingIndication(uint requestID, uint patientID) {
-		for (uint i = 0; i < patientContract.getIndications(patientID).length; i++) {
-			require(patientContract.getIndications(patientID)[i] == requests[requestID].indications[i]);
+		bool passed = true;
+		if (patientContract.getIndications(patientID).length != 
+			requests[requestID].indications.length) {
+			passed = false;
 		}
+		if (patientContract.getIndications(patientID)[0] != 
+			requests[requestID].indications[0]) {
+			passed = false;
+		}
+		require(passed == true);
 		_;
 	}
 	
@@ -194,19 +201,6 @@ contract Request {
 		requests[requestID].resolved = true;
 		
 		emit Process(requestID, patientID);
-	}
-	
-	// Update the information of a request
-	function updateRequest(uint requestID, uint patientID, uint score,
-						   uint[] memory indications, bool resolution) 
-	public onlyRequestOwnerAndUp(requestID) unresolved(requestID) {
-		// Update request
-		requests[requestID].allocatedPatientID = patientID;
-		requests[requestID].score = score;
-		requests[requestID].indications = indications;
-		requests[requestID].resolved = resolution;
-
-		emit Update(requestID, msg.sender);
 	}
 	
 	// Withdraw the request
