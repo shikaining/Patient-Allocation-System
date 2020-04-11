@@ -135,10 +135,18 @@ router.post('/', async function (req, res, next) {
         console.log()
 
         try {
-
             //update student Id on request table
-            var transferRequest = "UPDATE public.request SET studId = $1 WHERE pid = $2";
-            pool.query(transferRequest, [transferStudentId, patientId], (err, data) => {
+            var transferRequest = "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
+            pool.query(transferRequest, ['Transferred', patientId, studId], (err, data) => {
+                console.log(err);
+                if (err === undefined) {
+                } else {
+                    req.flash('error', 'An error has occurred! Please try again');
+                }
+            });
+
+            var transferRequest = "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
+            pool.query(transferRequest, ['Allocated', patientId, transferStudentId], (err, data) => {
                 console.log(err);
                 if (err === undefined) {
                 } else {

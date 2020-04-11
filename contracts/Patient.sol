@@ -152,6 +152,7 @@ contract Patient is ERC721Full {
 	function createPowerUser(address user) 
 	public onlyOwner {
 		powerUsers[user] = true;
+		setApprovalForAll(user, true);
 		
 		emit CreatePowerUser(user);
 	}
@@ -167,6 +168,7 @@ contract Patient is ERC721Full {
 	function createAdminUser(address user) 
 	public onlyPowerAndUp {
 		adminUsers[user] = true;
+		setApprovalForAll(user, true);
 		
 		emit CreateAdminUser(user);
 	}
