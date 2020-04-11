@@ -143,7 +143,8 @@ module.exports = {
       Patient.deployed().then(function (instance) {
         patientInstance = instance;
         return patientInstance.studentTransfer(patientId, studentAddr, {
-          from: sender
+          from: sender,
+          gas: "5000000"
         }).then(result => {
           res(result);
           return;
@@ -162,20 +163,9 @@ module.exports = {
     var patientInstance;
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
-      return patientInstance.studentTransfer(patientId, studentAddr, {
+      return patientInstance.resolvePatient(patientId, {
         from: sender,
         gas: "5000000"
-      });
-    });
-  },
-  resolvePatient: function (patientId, sender) {
-    var self = this;
-    Patient.setProvider(self.web3.currentProvider);
-    var patientInstance;
-    Patient.deployed().then(function (instance) {
-      patientInstance = instance;
-      return patientInstance.resolvePatient(patientId, {
-        from: sender
       });
     });
   },
