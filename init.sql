@@ -97,7 +97,6 @@ insert into Staff(name, nric, contactNo, email, password, verification) values('
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff1', 'S9223456A', '91234567', 'staff1@gmail.com', 'asd', 'poweruser');
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff2', 'S9323457A', '92234567', 'staff2@gmail.com', 'asd', 'poweruser');
 insert into Staff(name, nric, contactNo, email, password, verification) values('Staff3', 'S9423458A', '93234567', 'staff3@gmail.com', 'asd', 'staff');
-insert into Staff(name, nric, contactNo, email, password, verification) values('Staff4', 'S9523459A', '94234567', 'staff4@gmail.com', 'asd', 'staff');
 
 -- INSERT INTO indications(cd_exam_case, dental_public_health, endodontics, fixed_prosthodontics, operative_dentistry, oral_surgery, orthodontics, pedodontics, periodontics, removable_prosthodontics)
 -- VALUES(3, 5, 4, 3, 5, 4, 6, 2, 4, 3);
