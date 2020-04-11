@@ -36,7 +36,7 @@ router.post('/', function (req, res, next) {
   var sql_query = "SELECT * FROM public.staff WHERE public.staff.email ='" + email + "' and public.staff.password ='" + password + "'";
 
   pool.query(sql_query, (err, staff) => {
-    console.log(staff);
+    // console.log(staff);
     if (staff.rowCount === 1) {
       req.session.username = email;
       console.log(req.session.username);

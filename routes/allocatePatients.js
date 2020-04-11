@@ -78,61 +78,116 @@ router.post('/', async function (req, res, next) {
                     requestId,
                     patientId,
                     me.staffAddr
-                ).catch(error => {
+                ).then(pass => {
+                    //update postgreSQL Database
+
+                    //1-update allocatedStatus of patient
+                    var allocatePatient = "UPDATE public.patient SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
+                    pool.query(allocatePatient, ['Allocated', studId, patientId], (err, data) => {
+                        console.log("1-update allocatedStatus of patient - Start")
+                        if (err === undefined) {
+                            //2-update allocatedStatus of request (successful one)
+                            var successfulRequest_query =
+                                "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
+                            console.log(requestId);
+                            pool.query(
+                                successfulRequest_query,
+                                ['Allocated', requestId],
+                                (err, data) => {
+                                    console.log("2-update allocatedStatus of request (successful one) - Start")
+                                    if (err === undefined) {
+                                        //3-update allocatedStatus of request (unsuccessful ones)
+                                        var failedRequest_query =
+                                            "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId != $3";
+                                        pool.query(
+                                            failedRequest_query,
+                                            ['Not Allocated', patientId, studId],
+                                            (err, data) => {
+                                                console.log("3-update allocatedStatus of request (unsuccessful ones) - Start")
+                                                if (err === undefined) {
+                                                    // req.flash('info', 'Request Updated');
+                                                    req.flash('info', 'Patient Allocated')
+                                                } else {
+                                                    req.flash('error', 'An error has occurred! Please try again');
+                                                }
+                                            console.log("3-update allocatedStatus of request (unsuccessful ones) - End")
+
+                                            res.redirect('/allocatePatients');
+                                        });
+                                    } else {
+                                        req.flash('error', 'An error has occurred! Please try again');
+                                    }
+                                    console.log("2-update allocatedStatus of request (successful one) - End")
+                                    //res.redirect('/allocatePatients');
+                            });
+                        } else {
+                            req.flash('error', 'An error has occurred! Please try again');
+                        }
+                        console.log("1-update allocatedStatus of patient - END")
+                        //res.redirect('/allocatePatients');
+                    });
+                }).catch(error => {
                     console.log("Caught error within AllocatePatient.js")
                     req.flash('error', 'Failed to Allocate Patient due to - ' + error)
                     return;
                 });
             });
         });
+        
+        //AlL this commented down below has been shifted up 
 
-        truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-            console.log(answer);
-        });
+        // truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
+        //     console.log(answer);
+        // });
 
         //update postgreSQL Database
 
-        //1-update allocatedStatus of patient
-        var allocatePatient = "UPDATE public.patient SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
-        pool.query(allocatePatient, ['Allocated', studId, patientId], (err, data) => {
-            if (err === undefined) {
-                req.flash('info', 'Patient Allocated');
-            } else {
-                req.flash('error', 'An error has occurred! Please try again');
-            }
+        // //1-update allocatedStatus of patient
+        // var allocatePatient = "UPDATE public.patient SET allocatedStatus = $1, studId = $2 WHERE pid = $3";
+        // pool.query(allocatePatient, ['Allocated', studId, patientId], (err, data) => {
+        //     console.log("1-update allocatedStatus of patient - Start")
+        //     if (err === undefined) {
+        //         req.flash('info', 'Patient Allocated');
+        //     } else {
+        //         req.flash('error', 'An error has occurred! Please try again');
+        //     }
+        //     console.log("1-update allocatedStatus of patient - END")
+        //     //res.redirect('/allocatePatients');
+        // });
+        // //2-update allocatedStatus of request (successful one)
+        // var successfulRequest_query =
+        //     "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
+        // console.log(requestId);
+        // pool.query(
+        //     successfulRequest_query,
+        //     ['Allocated', requestId],
+        //     (err, data) => {
+        //         console.log("2-update allocatedStatus of request (successful one) - Start")
+        //         if (err === undefined) {
+        //             // req.flash('info', 'Request Updated');
+        //         } else {
+        //             req.flash('error', 'An error has occurred! Please try again');
+        //         }
+        //         console.log("2-update allocatedStatus of request (successful one) - End")
+        //         //res.redirect('/allocatePatients');
+        //     });
+        // //3-update allocatedStatus of request (unsuccessful ones)
+        // var failedRequest_query =
+        //     "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId != $3";
+        // pool.query(
+        //     failedRequest_query,
+        //     ['Not Allocated', patientId, studId],
+        //     (err, data) => {
+        //         console.log("3-update allocatedStatus of request (unsuccessful ones) - Start")
+        //         if (err === undefined) {
+        //             req.flash('info', 'Request Updated');
+        //         } else {
+        //             req.flash('error', 'An error has occurred! Please try again');
+        //         }
+        //         console.log("3-update allocatedStatus of request (unsuccessful ones) - End")
 
-            //res.redirect('/allocatePatients');
-        });
-        //2-update allocatedStatus of request (successful one)
-        var successfulRequest_query =
-            "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
-        pool.query(
-            successfulRequest_query,
-            ['Allocated', requestId],
-            (err, data) => {
-                if (err === undefined) {
-                    // req.flash('info', 'Request Updated');
-                } else {
-                    req.flash('error', 'An error has occurred! Please try again');
-                }
-
-                //res.redirect('/allocatePatients');
-            });
-        //3-update allocatedStatus of request (unsuccessful ones)
-        var failedRequest_query =
-            "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId != $3";
-        pool.query(
-            failedRequest_query,
-            ['Not Allocated', patientId, studId],
-            (err, data) => {
-                if (err === undefined) {
-                    req.flash('info', 'Request Updated');
-                } else {
-                    req.flash('error', 'An error has occurred! Please try again');
-                }
-
-                res.redirect('/allocatePatients');
-            });
+        //         res.redirect('/allocatePatients');
+        //     });
 
 
 

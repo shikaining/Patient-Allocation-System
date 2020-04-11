@@ -31,6 +31,7 @@ module.exports = {
   CALLS PATIENT CONTRACT
   */
   allocatePatient: function (requestId, patientId, sender) {
+    
     return new Promise((res,rej) => {
       var self = this;
       Request.setProvider(self.web3.currentProvider);
@@ -39,9 +40,10 @@ module.exports = {
       Request.deployed().then(function (instance) {
         requestInstance = instance;
 
-        console.log(requestId)
-        console.log(patientId)
-        console.log(sender);
+        console.log("**Allocate Patient Contract **")
+        console.log("Request id : " + requestId)
+        console.log("Patient Id" + patientId)
+        console.log("Sender Address : " + sender)
         requestInstance.processRequest(requestId, patientId, {
           from: sender,
           gas: "5000000"
