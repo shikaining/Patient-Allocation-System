@@ -15,6 +15,7 @@ const pool = new Pool({
 })
 
 var staffAddr;
+var name;
 var patientIds = [];
 var unallocatedPatients = [];
 var indicationsArray = [
@@ -39,6 +40,12 @@ router.get('/', async function (req, res, next) {
     if (username === undefined) {
         res.redirect('/login');
     } else {
+
+        var sql_query = "SELECT * FROM public.student WHERE public.student.email = $1";
+        pool.query(sql_query, [username], (err, data) => {
+          name = data.rows[0].name;
+        });
+
         let me = this;
         //retrieve all listed and unallocated patients from db
         var retreiveAllPatientInfo =
@@ -101,7 +108,7 @@ router.get('/', async function (req, res, next) {
                 }
 
                 setTimeout(function () {
-                    res.render('viewAllUnallocatedPatients', { title: 'View All Unallocated Patients', user: username, data: me.unallocatedPatients });
+                    res.render('viewAllUnallocatedPatients', { title: 'View All Unallocated Patients', user: name, data: me.unallocatedPatients });
 
                 }, 1000);
 

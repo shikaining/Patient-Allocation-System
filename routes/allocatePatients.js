@@ -15,16 +15,23 @@ const pool = new Pool({
 var staff;
 var staffAddr;
 var username;
+var name;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-    this.username = req.session.username;
+    username = req.session.username;
 
-    console.log(this.username);
+    console.log(username);
 
-    if (this.username === undefined) {
+    if (username === undefined) {
         res.redirect('/staffLogin');
     } else {
+
+        var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+        pool.query(sql_query, [username], (err, data) => {
+          name = data.rows[0].name;
+        });
+
 
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
         pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
@@ -41,7 +48,7 @@ router.get('/', async function (req, res, next) {
         await pool.query(retreiveAllRequests_query,
             ['Not Allocated', 'Listed'],
             (err, data) => {
-                res.render('allocatePatients', { title: 'Allocate Patients', user: this.username, data: data.rows });
+                res.render('allocatePatients', { title: 'Allocate Patients', user: name, data: data.rows });
             });
     }
 });
@@ -133,8 +140,8 @@ router.post('/', async function (req, res, next) {
                 });
             });
         });
-        
-        //AlL this commented down below has been shifted up 
+
+        //AlL this commented down below has been shifted up
 
         // truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
         //     console.log(answer);

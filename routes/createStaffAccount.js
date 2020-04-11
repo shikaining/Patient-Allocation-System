@@ -25,6 +25,7 @@ const pool = new Pool({
 var staff;
 var verification;
 var currAddr;
+var name;
 
 router.get('/', async function (req, res, next) {
     var username = req.session.username;
@@ -39,9 +40,10 @@ router.get('/', async function (req, res, next) {
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
 
         await pool.query(sql_query, [username], (err, data) => {
+            name = data.rows[0].name;
             verification = data.rows[0].verification;
             me.currAddr = data.rows[0].address;
-            res.render('createStaffAccount', { title: 'Create Staff Account', user: username, data: data.rows });
+            res.render('createStaffAccount', { title: 'Create Staff Account', user: name, data: data.rows });
         });
     }
 });

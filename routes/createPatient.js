@@ -32,9 +32,10 @@ var indicationsArray = [
   "Pedodontics",
   "Periodontics",
   "Removable Prosthodontics"
-]; 
+];
 
 var staff;
+var name;
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -50,11 +51,12 @@ router.get("/", function(req, res, next) {
 
     pool.query(sql_query, [username], (err, data) => {
       staff = data.rows[0];
-      res.render("createPatient", { title: "Create a Patient", user: username });
+      name = data.rows[0].name;
+      res.render("createPatient", { title: "Create a Patient", user: name });
     });
   }
 
-  
+
 });
 
 // POST
@@ -120,7 +122,7 @@ router.post("/", async function(req, res, next) {
       res.redirect("/createPatient");
     })
 
-    
+
   // } catch (error) {
   //   console.log("ERROR: " + error);
   //   req.flash("error", "Patient Failed to be Created");

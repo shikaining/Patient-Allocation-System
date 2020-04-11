@@ -13,6 +13,7 @@ const pool = new Pool({
 })
 
 var staff;
+var name;
 var addr;
 var patients = [];
 var patientIds = [];
@@ -40,6 +41,13 @@ router.get('/', async function (req, res, next) {
     if (username === undefined) {
         res.redirect('/staffLogin');
     } else {
+
+
+        var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+        pool.query(sql_query, [username], (err, data) => {
+          name = data.rows[0].name;
+        });
+
         let me = this;
         //retrieve all patients from db
         var retreiveAllPatientInfo =
@@ -97,7 +105,7 @@ router.get('/', async function (req, res, next) {
                 }
 
                 setTimeout(function () {
-                    res.render('viewPatients', { title: 'View Patients', user: username, data: me.patients });
+                    res.render('viewPatients', { title: 'View Patients', user: name, data: me.patients });
 
                 }, 1000);
 
@@ -162,7 +170,7 @@ router.post('/', async function (req, res, next) {
                     });
 
                 } else {
-                    //patient has been listed before, so we will keep the old listed Timestamp 
+                    //patient has been listed before, so we will keep the old listed Timestamp
                     //since there might be cases where other students already submitted request.
                     console.log("REEEE-listing")
                     var listOldPatient_query = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
@@ -260,7 +268,7 @@ router.post('/', async function (req, res, next) {
                     var retrieveStudent_query = "select * from public.patient where studid = $1";
                     pool.query(retrieveStudent_query, [owner], (err, data) => {
                         owner = data.rows[0].address;
-    
+
                         var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
                         pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
                             console.log(err);
@@ -280,7 +288,7 @@ router.post('/', async function (req, res, next) {
                                     req.flash('error', 'An error has occurred! Please try again. Error due to - ' + error);
                                     res.redirect('/viewPatients')
                                 })
-                                
+
                             } else {
                                 req.flash('error', 'An error has occurred! Please try again');
                                 console.log(err);
@@ -313,7 +321,7 @@ router.post('/', async function (req, res, next) {
                                 req.flash('error', 'An error has occurred! Please try again. Error due to - ' + error);
                                 res.redirect('/viewPatients')
                             })
-                            
+
                         } else {
                             req.flash('error', 'An error has occurred! Please try again');
                             console.log(err);

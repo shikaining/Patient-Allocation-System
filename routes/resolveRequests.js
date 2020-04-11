@@ -18,6 +18,8 @@ var studentAddr;
 var transferStudentAddr;
 var patientInfo;
 var staffAddr;
+var name;
+var indicationRecords;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -28,6 +30,7 @@ router.get('/', async function (req, res, next) {
     if (username === undefined) {
         res.redirect('/login');
     } else {
+        indicationRecords = "";
 
         //retrieve current student object
         let me = this;
@@ -36,12 +39,13 @@ router.get('/', async function (req, res, next) {
         await pool.query(sql_query, [username], (err, data) => {
             me.student = data.rows[0];
             me.studentAddr = data.rows[0].address;
+            name = data.rows[0].name;
 
             //retrieve all listed patients from db
             var retreiveAllocatedRequest =
                 "SELECT * FROM public.request WHERE public.request.allocatedStatus = $1 AND public.request.studId = $2";
             pool.query(retreiveAllocatedRequest, ['Allocated', this.student.studid], (err, data) => {
-                res.render('resolveRequests', { title: 'Operative Dentistry Course Record', user: username, data: data.rows });
+                res.render('resolveRequests', { title: 'Operative Dentistry Course Record', user: name, indicationRecords: indicationRecords, data: data.rows });
             });
         });
 

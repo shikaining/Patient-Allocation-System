@@ -14,6 +14,7 @@ const pool = new Pool({
 var displayedRequests = [];
 var ownAddr;
 var studId;
+var name;
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -31,6 +32,7 @@ router.get("/", function (req, res, next) {
       "'";
     pool.query(sql_query, (err, user) => {
       // console.log(user);
+      name = user.rows[0].name;
       me.studId = user.rows[0].studid;
       me.ownAddr = user.rows[0].address;
 
@@ -79,7 +81,7 @@ router.get("/", function (req, res, next) {
         setTimeout(function () {
           res.render("viewRequests", {
             title: "View Requests",
-            user: username,
+            user: name,
             data: me.displayedRequests,
           });
         }, 1000);

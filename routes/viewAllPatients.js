@@ -16,6 +16,7 @@ const pool = new Pool({
 var staffAddr;
 var listedPatients = [];
 var patientIds = [];
+var name;
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -27,6 +28,13 @@ router.get('/', async function (req, res, next) {
     if (username === undefined) {
         res.redirect('/login');
     } else {
+
+        var sql_query = "SELECT * FROM public.student WHERE public.student.email = $1";
+        pool.query(sql_query, [username], (err, data) => {
+          name = data.rows[0].name;
+        });
+
+
         let me = this;
         //retrieve all listed patients from db
         var retreiveAllPatientInfo =
@@ -76,7 +84,7 @@ router.get('/', async function (req, res, next) {
                 }
 
                 setTimeout(function () {
-                    res.render('viewAllPatients', { title: 'View All Patients', user: username, data: me.listedPatients });
+                    res.render('viewAllPatients', { title: 'View All Patients', user: name, data: me.listedPatients });
 
                 }, 1000);
 
