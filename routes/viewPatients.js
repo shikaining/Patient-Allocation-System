@@ -33,6 +33,7 @@ var indicationsArray = [
 router.get('/', async function (req, res, next) {
     this.patients = [];
     this.patientIds = [];
+    this.patientListTimes = [];
     var username = req.session.username;
     console.log(username);
 
@@ -50,6 +51,9 @@ router.get('/', async function (req, res, next) {
                 me.patientIds.push({
                     patientId: data.rows[i].pid
                 });
+                me.patientListTimes.push({
+                    patientListTime: data.rows[i].listedtimestamp
+                });
             }
 
             //retrieve current staff address
@@ -62,6 +66,7 @@ router.get('/', async function (req, res, next) {
                 var i;
                 for (i = 0; i < me.patientIds.length; i++) {
                     let id = this.patientIds[i].patientId;
+                    let patientListTime = this.patientListTimes[i].patientListTime
                     let indications = data.rows[i].indications;
                     let listingStatus = data.rows[i].liststatus;
                     let allocationStatus = data.rows[i].allocatedstatus;
@@ -82,6 +87,7 @@ router.get('/', async function (req, res, next) {
                                 indications: indications,
                                 listingStatus: listingStatus,
                                 allocationStatus: allocationStatus,
+                                listedtimestamp: patientListTime,
                                 studid: requiredId
                             });
                         });

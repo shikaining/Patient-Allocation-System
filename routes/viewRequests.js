@@ -35,7 +35,7 @@ router.get("/", function (req, res, next) {
       me.ownAddr = user.rows[0].address;
 
       var retreiveAllRequestInfo =
-        "SELECT r.rid, r.pid, p.liststatus, p.indications, p.allocatedstatus as patient_status, r.allocatedstatus as student_status FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.studId = $1 ORDER BY r.allocatedstatus";
+        "SELECT r.rid, r.pid, p.liststatus, p.indications, p.allocatedstatus as patient_status, r.allocatedstatus as student_status FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.studId = $1 ORDER BY r.allocatedstatus ASC, r.rid DESC";
       pool.query(retreiveAllRequestInfo, [me.studId], (err, data) => {
         // console.log("rowCount" + data.rowCount);
         var i;

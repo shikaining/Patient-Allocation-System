@@ -71,7 +71,7 @@ router.post('/', async function (req, res, next) {
             me.staffAddr = data.rows[0].address;
             var requesId_query =
                 "SELECT * FROM public.request WHERE public.request.pid = $1"
-                + " AND public.request.studid = $2";
+                + " AND public.request.studid = $2 AND request.allocatedstatus = 'Pending'";
             pool.query(requesId_query, [patientId, studId], (err, data) => {
                 requestId = data.rows[0].rid;
                 truffle_connect.allocatePatient(
@@ -105,10 +105,10 @@ router.post('/', async function (req, res, next) {
         });
         //2-update allocatedStatus of request (successful one)
         var successfulRequest_query =
-            "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
+            "UPDATE public.request SET allocatedStatus = $1 WHERE rid = $2";
         pool.query(
             successfulRequest_query,
-            ['Allocated', patientId, studId],
+            ['Allocated', requestId],
             (err, data) => {
                 if (err === undefined) {
                     // req.flash('info', 'Request Updated');

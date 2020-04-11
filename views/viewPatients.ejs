@@ -52,7 +52,7 @@
             }
 
             var button;
-            if (listStatus === 'listed') {
+            if (listStatus === 'Listed') {
                 button = 'Unlist Patient';
             } else {
                 button = 'List Patient';
@@ -123,7 +123,7 @@
                     <td><%= data[i].allocationStatus%></td>
                     <td><%= data[i].studid%></td>
                     <% if (data[i].listingStatus == 'Listed' && data[i].allocationStatus != 'Allocated') {%>
-                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">Unlist
+                    <td><button type="button" class="btn btn-warning" onclick="listUnlistPatient(this)">Unlist
                         </button>
                     </td>
                     <% } else if (data[i].listingStatus == 'Not Listed' && data[i].allocationStatus != 'Allocated'){ %>
@@ -132,8 +132,8 @@
                     </td>
                     <% } %>
 
-                    <% if (data[i].allocationStatus != 'Allocated') {%>
-                    <td><button type="button" class="btn btn-primary" onclick="editPatient(this)">Edit</button></td>
+                    <% if (data[i].allocationStatus != 'Allocated' && data[i].listedtimestamp == null) {%>
+                    <td><button type="button" class="btn btn-info" onclick="editPatient(this)">Edit</button></td>
                     <% } else { %>
 
                     <% } %>
