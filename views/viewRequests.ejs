@@ -75,7 +75,7 @@
                     <% } else { %>
                         <td><%= data[i].allocatedstatus%></td>
                     <% } %>
-                    <% if (data[i].isWithdrawn == false) {%>
+                    <% if (data[i].isWithdrawn == false && data[i].patientstatus == 'Not Allocated') {%>
                     <td><button type="button" class="btn btn-primary" onclick="withdraw(this)">Withdraw Request</button></td>
                     <% } else { %>
                     <% } %>

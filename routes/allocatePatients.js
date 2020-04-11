@@ -26,6 +26,15 @@ router.get('/', async function (req, res, next) {
         res.redirect('/staffLogin');
     } else {
 
+        var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
+        pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
+            var staffAddr = data.rows[0].address;
+            truffle_connect.getPatient(1, staffAddr, (answer) => {
+                console.log(answer);
+            });
+        });
+
+
         //retrieve all patients to be allocated
         var retreiveAllRequests_query =
             "SELECT * FROM public.patient WHERE public.patient.allocatedStatus = $1 AND public.patient.listStatus = $2";
@@ -57,23 +66,30 @@ router.post('/', async function (req, res, next) {
         //Update into Ethereum
         //retrieve current staff object
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
-        await pool.query(sql_query, [me.username], (err, data) => {
+        pool.query(sql_query, [me.username], (err, data) => {
             me.staff = data.rows[0];
             me.staffAddr = data.rows[0].address;
-            console.log("querying staff address...");
             var requesId_query =
                 "SELECT * FROM public.request WHERE public.request.pid = $1"
                 + " AND public.request.studid = $2";
             pool.query(requesId_query, [patientId, studId], (err, data) => {
                 requestId = data.rows[0].rid;
-                console.log("querying request id...");
                 truffle_connect.allocatePatient(
                     requestId,
                     patientId,
                     me.staffAddr
-                );
+                ).catch(error => {
+                    console.log("Caught error within AllocatePatient.js")
+                    req.flash('error', 'Failed to Allocate Patient due to - ' + error)
+                    return;
+                });
             });
         });
+
+        truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
+            console.log(answer);
+        });
+
         //update postgreSQL Database
 
         //1-update allocatedStatus of patient
@@ -124,11 +140,6 @@ router.post('/', async function (req, res, next) {
         console.log("ERROR at allocatePatient: " + error);
         return;
     }
-    // truffle_connect.getPatient(patientId, this.staffAddr, (answer) => {
-    //     console.log("getting patient info ...")
-    //     console.log(answer);
-
-    // });
 
 });
 

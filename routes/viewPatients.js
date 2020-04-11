@@ -105,14 +105,11 @@ router.post('/', async function (req, res, next) {
     // Retrieve Information
     var username = req.session.username;
     var patientId = req.body.patientId;
-
     var listStatus = req.body.listStatus;
     var allocatedStatus = req.body.allocationStatus;
     var patientName = req.body.patientName;
     var patientContact = req.body.patientContact;
-
     var patientIdToEdit = req.body.patientIdToEdit;
-
 
     console.log("Patient ID" + patientId);
     console.log("List Status " + listStatus);
@@ -128,14 +125,14 @@ router.post('/', async function (req, res, next) {
             var listedTimestamp = new Date();
             console.log("TimeStamp : " + listedTimestamp);
             var retrievePatient_query = "select * from public.patient where pid = $1";
-            pool.query(retrievePatient_query, [patientId], (err,data) => {
-                if(err){
+            pool.query(retrievePatient_query, [patientId], (err, data) => {
+                if (err) {
                     console.log(err)
                     req.flash('info', 'Patient Fail to be Listed');
                     res.redirect('/viewPatients');
                 }
                 console.log("Timestamp: " + data.rows[0].listedtimestamp)
-                if(data.rows[0].listedtimestamp == null){
+                if (data.rows[0].listedtimestamp == null) {
                     //Patient has never been listed before, so have to update Timestamp
                     var listPatient_query = "UPDATE public.patient SET liststatus = $1, listedTimestamp = $2 WHERE pid = $3";
                     pool.query(listPatient_query, ['Listed', listedTimestamp, patientId], async (err, data) => {
@@ -156,14 +153,14 @@ router.post('/', async function (req, res, next) {
                             res.redirect('/viewPatients');
                         }
                     });
-                    
+
                 } else {
                     //patient has been listed before, so we will keep the old listed Timestamp 
                     //since there might be cases where other students already submitted request.
                     console.log("REEEE-listing")
                     var listOldPatient_query = "UPDATE public.patient SET liststatus = $1 WHERE pid = $2";
-                    pool.query(listOldPatient_query, ['Listed', patientId], (err,data) => {
-                        if(err){
+                    pool.query(listOldPatient_query, ['Listed', patientId], (err, data) => {
+                        if (err) {
                             console.log(err)
                             req.flash('info', 'Patient Fail to be Listed');
                             res.redirect('/viewPatients');
@@ -171,15 +168,15 @@ router.post('/', async function (req, res, next) {
                             req.flash('info', 'Patient Listed');
                             res.redirect('/viewPatients');
                         }
-                        
+
                     })
                 }
             })
-            
+
         }).catch(error => {
             //Error when listing patient on Contract side.
-            console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: " + error);
-            req.flash('info', 'Patient Fail to be Listed');
+            console.log("ERROR at ListPatient in ViewPatients FOR *Contract*: ");
+            req.flash('error', 'Patient Fail to be Listed due to - ' + error);
             res.redirect('/viewPatients');
             return;
         });
@@ -212,8 +209,8 @@ router.post('/', async function (req, res, next) {
             })
         }).catch(error => {
             //Error when Unlisting patient on Contract side.
-            console.log("ERROR at UnlistPatient in ViewPatients FOR *Contract*: " + error);
-            req.flash('info', 'Patient Fail to be Unlisted');
+            console.log("ERROR at UnlistPatient in ViewPatients FOR *Contract*: ");
+            req.flash('error', 'Patient Fail to be Unlisted due to - ' + error);
             res.redirect('/viewPatients');
             return;
         });
@@ -222,35 +219,99 @@ router.post('/', async function (req, res, next) {
         let solidityIndication = [];
         let dbIndication = "{";
         for (i = 0; i <= rawIndications.length - 1; i++) {
-          if (i > 0) {
-            dbIndication += ",";
-          }
-          dbIndication += '"' + indicationsArray[parseInt(rawIndications[i])] + '"';
-          solidityIndication.push(parseInt(rawIndications[i]));
+            if (i > 0) {
+                dbIndication += ",";
+            }
+            dbIndication += '"' + indicationsArray[parseInt(rawIndications[i])] + '"';
+            solidityIndication.push(parseInt(rawIndications[i]));
         }
         dbIndication += "}";
 
         //update patient db
         console.log(dbIndication);
         console.log(patientName);
-        var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
-        pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
-            console.log(err);
-            if (err === undefined) {
-                req.flash('info', 'Patient details updated');
-                res.redirect('/viewPatients');
-            } else {
-                req.flash('error', 'An error has occurred! Please try again');
-                res.redirect('/viewPatients');
+
+        try {
+            var owner;
+            var resolution;
+
+            var retrievePatient_query = "select * from public.patient where pid = $1";
+            await pool.query(retrievePatient_query, [patientIdToEdit], (err, data) => {
+                owner = data.rows[0].studid;
+                console.log(owner);
+
+                resolution = data.rows[0].curedstatus;
+                console.log(resolution);
+                if (resolution === 'Not Cured') {
+                    resolution = false;
+                }
+                else {
+                    resolution = true;
+                }
+            });
+
+            if (owner !== undefined) {
+                var retrieveStudent_query = "select * from public.patient where studid = $1";
+                await pool.query(retrieveStudent_query, [owner], (err, data) => {
+                    owner = data.rows[0].address;
+
+                    var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
+                    pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
+                        console.log(err);
+                        if (err === undefined) {
+                            truffle_connect.updatePatient(
+                                patientIdToEdit,
+                                patientName,
+                                patientContact,
+                                solidityIndication,
+                                owner,
+                                resolution,
+                                staff.address
+                            )
+                            req.flash('info', 'Patient details updated');
+                            res.redirect('/viewPatients');
+                        } else {
+                            req.flash('error', 'An error has occurred! Please try again');
+                            res.redirect('/viewPatients');
+                        }
+                        //res.redirect('/allocatePatients');
+                    });
+                });
             }
-            //res.redirect('/allocatePatients');
-        });
+            else {
+                truffle_connect.getPatient(patientIdToEdit, staff.address, (answer) => {
+                    owner = answer[3];
+                });
+                var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
+                pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
+                    console.log(err);
+                    if (err === undefined) {
+                        truffle_connect.updatePatient(
+                            patientIdToEdit,
+                            patientName,
+                            patientContact,
+                            solidityIndication,
+                            owner,
+                            resolution,
+                            staff.address
+                        )
+                        req.flash('info', 'Patient details updated');
+                        res.redirect('/viewPatients');
+                    } else {
+                        req.flash('error', 'An error has occurred! Please try again');
+                        res.redirect('/viewPatients');
+                    }
+                    //res.redirect('/allocatePatients');
+                });
+            }
+        } catch (error) {
+            console.log("ERROR at updatePatient: " + error);
+            return;
+        }
     } else {
         req.flash('error', 'An error has occurred! Please try again');
         res.redirect('/viewPatients');
     }
-    //tested getTotalPatients & getPatientInfo
-
 });
 
 module.exports = router;

@@ -44,7 +44,7 @@ router.get("/", function(req, res, next) {
   // console.log(username);
 
   if (username === undefined) {
-    res.redirect("/login");
+    res.redirect("/staffLogin");
   } else {
     var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
 
@@ -116,8 +116,7 @@ router.post("/", async function(req, res, next) {
       res.redirect("/createPatient");
     }).catch(err => {
       console.log("Caught Error in Create Patient")
-      console.log("Error Caught : " + err)
-      req.flash("error", "Patient Failed to be Created");
+      req.flash("error", "Patient Failed to be Created due to - " + err);
       res.redirect("/createPatient");
     })
 

@@ -31,17 +31,32 @@ module.exports = {
   CALLS PATIENT CONTRACT
   */
   allocatePatient: function (requestId, patientId, sender) {
-    var self = this;
-    Request.setProvider(self.web3.currentProvider);
-    var requestInstance;
-    //deploy Patient
-    Request.deployed().then(function (instance) {
-      requestInstance = instance;
-      return requestInstance.processRequest(requestId, patientId, {
-        from: sender,
-        gas: "5000000"
+    return new Promise((res,rej) => {
+      var self = this;
+      Request.setProvider(self.web3.currentProvider);
+      var requestInstance;
+      //deploy Patient
+      Request.deployed().then(function (instance) {
+        requestInstance = instance;
+
+        console.log(requestId)
+        console.log(patientId)
+        console.log(sender);
+        requestInstance.processRequest(requestId, patientId, {
+          from: sender,
+          gas: "5000000"
+        }).then(result => {
+          res(result);
+          return;
+        }).catch(error => {
+          console.log('Contract Error!!')
+          console.log(error)
+          rej("Error in Contract");
+          return;
+        });
       });
-    });
+    })
+    
   },
   getTotalPatients: function (callback) {
     var self = this;
@@ -84,39 +99,41 @@ module.exports = {
       Patient.setProvider(self.web3.currentProvider);
       var patientInstance;
       Patient.deployed().then(function (instance) {
-        try {
           patientInstance = instance;
           console.log("ListPatient End");
-          res(patientInstance.listPatient(patientId, { from: sender }))
-          return;
-        } catch (error) {
-          rej(error);
-          return;
-        }
-
+          patientInstance.listPatient(patientId, { from: sender }).then(result => {
+            res(result);
+            return;
+          }).catch(error => {
+            console.log("Contract Error!");
+            console.log(error);
+            rej("Error in Contract");
+            return;
+          });
+        })
       });
-    })
-
-  },
-  unlistPatient: async function (patientId, sender) {
+    },
+  unlistPatient: function (patientId, sender) {
     return new Promise((res, rej) => {
       console.log("UnlistPatient Start");
       var self = this;
       Patient.setProvider(self.web3.currentProvider);
       var patientInstance;
       Patient.deployed().then(function (instance) {
-        try {
           patientInstance = instance;
-          res(patientInstance.unlistPatient(patientId, { from: sender }));
-          return
-        } catch (error) {
-          rej(error);
-          return;
-        }
+          patientInstance.unlistPatient(patientId, { from: sender }).then(result => {
+            res(result);
+            return;
+          }).catch(error => {
+            console.log("Contract Error!");
+            console.log(error);
+            rej("Error in Contract");
+            return;
+          });
+          console.log("UnlistPatient End");
+        });
       });
-      console.log("UnlistPatient End");
-    });
-  },
+    },
 
   studentTransfer: function (patientId, studentAddr, sender) {
     var self = this;
@@ -125,6 +142,18 @@ module.exports = {
     Patient.deployed().then(function (instance) {
       patientInstance = instance;
       return patientInstance.studentTransfer(patientId, studentAddr, {
+        from: sender,
+        gas: "5000000"
+      });
+    });
+  },
+  resolvePatient: function (patientId, sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.resolvePatient(patientId, {
         from: sender
       });
     });
@@ -165,6 +194,8 @@ module.exports = {
       var patientInstance;
       Patient.deployed().then(function (instance) {
           patientInstance = instance;
+
+          console.log(sender);
           patientInstance.createPatient
             .call(patientName, patientContact, solidityIndication, {
               from: sender,
@@ -191,7 +222,7 @@ module.exports = {
                   if (err) {
                     console.log("Error in query");
                     console.log(err);
-                    rej(err);
+                    rej('Error within Database Query.');
                     return;
                   } else {
                     patientInstance
@@ -209,9 +240,10 @@ module.exports = {
                 }
               );
             })
-            .catch(testErr => {
+            .catch(error => {
               console.log("Contract Error!")
-              rej(testErr);
+              console.log(error);
+              rej('Error with Contract.');
               return;
             });
       });
@@ -233,9 +265,9 @@ module.exports = {
             var createRequest_query = "INSERT INTO public.request(rId, studId, pId, allocatedStatus, indications, score, requestTimestamp) values($1,$2,$3,$4,$5,$6,$7)"
             pool.query(createRequest_query, [rId, stuId, patientId, allocatedStatus, dbIndication, studentScore, requestTimeStamp], (err, data) => {
               if (err) {
-                req.flash("Error", "Failed to create request");
                 console.log("Error in Insert Request Query");
-                rej(err);
+                console.log(err)
+                rej("Error within Database Insert Query");
                 return;
               } else {
                 requestInstance.createRequest(studentScore, solidityIndications, { from: sender, gas: "5000000" })
@@ -246,7 +278,9 @@ module.exports = {
               }
             })
           }).catch(error => {
-            rej(error);
+            console.log("Contract Error!")
+            console.log(error);
+            rej("Error in Contract");
             return;
           })
       })
@@ -289,5 +323,96 @@ module.exports = {
         console.log(e);
         callback("ERROR 404");
       });
+  },
+  withdrawRequest: function (requestId, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.withdrawRequest(patientId, {
+        from: sender
+      });
+    });
+  },
+  updatePatient: function (
+    patientId,
+    patientName,
+    patientContact,
+    solidityIndications,
+    owner,
+    resolution,
+    sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.updatePatient(
+        patientId,
+        patientName,
+        patientContact,
+        solidityIndications,
+        owner,
+        resolution, {
+        from: sender
+      });
+    });
+  },
+  createPowerUserInPatient: function (powerUserAddr, sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.createPowerUser(powerUserAddr, {
+        from: sender
+      });
+    });
+  },
+  createPowerUserInReq: function (powerUserAddr, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.createPowerUser(powerUserAddr, {
+        from: sender
+      });
+    });
+  },
+  createAdminUserInPatient: function (adminUserAddr, sender) {
+    var self = this;
+    Patient.setProvider(self.web3.currentProvider);
+    var patientInstance;
+    Patient.deployed().then(function (instance) {
+      patientInstance = instance;
+      return patientInstance.createAdminUser(adminUserAddr, {
+        from: sender
+      });
+    });
+  },
+  createAdminUserInReq: function (adminUserAddr, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.createAdminUser(adminUserAddr, {
+        from: sender
+      });
+    });
+  },
+  getPowerUser: function (powerUserAddr, sender) {
+    var self = this;
+    Request.setProvider(self.web3.currentProvider);
+    var requestInstance;
+    Request.deployed().then(function (instance) {
+      requestInstance = instance;
+      return requestInstance.getPowerUser(powerUserAddr, {
+        from: sender
+      });
+    });
   }
+
 };

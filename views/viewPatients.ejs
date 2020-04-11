@@ -56,7 +56,7 @@
                 button = 'Unlist Patient';
             } else {
                 button = 'List Patient';
-
+                
             }
             document.getElementById("listOrUnlist").innerHTML = button;
 
@@ -122,12 +122,21 @@
                     <td><%= data[i].listingStatus%></td>
                     <td><%= data[i].allocationStatus%></td>
                     <td><%= data[i].studid%></td>
-                    <% if (data[i].listingStatus == 'Listed') {%>
-                        <td><button type="button" class="btn btn-danger" style="width: 65px;" onclick="listUnlistPatient(this)">Unlist</button></td>
-                    <%} else { %>
-                        <td><button type="button" class="btn btn-primary" style="width: 65px;" onclick="listUnlistPatient(this)">List</button></td>
+                    <% if (data[i].listingStatus == 'Listed' && data[i].allocationStatus != 'Allocated') {%>
+                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">Unlist
+                        </button>
+                    </td>
+                    <% } else if (data[i].listingStatus == 'Not Listed' && data[i].allocationStatus != 'Allocated'){ %>
+                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List
+                        </button>
+                    </td>
                     <% } %>
-                    <td><button type="button" class="btn btn-info" onclick="editPatient(this)">Edit</button></td>
+
+                    <% if (data[i].allocationStatus != 'Allocated') {%>
+                    <td><button type="button" class="btn btn-primary" onclick="editPatient(this)">Edit</button></td>
+                    <% } else { %>
+
+                    <% } %>
                 </tr>
                 <% } %>
             </tbody>
@@ -160,15 +169,15 @@
             <h3 class="mt-4 mb-3">Edit Patient</h3>
             <div class="form-group">
                 <label for="patientIdToEdit">Patient ID:</label>
-                <input type="text" class="form-control" id="patientIdToEdit" name="patientIdToEdit"
-                    required="required" readonly="true">
+                <input type="text" class="form-control" id="patientIdToEdit" name="patientIdToEdit" required="required"
+                    readonly="true">
             </div>
 
             <div class="form-group">
 
                 <label for="patientName">Please enter Patient Name:</label>
-                <input type="text" class="form-control" id="patientName" name="patientName" placeholder="Enter Patient Name"
-                    required="required">
+                <input type="text" class="form-control" id="patientName" name="patientName"
+                    placeholder="Enter Patient Name" required="required">
             </div>
             <div class="form-group">
                 <label for="patientContact">Please enter Patient Contact Number:</label>
@@ -184,7 +193,8 @@
                     <label class="form-check-label" for="cDExamCase">CD Exam Case</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" name="indications" type="checkbox" id="dentalPublicHealth" value="1">
+                    <input class="form-check-input" name="indications" type="checkbox" id="dentalPublicHealth"
+                        value="1">
                     <label class="form-check-label" for="dentalPublicHealth">Dental Public Health</label>
                 </div>
                 <div class="form-check form-check-inline">
@@ -192,11 +202,13 @@
                     <label class="form-check-label" for="endodontics">Endodontics</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" name="indications" type="checkbox" id="fixedProsthodontics" value="3">
+                    <input class="form-check-input" name="indications" type="checkbox" id="fixedProsthodontics"
+                        value="3">
                     <label class="form-check-label" for="fixedProsthodontics">Fixed Prosthodontics</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" name="indications" type="checkbox" id="operativeDentistry" value="4">
+                    <input class="form-check-input" name="indications" type="checkbox" id="operativeDentistry"
+                        value="4">
                     <label class="form-check-label" for="operativeDentistry">Operative Dentistry</label>
                 </div>
                 <br />
@@ -217,7 +229,8 @@
                     <label class="form-check-label" for="periodontics">Periodontics</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" name="indications" type="checkbox" id="removableProsthodontics" value="9">
+                    <input class="form-check-input" name="indications" type="checkbox" id="removableProsthodontics"
+                        value="9">
                     <label class="form-check-label" for="removableProsthodontics">Removable Prosthodontics</label>
                 </div>
             </div>
