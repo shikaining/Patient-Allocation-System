@@ -31,7 +31,7 @@ router.get('/', async function (req, res, next) {
         //retrieve all listed patients from db
         var retreiveAllPatientInfo =
             "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 OR public.patient.curedStatus = $2";
-        await pool.query(retreiveAllPatientInfo, ['Listed', 'Cured'], (err, data) => {
+        pool.query(retreiveAllPatientInfo, ['Listed', 'Cured'], (err, data) => {
 
             //push listed patientIds into patientIds array
             for (var i = 0; i < data.rowCount; i++) {

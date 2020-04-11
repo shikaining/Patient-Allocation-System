@@ -365,21 +365,41 @@ module.exports = {
     owner,
     resolution,
     sender) {
-    var self = this;
-    Patient.setProvider(self.web3.currentProvider);
-    var patientInstance;
-    Patient.deployed().then(function (instance) {
-      patientInstance = instance;
-      return patientInstance.updatePatient(
-        patientId,
-        patientName,
-        patientContact,
-        solidityIndications,
-        owner,
-        resolution, {
-        from: sender
-      });
-    });
+      return new Promise((res, rej)=> {
+        var self = this;
+        Patient.setProvider(self.web3.currentProvider);
+        var patientInstance;
+        console.log("patientId : " + patientId)
+        console.log("patientName : " + patientName)
+        console.log("patientContact : " + patientContact)
+        console.log("solidityIndications : " + solidityIndications)
+        console.log("owner : " + owner)
+        console.log("resolution : " + resolution)
+        console.log("sender : " + sender)
+        
+        Patient.deployed().then(function (instance) {
+          patientInstance = instance;
+          patientInstance.updatePatient(
+            patientId,
+            patientName,
+            patientContact,
+            solidityIndications,
+            owner,
+            resolution, {
+            from: sender,
+            gas: "5000000"
+          }).then(pass => {
+            res(pass);
+            return
+          }).catch(error => {
+            console.log('Contract Error within Update Patient');
+            console.log(error);
+            rej('Contract Error!!');
+            return;
+          });
+        });
+      })
+    
   },
   createPowerUserInPatient: function (powerUserAddr, sender) {
     var self = this;
