@@ -52,7 +52,7 @@ router.post('/', function (req, res, next) {
     var name = req.body.staffName;
     var nric = req.body.staffNRIC;
     var contactNo = req.body.staffContact;
-    var address = req.body.staffAddress;
+    var address = req.body.staffAddress.toLowerCase();
     var email = req.body.staffEmail;
     var password = req.body.password;
     var accountType = req.body.accountType;

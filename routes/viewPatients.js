@@ -71,6 +71,7 @@ router.get('/', async function (req, res, next) {
                     let listingStatus = data.rows[i].liststatus;
                     let allocationStatus = data.rows[i].allocatedstatus;
                     truffle_connect.getPatient(id, this.addr, (answer) => {
+                        console.log(answer[3])
 
                         //add studentId attr
                         let requiredId = 'None';

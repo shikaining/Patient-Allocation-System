@@ -48,7 +48,7 @@ router.post('/', function (req, res, next) {
     var nric = req.body.studentNRIC;
     var contactNo = req.body.studentContact;
     var enrolYear = req.body.studentYear;
-    var address = req.body.studentAddress;
+    var address = req.body.studentAddress.toLowerCase();
     var email = req.body.studentEmail;
     var password = req.body.password;
     console.log(email);
