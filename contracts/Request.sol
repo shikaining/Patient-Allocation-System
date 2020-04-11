@@ -140,7 +140,6 @@ contract Request {
 	function createPowerUser(address user) 
 	public onlyOwner {
 		powerUsers[user] = true;
-		setApprovalForAll(user, true);
 		
 		emit CreatePowerUser(user);
 	}
@@ -156,7 +155,6 @@ contract Request {
 	function createAdminUser(address user) 
 	public onlyOwner {
 		adminUsers[user] = true;
-		setApprovalForAll(user, true);
 		
 		emit CreateAdminUser(user);
 	}
