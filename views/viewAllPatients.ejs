@@ -34,6 +34,26 @@
     <!-- Page Content -->
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
+        <h5>Current Indications Record:</h5>
+        <table class="table table-sm" width="50%">
+            <thead>
+                <tr>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <% for(var i=0; i<5; i++) { %>
+                    <td><%= indicationsArray[i]%>:  <%= studentRecords[i]%>/<%= indicationRecords[i]%></td>
+                <% } %>
+                </tr>
+                <tr>
+                <% for(var i=5; i<10; i++) { %>
+                    <td><%= indicationsArray[i]%>:  <%= studentRecords[i]%>/<%= indicationRecords[i]%></td>
+                <% } %>
+                </tr>
+            </tbody>
+        </table>
+
         <h3 class="mt-4 mb-3"><%= title %></h3>
         <%- messages('my_message_template', locals) %>
         <table class="table">

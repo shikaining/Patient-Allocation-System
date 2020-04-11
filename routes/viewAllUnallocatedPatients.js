@@ -44,6 +44,13 @@ router.get('/', async function (req, res, next) {
         var sql_query = "SELECT * FROM public.student WHERE public.student.email = $1";
         pool.query(sql_query, [username], (err, data) => {
           name = data.rows[0].name;
+          studentIndication = data.rows[0].indicationcount;
+        });
+
+        var indicationQuota_query = "select * from public.indicationquota";
+
+        pool.query(indicationQuota_query, (err, data) => {
+            indicationRecords = data.rows[0].indicationarray;
         });
 
         let me = this;
@@ -108,7 +115,8 @@ router.get('/', async function (req, res, next) {
                 }
 
                 setTimeout(function () {
-                    res.render('viewAllUnallocatedPatients', { title: 'View All Unallocated Patients', user: name, data: me.unallocatedPatients });
+                    res.render('viewAllUnallocatedPatients', { title: 'View All Unallocated Patients', user: name, indicationsArray: indicationsArray,
+                    indicationRecords: indicationRecords, studentRecords : studentIndication, data: me.unallocatedPatients });
 
                 }, 1000);
 

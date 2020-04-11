@@ -18,6 +18,19 @@ var listedPatients = [];
 var patientIds = [];
 var name;
 
+var indicationsArray = [
+    "CD Exam Case",
+    "Dental Public Health",
+    "Endodontics",
+    "Fixed Prosthodontics",
+    "Operative Dentistry",
+    "Oral Surgery",
+    "Orthodontics",
+    "Pedodontics",
+    "Periodontics",
+    "Removable Prosthodontics"
+];
+
 /* GET home page. */
 router.get('/', async function (req, res, next) {
     this.patientIds = [];
@@ -31,14 +44,22 @@ router.get('/', async function (req, res, next) {
 
         var sql_query = "SELECT * FROM public.student WHERE public.student.email = $1";
         pool.query(sql_query, [username], (err, data) => {
-          name = data.rows[0].name;
+            name = data.rows[0].name;
+            studentIndication = data.rows[0].indicationcount;
+        });
+
+
+        var indicationQuota_query = "select * from public.indicationquota";
+
+        pool.query(indicationQuota_query, (err, data) => {
+            indicationRecords = data.rows[0].indicationarray;
         });
 
 
         let me = this;
         //retrieve all listed patients from db
         var retreiveAllPatientInfo =
-            "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 OR public.patient.curedStatus = $2";
+        "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 OR public.patient.curedStatus = $2";
         pool.query(retreiveAllPatientInfo, ['Listed', 'Cured'], (err, data) => {
 
             //push listed patientIds into patientIds array
@@ -84,7 +105,8 @@ router.get('/', async function (req, res, next) {
                 }
 
                 setTimeout(function () {
-                    res.render('viewAllPatients', { title: 'View All Patients', user: name, data: me.listedPatients });
+                    res.render('viewAllPatients', { title: 'View All Patients', user: name, indicationsArray: indicationsArray,
+                    indicationRecords: indicationRecords,studentRecords : studentIndication,data: me.listedPatients });
 
                 }, 1000);
 
