@@ -81,7 +81,7 @@ contract("Patient [Workflow Test]", accounts => {
 			console.log("------------------------");
 			
 			// Check for CreatePowerUser event
-			assert.equal(evt.logs[0].event, 'CreatePowerUser', "Power User 3 not created successfully");
+			assert.equal(evt.logs[1].event, 'CreatePowerUser', "Power User 3 not created successfully");
 			powerUser3 = accounts[7];
 		})
 	);
@@ -98,7 +98,7 @@ contract("Patient [Workflow Test]", accounts => {
 		patient.createAdminUser(accounts[8], {from: owner})
 		.then((evt) => {
 			// Check for CreatePowerUser event
-			assert.equal(evt.logs[0].event, 'CreateAdminUser', "Admin User 3 not created successfully");
+			assert.equal(evt.logs[1].event, 'CreateAdminUser', "Admin User 3 not created successfully");
 			adminUser3 = accounts[8];
 		})
 	);
