@@ -112,7 +112,7 @@ contract("Patient [Workflow Test]", accounts => {
 	);
 	
 	it("Patient 1 is created", () =>
-		patient.createPatient.call('Kai Ning', '999', [1, 2], {from: powerUser1})
+		patient.createPatient.call([1, 2], {from: powerUser1})
 		.then((patientID) => {
 			console.log("Patient Creation");
 			console.log("----------------");
@@ -122,7 +122,7 @@ contract("Patient [Workflow Test]", accounts => {
 			patient1 = patientID.toNumber();
 		}).then(() => {
 			// Create Patient 1
-			patient.createPatient('Kai Ning', '999', [1, 2], {from: powerUser1});
+			patient.createPatient([1, 2], {from: powerUser1});
 		})
 	);
 	
@@ -130,16 +130,13 @@ contract("Patient [Workflow Test]", accounts => {
 		patient.getPatient.call(patient1, {from: adminUser1})
 		.then((rsl) => {
 			// Check for all Patient 1 credentials
-			assert.equal(rsl[0], 'Kai Ning', "Patient 1's name incorrect");
-			assert.equal(rsl[1], '999', "Patient 1's contact number incorrect");
-			
 			let indications = [1, 2];
-			for (let i = 0; i < rsl[2].length; i++) {
-				assert.equal(rsl[2][i], indications[i], "Patient 1's indications incorrect");
+			for (let i = 0; i < rsl[0].length; i++) {
+				assert.equal(rsl[0][i], indications[i], "Patient 1's indications incorrect");
 			}
 			
-			assert.equal(rsl[3], 0, "Patient 1's dentist incorrect");
-			assert.equal(rsl[4], false, "Patient 1's resolution incorrect");
+			assert.equal(rsl[1], 0, "Patient 1's dentist incorrect");
+			assert.equal(rsl[2], false, "Patient 1's resolution incorrect");
 		})
 	);
 	
@@ -184,7 +181,7 @@ contract("Patient [Workflow Test]", accounts => {
 			return patient.getPatient.call(patient1, {from: powerUser1});
 		}).then((rsl) => {
 			// Check for Patient 1 owner using local function
-			assert.equal(rsl[3], student1, "Patient 1's allocated dentist incorrect");
+			assert.equal(rsl[1], student1, "Patient 1's allocated dentist incorrect");
 		})
 	);
 	
@@ -208,7 +205,7 @@ contract("Patient [Workflow Test]", accounts => {
 			return patient.getPatient.call(patient1, {from: powerUser2});
 		}).then((rsl) => {
 			// Check for Patient 1 owner using local function
-			assert.equal(rsl[3], student2, "Patient 1's dentist not updated");
+			assert.equal(rsl[1], student2, "Patient 1's dentist not updated");
 		})
 	);
 	
@@ -227,13 +224,12 @@ contract("Patient [Workflow Test]", accounts => {
 		patient.getPatient.call(patient1, {from: powerUser1})
 		.then((rsl) => {
 			// Check if patient is resolved
-			assert.equal(rsl[4], true, "Patient 1 not resolved successfully");
+			assert.equal(rsl[2], true, "Patient 1 not resolved successfully");
 		})
 	);
 	
 	it("Patient 1 information is updated", () =>
-		patient.updatePatient(patient1, "Kai Ningg", "998", [1, 2, 3], 
-							  student2, false, {from: powerUser1})
+		patient.updatePatient(patient1, [1, 2, 3], student2, false, {from: powerUser1})
 		.then((evt) => {
 			console.log("Patient Update");
 			console.log("--------------");
@@ -247,16 +243,13 @@ contract("Patient [Workflow Test]", accounts => {
 		patient.getPatient.call(patient1, {from: adminUser1})
 		.then((rsl) => {
 			// Check for all Patient 1 credentials
-			assert.equal(rsl[0], 'Kai Ningg', "Patient 1's name incorrect");
-			assert.equal(rsl[1], '998', "Patient 1's contact number incorrect");
-			
 			let indications = [1, 2, 3];
-			for (let i = 0; i < rsl[2].length; i++) {
-				assert.equal(rsl[2][i], indications[i], "Patient 1's indications incorrect");
+			for (let i = 0; i < rsl[0].length; i++) {
+				assert.equal(rsl[0][i], indications[i], "Patient 1's indications incorrect");
 			}
 			
-			assert.equal(rsl[3], student2, "Patient 1's dentist incorrect");
-			assert.equal(rsl[4], false, "Patient 1's resolution incorrect");
+			assert.equal(rsl[1], student2, "Patient 1's dentist incorrect");
+			assert.equal(rsl[2], false, "Patient 1's resolution incorrect");
 		})
 	);
 	
@@ -365,7 +358,7 @@ contract("Patient [Failure Tests]", accounts => {
 			let err = null;
 		
 			try {
-				await patient.createPatient.call('Kai Ning', '999', [1, 2], {from: adminUser1});
+				await patient.createPatient.call([1, 2], {from: adminUser1});
 			}
 			catch (error) {
 				err = error;
@@ -381,7 +374,7 @@ contract("Patient [Failure Tests]", accounts => {
 			let err = null;
 		
 			try {
-				await patient.createPatient.call('Kai Ning', '999', [1, 2], {from: student1});
+				await patient.createPatient.call([1, 2], {from: student1});
 			}
 			catch (error) {
 				err = error;
@@ -397,9 +390,8 @@ contract("Patient [Failure Tests]", accounts => {
 			console.log("Patient Registration");
 			console.log("--------------------");
 			
-			tempPatient = await patient.createPatient.call('Temp', '911', [2], 
-															  {from: powerUser2});
-			await patient.createPatient('Temp', '911', [2], {from: powerUser2});
+			tempPatient = await patient.createPatient.call([2], {from: powerUser2});
+			await patient.createPatient([2], {from: powerUser2});
 						
 			let err = null;
 		
@@ -525,9 +517,8 @@ contract("Patient [Failure Tests]", accounts => {
 			console.log("Patient Allocation");
 			console.log("------------------");
 			
-			tempPatient = await patient.createPatient.call('Temp2', '912', [2], 
-														  {from: powerUser1});
-			await patient.createPatient('Temp2', '912', [2], {from: powerUser1});
+			tempPatient = await patient.createPatient.call([2], {from: powerUser1});
+			await patient.createPatient([2], {from: powerUser1});
 						
 			let err = null;
 		
@@ -678,9 +669,8 @@ contract("Patient [Failure Tests]", accounts => {
 			console.log("Patient Resolution");
 			console.log("------------------");
 			
-			tempPatient = await patient.createPatient.call('Temp3', '913', [2], 
-														  {from: powerUser1});
-			await patient.createPatient('Temp3', '913', [2], {from: powerUser1});
+			tempPatient = await patient.createPatient.call([2], {from: powerUser1});
+			await patient.createPatient([2], {from: powerUser1});
 			await patient.listPatient(tempPatient.toNumber(), {from: powerUser1});
 			await patient.allocatePatient(tempPatient.toNumber(), student1, 
 										 {from: powerUser1});
@@ -775,16 +765,14 @@ contract("Patient [Failure Tests]", accounts => {
 			console.log("Patient Update");
 			console.log("--------------");
 			
-			tempPatient = await patient.createPatient.call('Temp4', '914', [2], 
-														  {from: powerUser2});
-			await patient.createPatient('Temp4', '914', [2], {from: powerUser2});
+			tempPatient = await patient.createPatient.call([2], {from: powerUser2});
+			await patient.createPatient([2], {from: powerUser2});
 
 			let err = null;
 		
 			try {
-				await patient.updatePatient.call(tempPatient.toNumber(), 'Temp5',
-												 '915', [3], owner, false,
-												{from: adminUser2});
+				await patient.updatePatient.call(tempPatient.toNumber(), [3], 
+												 owner, false, {from: adminUser2});
 			}
 			catch (error) {
 				err = error;
@@ -800,9 +788,8 @@ contract("Patient [Failure Tests]", accounts => {
 			let err = null;
 		
 			try {
-				await patient.updatePatient.call(tempPatient.toNumber(), 'Temp5',
-												 '915', [3], owner, false,
-												{from: student1});
+				await patient.updatePatient.call(tempPatient.toNumber(), [3], 
+												 owner, false, {from: student1});
 			}
 			catch (error) {
 				err = error;
@@ -908,7 +895,7 @@ contract("Request [Workflow Test]", accounts => {
 	);
 
 	it("Patient 2 is created", () =>
-		patient.createPatient.call('Jason Teo', '919', [3, 4, 5], {from: powerUser1})
+		patient.createPatient.call([3, 4, 5], {from: powerUser1})
 		.then((patientID) => {
 			console.log("Request Processing");
 			console.log("------------------");
@@ -918,7 +905,7 @@ contract("Request [Workflow Test]", accounts => {
 			patient2 = patientID.toNumber();
 		}).then(() => {
 			// Create Patient 2
-			patient.createPatient('Jason Teo', '919', [3, 4, 5], {from: powerUser2});
+			patient.createPatient([3, 4, 5], {from: powerUser2});
 		})
 	);
 	
@@ -926,16 +913,13 @@ contract("Request [Workflow Test]", accounts => {
 		patient.getPatient.call(patient2, {from: adminUser1})
 		.then((rsl) => {
 			// Check for all Patient 1 credentials
-			assert.equal(rsl[0], 'Jason Teo', "Patient 1's name incorrect");
-			assert.equal(rsl[1], '919', "Patient 1's contact number incorrect");
-			
 			let indications = [3, 4, 5];
-			for (let i = 0; i < rsl[2].length; i++) {
-				assert.equal(rsl[2][i], indications[i], "Patient 1's indications incorrect");
+			for (let i = 0; i < rsl[0].length; i++) {
+				assert.equal(rsl[0][i], indications[i], "Patient 1's indications incorrect");
 			}
 			
-			assert.equal(rsl[3], 0, "Patient 1's dentist incorrect");
-			assert.equal(rsl[4], false, "Patient 1's resolution incorrect");
+			assert.equal(rsl[1], 0, "Patient 1's dentist incorrect");
+			assert.equal(rsl[2], false, "Patient 1's resolution incorrect");
 		})
 	);
 
@@ -964,7 +948,7 @@ contract("Request [Workflow Test]", accounts => {
 			return patient.getPatient.call(patient1, {from: powerUser1});
 		}).then((rsl) => {
 			// Check for Patient 2 owner using local function
-			assert.equal(rsl[3], student2, "Patient 2's allocated dentist incorrect");
+			assert.equal(rsl[1], student2, "Patient 2's allocated dentist incorrect");
 		})
 	);
 	
@@ -975,7 +959,7 @@ contract("Request [Workflow Test]", accounts => {
 			console.log("------------------");
 			
 			// Check resolution
-			assert.equal(rsl[5], true, "Request 1's resolution incorrect");
+			assert.equal(rsl[2], true, "Request 1's resolution incorrect");
 		})
 	);
 	
@@ -1114,9 +1098,8 @@ contract("Request [Failure Tests]", accounts => {
 			console.log("Request Processing");
 			console.log("------------------");
 
-			tempPatient = await patient.createPatient.call('Temp6', '916', [2], 
-														  {from: powerUser1});
-			await patient.createPatient('Temp6', '916', [2], {from: powerUser1});
+			tempPatient = await patient.createPatient.call([2], {from: powerUser1});
+			await patient.createPatient([2], {from: powerUser1});
 			await patient.listPatient(tempPatient.toNumber(), {from: powerUser1});
 			
 			tempRequest1 = await request.createRequest.call(22, [2], {from: student1});
