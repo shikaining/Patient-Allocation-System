@@ -69,7 +69,7 @@ router.get("/", async function (req, res, next) {
         pool.query(
           retreiveAllocatedRequest,
           ["Allocated", this.student.studid],
-          (err, data) => {            
+          (err, data) => {
 
               res.render("resolveRequests", {
                 title: "Operative Dentistry Course Record",
@@ -235,63 +235,81 @@ router.post("/", async function (req, res, next) {
     console.log();
 
     try {
-      //update student Id on request table
-      var transferRequest =
-        "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
-      pool.query(
-        transferRequest,
-        ["Transferred", patientId, studId],
-        (err, data) => {
-          console.log(err);
-          if (err === undefined) {
-          } else {
-            req.flash("error", "An error has occurred! Please try again");
-          }
-        }
-      );
+        var transferRequest =
+          "SELECT * FROM public.request WHERE pid = $1 AND studId = $2";
+        pool.query(
+          transferRequest,
+          [patientId, transferStudentId],
+          (err, data) => {
+            console.log(err);
+            if (data.rowCount === 0) {
+                req.flash("error", "An error has occurred! Please try again");
+                res.redirect("/resolveRequests");
+            } else {
+                //update student Id on request table
+                var transferRequest =
+                  "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
+                pool.query(
+                  transferRequest,
+                  ["Transferred", patientId, studId],
+                  (err, data) => {
+                    console.log(err);
+                    if (err === undefined) {
+                    } else {
+                      req.flash("error", "An error has occurred! Please try again");
+                      res.redirect("/resolveRequests");
+                    }
+                  }
+                );
 
-      var transferRequest =
-        "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
-      pool.query(
-        transferRequest,
-        ["Allocated", patientId, transferStudentId],
-        (err, data) => {
-          console.log(err);
-          if (err === undefined) {
-          } else {
-            req.flash("error", "An error has occurred! Please try again");
-          }
-        }
-      );
+                var transferRequest =
+                  "UPDATE public.request SET allocatedStatus = $1 WHERE pid = $2 AND studId = $3";
+                pool.query(
+                  transferRequest,
+                  ["Allocated", patientId, transferStudentId],
+                  (err, data) => {
+                    console.log(err);
+                    if (err === undefined) {
+                    } else {
+                      req.flash("error", "An error has occurred! Please try again");
+                      res.redirect("/resolveRequests");
+                    }
+                  }
+                );
 
-      //update student Id on patient table
-      var transferPatient =
-        "UPDATE public.patient SET studId = $1 WHERE pid = $2";
-      pool.query(
-        transferPatient,
-        [transferStudentId, patientId],
-        (err, data) => {
-          console.log(err);
-          if (err === undefined) {
-            req.flash("info", "Patient Transferred");
-            res.redirect("/resolveRequests");
-          } else {
-            req.flash("error", "An error has occurred! Please try again");
-          }
-        }
-      );
+                //update student Id on patient table
+                var transferPatient =
+                  "UPDATE public.patient SET studId = $1 WHERE pid = $2";
+                pool.query(
+                  transferPatient,
+                  [transferStudentId, patientId],
+                  (err, data) => {
+                    console.log(err);
+                    if (err === undefined) {
+                      req.flash("info", "Patient Transferred");
+                      res.redirect("/resolveRequests");
+                    } else {
+                      req.flash("error", "An error has occurred! Please try again");
+                    }
+                  }
+                );
 
-      var sql_query =
-        "SELECT * FROM public.staff WHERE public.staff.email = $1";
-      pool.query(sql_query, ["staff1@gmail.com"], (err, data) => {
-        var staffAddr = data.rows[0].address;
-        truffle_connect.getPatient(patientId, staffAddr, (answer) => {
-          console.log(answer);
-        });
-      });
+                var sql_query =
+                  "SELECT * FROM public.staff WHERE public.staff.email = $1";
+                pool.query(sql_query, ["staff1@gmail.com"], (err, data) => {
+                  var staffAddr = data.rows[0].address;
+                  truffle_connect.getPatient(patientId, staffAddr, (answer) => {
+                    console.log(answer);
+                  });
+                });
+            }
+          }
+        );
+
     } catch (error) {
       //end try
       console.log("ERROR at transPatient: " + error);
+      res.redirect("/resolveRequests");
       return;
     }
   }
