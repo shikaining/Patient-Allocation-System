@@ -117,7 +117,7 @@ router.post("/", async function (req, res, next) {
           //res.redirect('/allocatePatients');
         }
       );
-      //update patient table liststatus to 'unlisted' and curedStatus to 'cured'
+      //update patient table liststatus to 'unlisted' and curedStatus / resolutionStatus to 'cured'
       var successfulRequest_query =
         "UPDATE public.patient SET allocatedStatus = $1, listStatus = $2, curedStatus = $3 WHERE pid = $4 AND studId = $5";
       pool.query(
@@ -135,10 +135,71 @@ router.post("/", async function (req, res, next) {
               truffle_connect.getPatient(patientId, staffAddr, (answer) => {
                 console.log(answer);
               });
+              console.log("Student Indication = " + studentIndication)
+              newStudentIndication = studentIndication
+              var patient_query = "SELECT * from patient where pid = $1"
+              pool.query(patient_query, [patientId], (err,data) => {
+                patientIndication = data.rows[0].indications;
+                patientIndication.forEach(indication => {
+                  switch (indication) {
+                    //Finding the indication that matches this patient and then adding it to the student's completed count.
+                    case "CD Exam Case":
+                        console.log("CD Exam Case")
+                        newStudentIndication[0] = newStudentIndication[0] + 1;
+                        break;
+                    case "Dental Public Health":
+                        console.log("Dental Public Health")
+                        newStudentIndication[1] = newStudentIndication[1] + 1;
+                        break;
+                    case "Endodontics":
+                        console.log("Endodontics")
+                        newStudentIndication[2] = newStudentIndication[2] + 1;
+                        break;
+                    case "Fixed Prosthodontics":
+                        console.log("Fixed Prosthodontics")
+                        newStudentIndication[3] = newStudentIndication[3] + 1;
+                        break;
+                    case "Operative Dentistry":
+                        newStudentIndication[4] = newStudentIndication[4] + 1;
+                        break;
+                    case "Oral Surgery":
+                        newStudentIndication[5] = newStudentIndication[5] + 1;
+                        break;
+                    case "Orthodontics":
+                        newStudentIndication[6] = newStudentIndication[6] + 1;
+                        break;
+                    case "Pedodontics":
+                        newStudentIndication[7] = newStudentIndication[7] + 1;
+                        break;
+                    case "Periodontics":
+                        newStudentIndication[8] = newStudentIndication[8] + 1;
+                        break;
+                    case "Removable Prosthodontics":
+                        newStudentIndication[9] = newStudentIndication[9] + 1;
+                        break;
+                }                  
+                });
+                console.log("Patient Indications : " + patientIndication)
+                console.log("New Student Indication : " + newStudentIndication)
+                updateStudent_query = "UPDATE public.student SET indicationCount = $1 WHERE studid = $2"
+                pool.query(updateStudent_query, [newStudentIndication, studId], (err,data) => {
+                  req.flash("info", "Patient Resolved");
+              res.redirect("/resolveRequests");
+                })
+              })
+
+              // student_query = "SELECT * from public.student WHERE studid = $1"
+              // pool.query(student_query,[studId], (err,data) => {
+              //   var studentIndication = data.rows[0].indicationcount;
+              //   indicationQuota_query = "Select * from public.indicationquota";
+              //   pool.query(indicationQuota_query,(err,data) => {
+              //     indicationQuota = data.rows[0].indicationarray
+              //   })
+              // })
+
+              console.log()
             });
 
-            req.flash("info", "Patient Resolved");
-            res.redirect("/resolveRequests");
           } else {
             req.flash("error", "An error has occurred! Please try again");
           }
