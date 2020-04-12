@@ -173,3 +173,17 @@ Functions:
 	-	Request.sol
 	1)	removed updateRequest
 	2)	updated matchingIndications modifier to cover corner cases better
+	
+12 Apr, 1840hrs
+===============
+Tests:
+	> Updated tests for createPatient, updatePatient and getPatient
+	> Update test cases to cater for updateScore
+
+Functions:
+	-	Patient.sol
+	1)	updated createPatient, updatePatient and getPatient to not include 
+		personal information
+		
+	-	Request.sol
+	1)	updateScore
