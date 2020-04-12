@@ -447,6 +447,41 @@ module.exports = {
         from: sender
       });
     });
+  },
+  updateScore : function (requestId, newScore) {
+    console.log("Update Score in app.js****")
+    console.log(requestId);
+    console.log(newScore);
+    return new Promise ((res,rej) => {
+      contractOwner_query = "SELECT address FROM public.staff WHERE stfId = 1"
+      pool.query(contractOwner_query, (err,data) => {
+        if(err){
+          console.log(err);
+          rej(err);
+          return;
+        } else {
+          contractOwner_Address = data.rows[0].address;
+          var self = this;
+          Request.setProvider(self.web3.currentProvider);
+          var requestInstance;
+          Request.deployed().then(instance => {
+            requestInstance = instance;
+            console.log(contractOwner_Address);
+            requestInstance.updateScore(requestId, parseInt(newScore), {
+              from: contractOwner_Address
+            }).then(result => {
+              res('Score Updated in Contract');
+              return;
+            }).catch(error => {
+              console.log('Error in contract');
+              console.log(error);
+              rej(error);
+              return;
+            })
+          })
+        }
+      })
+    })
   }
 
 };

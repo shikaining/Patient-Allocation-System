@@ -177,6 +177,7 @@ router.post("/", async function (req, res, next) {
                                               "info",
                                               "Patient sucessfully allocated to Student."
                                             );
+                                            res.redirect("/allocatePatients");
                                           });
                                         }
                                       );
@@ -195,7 +196,7 @@ router.post("/", async function (req, res, next) {
                             "3-update allocatedStatus of request (unsuccessful ones) - End"
                           );
 
-                          res.redirect("/allocatePatients");
+                          
                         }
                       );
                     } else {
@@ -339,14 +340,18 @@ function updateExpectedIndicationCount(
           requestData.rows[i],
           requestData.rows[i].pid,
           newScore
-        )
-          .then((pass) => {
-            if (i == requestData.rows.length - 1) {
-              console.log("Ended allocation");
-              res("Pass");
-              return;
-            }
-          })
+        ).then(async pass => {
+            await truffle_connect.updateScore(requestData.rows[i].rid, newScore).then(pass => {
+                if (i == requestData.rows.length - 1) {
+                    console.log("Ended allocation");
+                    res("Pass");
+                    return;
+                  }
+            }).catch(error => {
+                console.log("Error within contract updateScore");
+                console.log(error);
+            })
+        })
           .catch((error) => {
             console.log("Error within updateExpectedIndicationCount");
             rej(error);

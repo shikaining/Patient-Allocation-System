@@ -13,7 +13,7 @@ module.exports = {
       console.log("***FORGOT TO RUN TRUFFLE MIGRATE***")
       return;
     }
-    pool.query("SELECT email FROM public.staff", (err, result)=>{
+    pool.query("SELECT email FROM public.staff ORDER BY stfId ASC", (err, result)=>{
       // console.log(result.rows);
       var updateStaff = "UPDATE public.staff SET address = $1 WHERE email = $2"
       for(i = 0; i < 4; i++){

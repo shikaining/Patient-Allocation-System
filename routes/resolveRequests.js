@@ -65,7 +65,7 @@ router.get("/", async function (req, res, next) {
         console.log("indicationQuota : " + indicationQuota);
 
         var retreiveAllocatedRequest =
-          "SELECT r.studid, r.pid, p.name, p.contactno, r.indications, r.allocatedstatus FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.allocatedStatus = $1 AND r.studId = $2";
+          "SELECT r.studid, r.pid, p.name, p.contactno, r.indications, r.allocatedstatus, r.isTransferred FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.allocatedStatus = $1 AND r.studId = $2";
         pool.query(
           retreiveAllocatedRequest,
           ["Allocated", this.student.studid],
@@ -612,33 +612,37 @@ function updateExpectedIndicationCount(
           parseInt(studentScore) +
           parseInt(requestData.rows[i].fcfsscore) +
           parseInt(requestData.rows[i].seniorityscore);
-        console.log("Old Score : " + requestData.rows[i].score);
-        console.log("New Score : " + newScore);
-        console.log("Before updateScore, pId : " + requestData.rows[i].pid);
-        await updateScoreAndIndications(
-          requestData.rows[i],
-          requestData.rows[i].pid,
-          newScore
-        )
-          .then((pass) => {
-            if (i == requestData.rows.length - 1) {
-              console.log("Ended allocation");
-              res("Pass");
-              return;
-            }
+          console.log("Old Score : " + requestData.rows[i].score);
+          console.log("New Score : " + newScore);
+          console.log("Before updateScore, pId : " + requestData.rows[i].pid);
+          await updateScoreAndIndications(
+            requestData.rows[i],
+            requestData.rows[i].pid,
+            newScore
+          ).then(async pass => {
+              await truffle_connect.updateScore(requestData.rows[i].rid, newScore).then(pass => {
+                  if (i == requestData.rows.length - 1) {
+                      console.log("Ended allocation");
+                      res("Pass");
+                      return;
+                    }
+              }).catch(error => {
+                  console.log("Error within contract updateScore");
+                  console.log(error);
+              })
           })
-          .catch((error) => {
-            console.log("Error within updateExpectedIndicationCount");
-            rej(error);
-            return;
-          });
+            .catch((error) => {
+              console.log("Error within updateExpectedIndicationCount");
+              rej(error);
+              return;
+            });
+        }
+      } else {
+        res("No pending request for current transfer Student.");
+        return;
       }
-    } else {
-      res("No pending request for current transfer Student.");
-      return;
-    }
-  });
-}
+    });
+  }
 
 //Finding the indication that matches this patient and then adding it to the student's EXPECTED count.
 // also trying to calculate the new score since expected count has been updated.

@@ -163,7 +163,9 @@
                     <td><%= data[i].contactno%></td>
                     <td><%= data[i].indications%></td>
                     <td><%= data[i].allocatedstatus%></td>
-                    <td><button type="button" class="btn btn-primary" onclick="transfer(this)">Transfer</button></td>
+                    <% if(!data[i].istransferred) {%>
+                        <td><button type="button" class="btn btn-primary" onclick="transfer(this)">Transfer</button></td>
+                    <%}%>
                     <td><button type="button" class="btn btn-primary" onclick="resolve(this)">Resolve</button></td>
                 </tr>
                 <% } %>
