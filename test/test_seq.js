@@ -966,8 +966,8 @@ contract("Request [Workflow Test]", accounts => {
 	it("Request 2 is created", () =>
 		request.createRequest.call(98, [6], {from: student2})
 		.then((requestID) => {
-			console.log("Request Withdrawal");
-			console.log("------------------");
+			console.log("Request Update");
+			console.log("--------------");
 			
 			// Check for returned request ID
 			assert.equal(requestID.toNumber(), 2, "Request 2 not created successfully");
@@ -978,11 +978,30 @@ contract("Request [Workflow Test]", accounts => {
 		})
 	);
 	
+	it("Request 2 is updated", () =>
+		request.updateScore(request2, 99999, {from: owner})
+		.then((evt) => {
+			// Check for update event
+			assert.equal(evt.logs[0].event, 'Update', "Request 2 not updated successfully");
+		})
+	);
+	
+	it("Request 2's updated score is accurate", () =>
+		request.getRequest.call(request2, {from: owner})
+		.then((rsl) => {
+			// Check updated score
+			assert.equal(rsl[3], 99999, "Request 2's updated score incorrect");
+		})
+	);
+	
 	it("Request 2 is withdrawn", () =>
 		request.withdrawRequest(request2, {from: student1})
 		.then((evt) => {
+			console.log("Request Withdrawal");
+			console.log("------------------");
+			
 			// Check for withdrawal event
-			assert.equal(evt.logs[0].event, 'Withdraw', "Patient 2 not withdrawn successfully");
+			assert.equal(evt.logs[0].event, 'Withdraw', "Request 2 not withdrawn successfully");
 		})
 	);
 	
@@ -1181,6 +1200,77 @@ contract("Request [Failure Tests]", accounts => {
 		}
 	);
 	
+	it("Unable to update resolved requests", async() =>		
+		{			
+			console.log("Request Update");
+			console.log("--------------");
+			
+			let err = null;
+		
+			try {
+				await request.updateScore.call(tempRequest1.toNumber(), 90,
+											  {from: owner});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request update should have failed");
+		}
+	);
+	
+	it("Power User unable to update requests", async() =>		
+		{			
+			let err = null;
+		
+			try {
+				await request.updateScore.call(tempRequest2.toNumber(), 90,
+											  {from: powerUser2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request update should have failed");
+		}
+	);
+	
+	it("Admin User unable to update requests", async() =>		
+		{			
+			let err = null;
+		
+			try {
+				await request.updateScore.call(tempRequest2.toNumber(), 90,
+											  {from: adminUser1});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request update should have failed");
+		}
+	);
+	
+	it("Student unable to update requests", async() =>		
+		{			
+			let err = null;
+		
+			try {
+				await request.updateScore.call(tempRequest2.toNumber(), 90,
+											  {from: student2});
+			}
+			catch (error) {
+				err = error;
+			}
+						
+			assert.ok(err instanceof Error
+					 , "Request update should have failed");
+		}
+	);
+	
 	it("Student unable to withdraw un-owned requests", async() =>		
 		{
 			console.log("Request Withdrawal");
@@ -1220,5 +1310,4 @@ contract("Request [Failure Tests]", accounts => {
 					 , "Request withdrawal should have failed");
 		}
 	);
-	
 });
