@@ -196,7 +196,7 @@ module.exports = {
     patientContact,
     listStatus,
     allocatedStatus,
-    curedStatus,
+    resolvedStatus,
     dbIndication,
     solidityIndication,
     sender
@@ -228,7 +228,7 @@ module.exports = {
                   patientContact,
                   listStatus,
                   allocatedStatus,
-                  curedStatus,
+                  resolvedStatus,
                   dbIndication
                 ],
                 (err, data) => {

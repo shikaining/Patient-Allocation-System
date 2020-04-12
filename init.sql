@@ -38,7 +38,7 @@ CREATE TABLE Patient (
 	contactNo varchar(20),
 	listStatus varchar(20),
 	allocatedStatus varchar(20),
-	curedStatus varchar(20),
+	resolvedStatus varchar(20),
 	indications text[],
 	listedTimestamp timestamptz ,
 	leadingStudentId integer DEFAULT 0,

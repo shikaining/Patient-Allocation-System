@@ -165,12 +165,10 @@ app.get('/getPatient', (req, res) => {
   let sender = req.body.sender;
 
   truffle_connect.getPatient(patientId, sender, (answer) => {
-    let patientName = answer[0];
-    let patientContact = answer[1];
-    let indications = answer[2];
-    let patientOwner = answer[3];
-    let resolved = answer[4];
-    response = [patientName, patientContact,indications, patientOwner, resolved]
+    let indications = answer[0];
+    let patientOwner = answer[1];
+    let resolved = answer[2];
+    response = [indications, patientOwner, resolved]
     // res.send(response);
   })
 });
@@ -179,8 +177,6 @@ app.post('/createPatient', (req, res) => {
   console.log("**** /createPatient ****");
   console.log(req.body);
 
-  let patientName = req.body.patientName;
-  let patientContact = req.body.patientContact;
   let indications = req.body.indications.split(",").filter(x => x.trim().length && !isNaN(x)).map(Number); // To be used for Solidity Contract
   let dbIndication = "{"; // To be use as insert statement to DB.
   for(indication in indications){
@@ -199,7 +195,7 @@ app.post('/createPatient', (req, res) => {
   // console.log("Indications passed to contract: " + indications);
   let sender = req.body.sender;
 
-  truffle_connect.createPatient(patientName, patientContact, indications, sender, () => {
+  truffle_connect.createPatient(indications, sender, () => {
     //res.send(balance);
     //insert into DB.
   });

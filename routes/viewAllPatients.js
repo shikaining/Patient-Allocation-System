@@ -59,8 +59,8 @@ router.get('/', async function (req, res, next) {
         let me = this;
         //retrieve all listed patients from db
         var retreiveAllPatientInfo =
-        "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 OR public.patient.curedStatus = $2";
-        pool.query(retreiveAllPatientInfo, ['Listed', 'Cured'], (err, data) => {
+        "SELECT * FROM public.patient WHERE public.patient.listStatus = $1 OR public.patient.resolvedStatus = $2";
+        pool.query(retreiveAllPatientInfo, ['Listed', 'Resolved'], (err, data) => {
 
             //push listed patientIds into patientIds array
             for (var i = 0; i < data.rowCount; i++) {
@@ -86,7 +86,7 @@ router.get('/', async function (req, res, next) {
                         //add studentId attr
                         let requiredId = 'None';
                         var retrieveStudentId_query = "SELECT * FROM public.student WHERE public.student.address = '";
-                        retrieveStudentId_query = retrieveStudentId_query + answer[3] + "' ";
+                        retrieveStudentId_query = retrieveStudentId_query + answer[1] + "' ";
                         pool.query(retrieveStudentId_query, (err, results) => {
                             if (results.rowCount > 0) {
                                 requiredId = results.rows[0].studid;
@@ -94,7 +94,7 @@ router.get('/', async function (req, res, next) {
                             me.listedPatients.push({
                                 patientId: id,
                                 indications: indications,
-                                cured: answer[4],
+                                resolvedStatus: answer[2],
                                 studid: requiredId,
                                 leadingStudentId: leadingStudentId,
                                 leadingStudentName: leadingStudentName

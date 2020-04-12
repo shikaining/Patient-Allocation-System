@@ -90,7 +90,7 @@ router.post("/", async function(req, res, next) {
   dbIndication += "}";
   var listStatus = "Not Listed";
   var allocatedStatus = "Not Allocated";
-  var curedStatus = "Not Cured";
+  var resolvedStatus = "Not Resolved";
 
   // try {
     //Update into Ethereum
@@ -99,7 +99,7 @@ router.post("/", async function(req, res, next) {
     console.log(patientContact);
     console.log(solidityIndication);
     var sql_query =
-      "INSERT INTO public.patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, curedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+      "INSERT INTO public.patient(pId, stfId, name, nric, contactNo, listStatus, allocatedStatus, resolvedStatus, indications) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
 
     await truffle_connect.createPatient(
       sql_query,
@@ -109,7 +109,7 @@ router.post("/", async function(req, res, next) {
       patientContact,
       listStatus,
       allocatedStatus,
-      curedStatus,
+      resolvedStatus,
       dbIndication,
       solidityIndication,
       staff.address

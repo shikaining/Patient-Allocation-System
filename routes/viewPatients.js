@@ -81,12 +81,12 @@ router.get('/', async function (req, res, next) {
                     let name = data.rows[i].name;
                     let contact = data.rows[i].contactno;
                     truffle_connect.getPatient(id, this.addr, (answer) => {
-                        console.log(answer[3])
+                        console.log(answer[1])
 
                         //add studentId attr
                         let requiredId = 'None';
                         var retrieveStudentId_query = "SELECT * FROM public.student WHERE public.student.address = '";
-                        retrieveStudentId_query = retrieveStudentId_query + answer[3] + "' ";
+                        retrieveStudentId_query = retrieveStudentId_query + answer[1] + "' ";
                         pool.query(retrieveStudentId_query, (err, results) => {
                             if (results.rowCount > 0) {
                                 requiredId = results.rows[0].studid;
@@ -258,9 +258,9 @@ router.post('/', async function (req, res, next) {
                 owner = data.rows[0].studid;
                 console.log(owner);
 
-                resolution = data.rows[0].curedstatus;
+                resolution = data.rows[0].resolvedStatus;
                 console.log(resolution);
-                if (resolution === 'Not Cured') {
+                if (resolution === 'Not Resolved') {
                     resolution = false;
                 }
                 else {
@@ -302,7 +302,7 @@ router.post('/', async function (req, res, next) {
                 }
                 else {
                     truffle_connect.getPatient(patientIdToEdit, staff.address, (answer) => {
-                        owner = answer[3];
+                        owner = answer[1];
                     });
                     var editPatient = "UPDATE public.patient SET name = $1, contactNo = $2, indications = $3 WHERE pid = $4";
                     pool.query(editPatient, [patientName, patientContact, dbIndication, patientIdToEdit], async (err, data) => {
