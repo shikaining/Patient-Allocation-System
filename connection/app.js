@@ -366,8 +366,6 @@ module.exports = {
         Patient.setProvider(self.web3.currentProvider);
         var patientInstance;
         console.log("patientId : " + patientId)
-        console.log("patientName : " + patientName)
-        console.log("patientContact : " + patientContact)
         console.log("solidityIndications : " + solidityIndications)
         console.log("owner : " + owner)
         console.log("resolution : " + resolution)
@@ -376,7 +374,7 @@ module.exports = {
         Patient.deployed().then(function (instance) {
           patientInstance = instance;
           patientInstance.updatePatient(
-            patientContact,
+            patientId,
             solidityIndications,
             owner,
             resolution, {

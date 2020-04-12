@@ -78,6 +78,8 @@ router.get('/', async function (req, res, next) {
                     let indications = data.rows[i].indications;
                     let listingStatus = data.rows[i].liststatus;
                     let allocationStatus = data.rows[i].allocatedstatus;
+                    let name = data.rows[i].name;
+                    let contact = data.rows[i].contactno;
                     truffle_connect.getPatient(id, this.addr, (answer) => {
                         console.log(answer[3])
 
@@ -91,8 +93,8 @@ router.get('/', async function (req, res, next) {
                             }
                             me.patients.push({
                                 patientId: id,
-                                patientName: data.rows[i].name,
-                                patientContact: data.rows[i].contactno,
+                                patientName: name,
+                                patientContact: contact,
                                 indications: indications,
                                 listingStatus: listingStatus,
                                 allocationStatus: allocationStatus,
@@ -308,8 +310,6 @@ router.post('/', async function (req, res, next) {
                         if (err === undefined) {
                             truffle_connect.updatePatient(
                                 patientIdToEdit,
-                                patientName,
-                                patientContact,
                                 solidityIndication,
                                 owner,
                                 resolution,

@@ -65,7 +65,7 @@ router.get("/", async function (req, res, next) {
         console.log("indicationRecords : " + indicationRecords);
 
         var retreiveAllocatedRequest =
-          "SELECT r.studid, r.pid, p.name, p.contactno, r.indications, r.allocatedstatus FROM public.request LEFT JOIN public.patient p ON r.pId = p.pId WHERE public.request.allocatedStatus = $1 AND public.request.studId = $2";
+          "SELECT r.studid, r.pid, p.name, p.contactno, r.indications, r.allocatedstatus FROM public.request r LEFT JOIN public.patient p ON r.pId = p.pId WHERE r.allocatedStatus = $1 AND r.studId = $2";
         pool.query(
           retreiveAllocatedRequest,
           ["Allocated", this.student.studid],
