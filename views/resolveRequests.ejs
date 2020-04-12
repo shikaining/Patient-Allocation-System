@@ -104,6 +104,8 @@
                 <tr>
                     <th scope="col">Student Id</th>
                     <th scope="col">Patient Id</th>
+                    <th scope="col">Patient Name</th>
+                    <th scope="col">Patient Contact No.</th>
                     <th scope="col">Indications</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
@@ -115,6 +117,8 @@
                 <tr>
                     <td><%= data[i].studid%></td>
                     <td><%= data[i].pid%></td>
+                    <td><%= data[i].name%></td>
+                    <td><%= data[i].contactno%></td>
                     <td><%= data[i].indications%></td>
                     <td><%= data[i].allocatedstatus%></td>
                     <td><button type="button" class="btn btn-primary" onclick="transfer(this)">Transfer Patient</button></td>

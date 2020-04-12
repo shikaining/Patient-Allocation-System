@@ -91,8 +91,8 @@ router.get('/', async function (req, res, next) {
                             }
                             me.patients.push({
                                 patientId: id,
-                                patientName: answer[0],
-                                patientContact: answer[1],
+                                patientName: data.rows[i].name,
+                                patientContact: data.rows[i].contactno,
                                 indications: indications,
                                 listingStatus: listingStatus,
                                 allocationStatus: allocationStatus,

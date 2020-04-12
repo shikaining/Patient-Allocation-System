@@ -65,22 +65,22 @@ router.get("/", async function (req, res, next) {
         console.log("indicationRecords : " + indicationRecords);
 
         var retreiveAllocatedRequest =
-          "SELECT * FROM public.request WHERE public.request.allocatedStatus = $1 AND public.request.studId = $2";
+          "SELECT r.studid, r.pid, p.name, p.contactno, r.indications, r.allocatedstatus FROM public.request LEFT JOIN public.patient p ON r.pId = p.pId WHERE public.request.allocatedStatus = $1 AND public.request.studId = $2";
         pool.query(
           retreiveAllocatedRequest,
           ["Allocated", this.student.studid],
-          (err, data) => {
-            res.render("resolveRequests", {
-              title: "Operative Dentistry Course Record",
-              user: name,
-              indicationsArray: indicationsArray,
-              indicationRecords: indicationRecords,
-              studentRecords : studentIndication,
-              data: data.rows,
-            });
-          }
-        );
-      });
+          (err, data) => {            
+
+              res.render("resolveRequests", {
+                title: "Operative Dentistry Course Record",
+                user: name,
+                indicationsArray: indicationsArray,
+                indicationRecords: indicationRecords,
+                studentRecords: studentIndication,
+                data: data.rows,
+              });//ends rendering
+            });//ends retrieve allocated requests
+      });//ends indication quote
     });
   }
 });
@@ -138,53 +138,53 @@ router.post("/", async function (req, res, next) {
               console.log("Student Indication = " + studentIndication)
               newStudentIndication = studentIndication
               var patient_query = "SELECT * from patient where pid = $1"
-              pool.query(patient_query, [patientId], (err,data) => {
+              pool.query(patient_query, [patientId], (err, data) => {
                 patientIndication = data.rows[0].indications;
                 patientIndication.forEach(indication => {
                   switch (indication) {
                     //Finding the indication that matches this patient and then adding it to the student's completed count.
                     case "CD Exam Case":
-                        console.log("CD Exam Case")
-                        newStudentIndication[0] = newStudentIndication[0] + 1;
-                        break;
+                      console.log("CD Exam Case")
+                      newStudentIndication[0] = newStudentIndication[0] + 1;
+                      break;
                     case "Dental Public Health":
-                        console.log("Dental Public Health")
-                        newStudentIndication[1] = newStudentIndication[1] + 1;
-                        break;
+                      console.log("Dental Public Health")
+                      newStudentIndication[1] = newStudentIndication[1] + 1;
+                      break;
                     case "Endodontics":
-                        console.log("Endodontics")
-                        newStudentIndication[2] = newStudentIndication[2] + 1;
-                        break;
+                      console.log("Endodontics")
+                      newStudentIndication[2] = newStudentIndication[2] + 1;
+                      break;
                     case "Fixed Prosthodontics":
-                        console.log("Fixed Prosthodontics")
-                        newStudentIndication[3] = newStudentIndication[3] + 1;
-                        break;
+                      console.log("Fixed Prosthodontics")
+                      newStudentIndication[3] = newStudentIndication[3] + 1;
+                      break;
                     case "Operative Dentistry":
-                        newStudentIndication[4] = newStudentIndication[4] + 1;
-                        break;
+                      newStudentIndication[4] = newStudentIndication[4] + 1;
+                      break;
                     case "Oral Surgery":
-                        newStudentIndication[5] = newStudentIndication[5] + 1;
-                        break;
+                      newStudentIndication[5] = newStudentIndication[5] + 1;
+                      break;
                     case "Orthodontics":
-                        newStudentIndication[6] = newStudentIndication[6] + 1;
-                        break;
+                      newStudentIndication[6] = newStudentIndication[6] + 1;
+                      break;
                     case "Pedodontics":
-                        newStudentIndication[7] = newStudentIndication[7] + 1;
-                        break;
+                      newStudentIndication[7] = newStudentIndication[7] + 1;
+                      break;
                     case "Periodontics":
-                        newStudentIndication[8] = newStudentIndication[8] + 1;
-                        break;
+                      newStudentIndication[8] = newStudentIndication[8] + 1;
+                      break;
                     case "Removable Prosthodontics":
-                        newStudentIndication[9] = newStudentIndication[9] + 1;
-                        break;
-                }                  
+                      newStudentIndication[9] = newStudentIndication[9] + 1;
+                      break;
+                  }
                 });
                 console.log("Patient Indications : " + patientIndication)
                 console.log("New Student Indication : " + newStudentIndication)
                 updateStudent_query = "UPDATE public.student SET indicationCount = $1 WHERE studid = $2"
-                pool.query(updateStudent_query, [newStudentIndication, studId], (err,data) => {
+                pool.query(updateStudent_query, [newStudentIndication, studId], (err, data) => {
                   req.flash("info", "Patient Resolved");
-              res.redirect("/resolveRequests");
+                  res.redirect("/resolveRequests");
                 })
               })
 

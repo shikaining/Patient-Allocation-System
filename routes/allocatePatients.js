@@ -37,9 +37,9 @@ router.get('/', async function (req, res, next) {
         var sql_query = "SELECT * FROM public.staff WHERE public.staff.email = $1";
         pool.query(sql_query, ['staff1@gmail.com'], (err, data) => {
             var staffAddr = data.rows[0].address;
-            truffle_connect.getPatient(1, staffAddr, (answer) => {
-                console.log(answer);
-            });
+            // truffle_connect.getPatient(1, staffAddr, (answer) => {
+            //     console.log(answer);
+            // });
         });
 
 
