@@ -51,7 +51,7 @@ router.get('/', async function (req, res, next) {
         let me = this;
         //retrieve all patients from db
         var retreiveAllPatientInfo =
-            "select * from public.patient ORDER BY liststatus desc, pId asc;";
+            "select * from public.patient ORDER BY liststatus asc, pId desc";
         await pool.query(retreiveAllPatientInfo, (err, data) => {
 
             //push listed patientIds into patientIds array
