@@ -137,6 +137,7 @@ router.post('/', async function (req, res, next) {
                 }).catch(error => {
                     console.log("Caught error within AllocatePatient.js")
                     req.flash('error', 'Failed to Allocate Patient due to - ' + error)
+                    res.redirect('/allocatePatients');
                     return;
                 });
             });
