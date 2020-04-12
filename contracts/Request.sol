@@ -107,7 +107,7 @@ contract Request {
 	event CreateAdminUser(address user);
 
 	// Functions 
-	event Update(uint requestID, address student);
+	event Update(uint requestID, uint score, address student);
 	event Process(uint requestID, uint patientID);
 	event Withdraw(uint requestID, address withdrawer);
 	
@@ -201,6 +201,14 @@ contract Request {
 		requests[requestID].resolved = true;
 		
 		emit Process(requestID, patientID);
+	}
+	
+	// Update the score rating of a request
+	function updateScore(uint requestID, uint _score) 
+	public onlyOwner unresolved(requestID) {
+		requests[requestID].score = _score;
+		
+		emit Update(requestID, _score, msg.sender);
 	}
 	
 	// Withdraw the request
