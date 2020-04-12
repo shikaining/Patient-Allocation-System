@@ -81,7 +81,7 @@ router.get('/', async function (req, res, next) {
                     let name = data.rows[i].name;
                     let contact = data.rows[i].contactno;
                     truffle_connect.getPatient(id, this.addr, (answer) => {
-                        console.log(answer[1])
+                        console.log(answer);
 
                         //add studentId attr
                         let requiredId = 'None';
@@ -258,7 +258,7 @@ router.post('/', async function (req, res, next) {
                 owner = data.rows[0].studid;
                 console.log(owner);
 
-                resolution = data.rows[0].resolvedStatus;
+                resolution = data.rows[0].resolvedstatus;
                 console.log(resolution);
                 if (resolution === 'Not Resolved') {
                     resolution = false;
@@ -277,8 +277,6 @@ router.post('/', async function (req, res, next) {
                             if (err === undefined) {
                                 truffle_connect.updatePatient(
                                     patientIdToEdit,
-                                    patientName,
-                                    patientContact,
                                     solidityIndication,
                                     owner,
                                     resolution,
