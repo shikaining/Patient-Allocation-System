@@ -14,6 +14,7 @@ CREATE TABLE Student (
 	address varchar(60),
 	enrolYear int not null,
 	indicationCount integer[10],
+	expectedCount integer[10],
 	PRIMARY KEY (studId)
 );
 
@@ -58,6 +59,9 @@ CREATE TABLE Request (
 	indications text[],
 	score bigint not null,
 	requestTimestamp timestamptz,
+	fcfsScore bigint not null,
+	seniorityScore bigint not null,
+	isTransferred boolean DEFAULT FALSE,
 	PRIMARY KEY (rId),
 	FOREIGN KEY (stfId) REFERENCES Staff(stfId) on delete cascade,
 	FOREIGN KEY (studId) REFERENCES Student(studId) on delete cascade,
@@ -85,10 +89,10 @@ CREATE TABLE IndicationQuota (
 	PRIMARY KEY(iId)
 );
 
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'password', 2018, '{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'password', 2019, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'password', 2018, '{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}','{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'password', 2019, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 
 
 --systemadmin is system admin

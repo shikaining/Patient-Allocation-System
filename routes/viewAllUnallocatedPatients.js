@@ -215,7 +215,7 @@ router.post("/", async function (req, res, next) {
                   var quota;
                   var maxQuota = 0;
 
-                  console.log(rawStudent.rows[0].indicationcount);
+                  console.log(rawStudent.rows[0].expectedcount);
                   indications.forEach((indication) => {
                     console.log(indication);
                     switch (indication) {
@@ -229,7 +229,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[0]),
+                            parseInt(rawStudent.rows[0].expectedcount[0]),
                           0
                         );
                         solidityIndications.push(0);
@@ -240,7 +240,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[1]),
+                            parseInt(rawStudent.rows[0].expectedcount[1]),
                           0
                         );
                         solidityIndications.push(1);
@@ -251,7 +251,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[2]),
+                            parseInt(rawStudent.rows[0].expectedcount[2]),
                           0
                         );
                         solidityIndications.push(2);
@@ -262,7 +262,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[3]),
+                            parseInt(rawStudent.rows[0].expectedcount[3]),
                           0
                         );
                         solidityIndications.push(3);
@@ -272,7 +272,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[4]),
+                            parseInt(rawStudent.rows[0].expectedcount[4]),
                           0
                         );
                         solidityIndications.push(4);
@@ -282,7 +282,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[5]),
+                            parseInt(rawStudent.rows[0].expectedcount[5]),
                           0
                         );
                         solidityIndications.push(5);
@@ -292,7 +292,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[6]),
+                            parseInt(rawStudent.rows[0].expectedcount[6]),
                           0
                         );
                         solidityIndications.push(6);
@@ -302,7 +302,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[7]),
+                            parseInt(rawStudent.rows[0].expectedcount[7]),
                           0
                         );
                         solidityIndications.push(7);
@@ -312,7 +312,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[8]),
+                            parseInt(rawStudent.rows[0].expectedcount[8]),
                           0
                         );
                         solidityIndications.push(8);
@@ -322,7 +322,7 @@ router.post("/", async function (req, res, next) {
                         maxQuota += quota;
                         studentScore += Math.max(
                           quota -
-                            parseInt(rawStudent.rows[0].indicationcount[9]),
+                            parseInt(rawStudent.rows[0].expectedcount[9]),
                           0
                         );
                         solidityIndications.push(9);
@@ -331,6 +331,7 @@ router.post("/", async function (req, res, next) {
                   });
                   //Weightage of 0.3
                   studentScore = (studentScore / maxQuota) * 0.3;
+                  studentScore = Math.round(studentScore * Math.pow(10, 12))
                   console.log(
                     "Student Score for Cases Leftover before Grad: " +
                       studentScore
@@ -349,7 +350,9 @@ router.post("/", async function (req, res, next) {
                     parseInt(moment(data.rows[0].listedtimestamp).year()) -
                     parseInt(rawStudent.rows[0].enrolyear);
                   console.log("Seniority Score : " + tempScore);
-                  studentScore += (tempScore / randomConstantNumber) * 0.5;
+                  seniorityScore = (tempScore / randomConstantNumber) * 0.5
+                  seniorityScore = Math.round(seniorityScore * Math.pow(10, 12))
+                  studentScore += seniorityScore;
 
                   //Calculate score by FCFS, Weightage 0.2
                   //using the difference of the request and timestamp patient was listed
@@ -364,15 +367,18 @@ router.post("/", async function (req, res, next) {
                       )) /
                       constantTime;
                   console.log("FCFS Score : " + tempScore);
-                  studentScore += tempScore * 0.2;
-
                   //conver studentScore into an integer
-                  studentScore = Math.round(studentScore * Math.pow(10, 12));
+                  fcfsScore = tempScore * 0.2 
+                  fcfsScore = Math.round(fcfsScore * Math.pow(10, 12))
+                  studentScore += fcfsScore;
+                  
                   console.log(studentScore);
 
                   //Insert into Ethereum smart contract + local DB
                   let requestId = await truffle_connect
                     .createRequest(
+                        fcfsScore,
+                        seniorityScore,
                       studentScore,
                       solidityIndications,
                       rawStudent.rows[0].address,

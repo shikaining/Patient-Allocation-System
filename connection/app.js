@@ -261,7 +261,7 @@ module.exports = {
     });
   },
 
-  createRequest: async function (studentScore, solidityIndications, sender, stuId, patientId, allocatedStatus, dbIndication, requestTimeStamp) {
+  createRequest: async function (fcfsScore, seniorityScore, studentScore, solidityIndications, sender, stuId, patientId, allocatedStatus, dbIndication, requestTimeStamp) {
     return new Promise((res, rej) => {
       var self = this;
       Request.setProvider(self.web3.currentProvider);
@@ -273,8 +273,8 @@ module.exports = {
             var rId = parseInt(requestId);
             console.log("RequestId returned from Contract : " + rId);
 
-            var createRequest_query = "INSERT INTO public.request(rId, studId, pId, allocatedStatus, indications, score, requestTimestamp) values($1,$2,$3,$4,$5,$6,$7)"
-            pool.query(createRequest_query, [rId, stuId, patientId, allocatedStatus, dbIndication, studentScore, requestTimeStamp], (err, data) => {
+            var createRequest_query = "INSERT INTO public.request(rId, studId, pId, allocatedStatus, indications, score, requestTimestamp, fcfsScore, seniorityScore) values($1,$2,$3,$4,$5,$6,$7,$8,$9)"
+            pool.query(createRequest_query, [rId, stuId, patientId, allocatedStatus, dbIndication, studentScore, requestTimeStamp, fcfsScore, seniorityScore], (err, data) => {
               if (err) {
                 console.log("Error in Insert Request Query");
                 console.log(err)
