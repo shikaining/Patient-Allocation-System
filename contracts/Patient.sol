@@ -43,8 +43,6 @@ contract Patient is ERC721Full {
 	
 	struct _Patient {
 		uint patientID;
-		string name;
-		string contactNum;
 		uint[] possessedIndications;
 		address owner;
 		bool resolved;
@@ -198,15 +196,12 @@ contract Patient is ERC721Full {
 	}
 	
 	//Create patient
-	function createPatient(string memory name, string memory contactNum, 
-						   uint[] memory possessedIndications) 
+	function createPatient(uint[] memory possessedIndications) 
 	public onlyPowerAndUp 
 	returns (uint) {
 		// Create patient
 		_Patient memory _patient = _Patient(
 			patientCount, 
-			name, 
-			contactNum, 
 			possessedIndications,
 			address(0),
 			false
@@ -258,13 +253,10 @@ contract Patient is ERC721Full {
 	}
 	
 	// Update patient information
-	function updatePatient(uint patientID, string memory _name,
-						   string memory _contactNum,
+	function updatePatient(uint patientID,
 						   uint[] memory _possessedIndications,
 						   address _owner, bool resolution)
 	public onlyPowerAndUp {
-		patients[patientID].name = _name;
-		patients[patientID].contactNum = _contactNum;
 		patients[patientID].possessedIndications = _possessedIndications;
 		patients[patientID].owner = _owner;
 		patients[patientID].resolved = resolution;
@@ -300,9 +292,8 @@ contract Patient is ERC721Full {
 	// Return all credentials of a patient
 	function getPatient(uint patientID) 
 	public onlyAdminAndUp
-	view returns (string memory, string memory, uint[] memory, address, bool) {
-		return (patients[patientID].name, patients[patientID].contactNum,
-			    patients[patientID].possessedIndications, patients[patientID].owner,
+	view returns (uint[] memory, address, bool) {
+		return (patients[patientID].possessedIndications, patients[patientID].owner,
 			    patients[patientID].resolved);
 	}
 	
