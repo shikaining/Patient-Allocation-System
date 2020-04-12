@@ -1,5 +1,6 @@
 var express = require('express');
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var router = express.Router();
 
@@ -30,26 +31,41 @@ router.post('/', function (req, res, next) {
 
   var email = req.body.email;
   var password = req.body.password;
-  console.log(email);
-  console.log(password);
-
-  var sql_query = "SELECT * FROM public.staff WHERE public.staff.email ='" + email + "' and public.staff.password ='" + password + "'";
-
-  pool.query(sql_query, (err, staff) => {
-    // console.log(staff);
-    if (staff.rowCount === 1) {
-      req.session.username = email;
-      console.log(req.session.username);
-      console.log("staff ID" + staff.rows[0].stfid);
-      res.redirect('/createPatient');
-    }
-    else {
+  retrievePassword_query = "SELECT password FROM public.staff WHERE staff.email = '" + email +"'";
+  pool.query(retrievePassword_query, (err,hashedPassword)=>{
+    if(err){
       req.flash('error', 'Invalid username or password');
+      res.redirect('/staffLogin')
+    } else {
+      bcrypt.compare(password,hashedPassword.rows[0].password, (error, result) => {
+        if(result){
+          var sql_query = "SELECT * FROM public.staff WHERE public.staff.email ='" + email + "'";
 
-      res.redirect('/staffLogin');
+          pool.query(sql_query, (err, staff) => {
+            // console.log(staff);
+            if (staff.rowCount === 1) {
+              req.session.username = email;
+              console.log(req.session.username);
+              console.log("staff ID" + staff.rows[0].stfid);
+              res.redirect('/createPatient');
+            }
+            else {
+              req.flash('error', 'Invalid username or password');
+
+              res.redirect('/staffLogin');
+            }
+
+          });
+        } else {
+          console.log("Bcrypt caught error");
+          req.flash('error', 'Invalid username or password');
+          res.redirect('/staffLogin')
+        }
+        
+      })
     }
-
-  });
+  })
+  
 });
 
 router.get('/', function (req, res, next) {

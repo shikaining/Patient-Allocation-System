@@ -1,4 +1,5 @@
 const Pool = require("pg").Pool;
+const bcrypt = require('bcrypt')
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
@@ -7,38 +8,43 @@ const pool = new Pool({
   port: 5432
 });
 
+const saltRounds = 10;
+
 module.exports = {
   init: function(accounts) {
     if(accounts == null || accounts.length < 5) {
       console.log("***FORGOT TO RUN TRUFFLE MIGRATE***")
       return;
     }
-    pool.query("SELECT email FROM public.staff ORDER BY stfId ASC", (err, result)=>{
-      // console.log(result.rows);
-      var updateStaff = "UPDATE public.staff SET address = $1 WHERE email = $2"
-      for(i = 0; i < 4; i++){
-        address = accounts[i];
-        email = result.rows[i].email;
-        // console.log("Address : " + address);
-        // console.log("Email : " + email)
-        
-        pool.query(updateStaff,[address,email])
-      }
-
-      //Add address to student
-      pool.query("SELECT email FROM public.student", (err, res) => {
-        var updateStudent = "UPDATE public.student SET address = $1 WHERE email = $2"
+    bcrypt.hash('password', saltRounds, (err, hashedPassword) => {
+      pool.query("SELECT email FROM public.staff ORDER BY stfId ASC", (err, result)=>{
+        // console.log(result.rows);
+        var updateStaff = "UPDATE public.staff SET address = $1, password = $2 WHERE email = $3"
         for(i = 0; i < 4; i++){
-          address = accounts[i+5];
-          email = res.rows[i].email;
+          address = accounts[i];
+          email = result.rows[i].email;
           // console.log("Address : " + address);
           // console.log("Email : " + email)
           
-          pool.query(updateStudent,[address,email])
+          pool.query(updateStaff,[address,hashedPassword,email])
         }
+  
+        //Add address to student
+        pool.query("SELECT email FROM public.student", (err, res) => {
+          var updateStudent = "UPDATE public.student SET address = $1, password = $2 WHERE email = $3"
+          for(i = 0; i < 4; i++){
+            address = accounts[i+5];
+            email = res.rows[i].email;
+            // console.log("Address : " + address);
+            // console.log("Email : " + email)
+            
+            pool.query(updateStudent,[address,hashedPassword,email])
+          }
+        })
+        console.log("End of Init, Success updating Database")
       })
-      console.log("End of Init, Success updating Database")
     })
+    
   },
   select: function(table, columns, params, order) {
     var query = "SELECT " + columns + " FROM " + table;

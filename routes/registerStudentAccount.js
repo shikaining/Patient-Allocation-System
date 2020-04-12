@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 const db = require("../connection/queries");
 const truffle_connect = require("../connection/app");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const { Pool } = require("pg");
 /* --- V7: Using Dot Env ---
@@ -51,22 +53,25 @@ router.post('/', function (req, res, next) {
     var address = req.body.studentAddress.toLowerCase();
     var email = req.body.studentEmail;
     var password = req.body.password;
-    console.log(email);
-    console.log(password);
+    bcrypt.hash(password, saltRounds, (err, hashPassword) => {
+        password = hashPassword;
+        var sql_query = "INSERT into Student(name, nric, contactNo, email, password, address, enrolYear, indicationCount, expectedCount) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
 
-    var sql_query = "INSERT into Student(name, nric, contactNo, email, password, address, enrolYear, indicationCount, expectedCount) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
+        pool.query(sql_query, [name, nric, contactNo, email, password, address, enrolYear, indicationsArray,indicationsArray], (err, data) => {
+            if (err === undefined) {
+                req.flash('info', 'Account successfully created');
+                res.redirect('/registerStudentAccount');
+            } else {
+                req.flash('error', 'An error has occurred! Please try again');
+                console.log(err);
+                res.redirect('/registerStudentAccount');
+            }
 
-    pool.query(sql_query, [name, nric, contactNo, email, password, address, enrolYear, indicationsArray,indicationsArray], (err, data) => {
-        if (err === undefined) {
-            req.flash('info', 'Account successfully created');
-            res.redirect('/registerStudentAccount');
-        } else {
-            req.flash('error', 'An error has occurred! Please try again');
-            console.log(err);
-            res.redirect('/registerStudentAccount');
-        }
+        });
+        
+    })
 
-    });
+    
 
 
 });

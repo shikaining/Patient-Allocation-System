@@ -10,7 +10,7 @@ CREATE TABLE Student (
 	nric varchar(20),
 	contactNo varchar(20),
 	email varchar(128) unique not null,
-	password varchar(60),
+	password varchar(120),
 	address varchar(60),
 	enrolYear int not null,
 	indicationCount integer[10],
@@ -24,7 +24,7 @@ CREATE TABLE Staff (
 	nric varchar(20),
 	contactNo varchar(20),
 	email varchar(128) unique not null,
-	password varchar(60),
+	password varchar(120),
 	address varchar(60),
 	verification varchar(60),
 	PRIMARY KEY (stfId)
