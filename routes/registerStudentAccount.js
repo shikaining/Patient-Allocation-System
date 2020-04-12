@@ -54,9 +54,9 @@ router.post('/', function (req, res, next) {
     console.log(email);
     console.log(password);
 
-    var sql_query = "INSERT into Student(name, nric, contactNo, email, password, address, enrolYear, indicationCount) values($1,$2,$3,$4,$5,$6,$7,$8)";
+    var sql_query = "INSERT into Student(name, nric, contactNo, email, password, address, enrolYear, indicationCount, expectedCount) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
 
-    pool.query(sql_query, [name, nric, contactNo, email, password, address, enrolYear, indicationsArray], (err, data) => {
+    pool.query(sql_query, [name, nric, contactNo, email, password, address, enrolYear, indicationsArray,indicationsArray], (err, data) => {
         if (err === undefined) {
             req.flash('info', 'Account successfully created');
             res.redirect('/registerStudentAccount');

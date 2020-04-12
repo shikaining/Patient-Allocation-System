@@ -96,7 +96,7 @@ router.get("/", function (req, res, next) {
                             listStatus: listStatus,
                         });
 
-                        console.log(me.displayedRequests);
+                        // console.log(me.displayedRequests);
                     });
                     // setTimeout(function () {
 

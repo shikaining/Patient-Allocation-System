@@ -37770,7 +37770,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-04-12T05:33:20.467Z",
+  "updatedAt": "2020-04-12T16:40:49.935Z",
   "devdoc": {
     "methods": {
       "approve(address,uint256)": {
