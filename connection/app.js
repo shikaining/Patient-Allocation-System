@@ -31,7 +31,7 @@ module.exports = {
   CALLS PATIENT CONTRACT
   */
   allocatePatient: function (requestId, patientId, sender) {
-    
+
     return new Promise((res,rej) => {
       var self = this;
       Request.setProvider(self.web3.currentProvider);
@@ -254,7 +254,7 @@ module.exports = {
             .catch(error => {
               console.log("Contract Error!")
               console.log(error);
-              rej('Error with Contract.');
+              rej('You do not have the access rights to create patients.');
               return;
             });
       });
@@ -370,7 +370,7 @@ module.exports = {
         console.log("owner : " + owner)
         console.log("resolution : " + resolution)
         console.log("sender : " + sender)
-        
+
         Patient.deployed().then(function (instance) {
           patientInstance = instance;
           patientInstance.updatePatient(
@@ -391,7 +391,7 @@ module.exports = {
           });
         });
       })
-    
+
   },
   createPowerUserInPatient: function (powerUserAddr, sender) {
     var self = this;
