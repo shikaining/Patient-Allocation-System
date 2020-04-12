@@ -56,7 +56,7 @@
                 button = 'Unlist Patient';
             } else {
                 button = 'List Patient';
-                
+
             }
             document.getElementById("listOrUnlist").innerHTML = button;
 
@@ -96,51 +96,6 @@
     <!-- Page Content -->
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
-        <h3 class="mt-4 mb-3"><%= title %></h3>
-        <%- messages('my_message_template', locals) %>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Patient Id</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Contact No.</th>
-                    <th scope="col">Indications</th>
-                    <th scope="col">Listing Status</th>
-                    <th scope="col">Allocation Status</th>
-                    <th scope="col">Student ID</th>
-                    <th scope="col">Action</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% for(var i=0; i<data.length; i++) { %>
-                <tr>
-                    <td><%= data[i].patientId%></td>
-                    <td><%= data[i].patientName%></td>
-                    <td><%= data[i].patientContact%></td>
-                    <td><%= data[i].indications%></td>
-                    <td><%= data[i].listingStatus%></td>
-                    <td><%= data[i].allocationStatus%></td>
-                    <td><%= data[i].studid%></td>
-                    <% if (data[i].listingStatus == 'Listed' && data[i].allocationStatus != 'Allocated') {%>
-                    <td><button type="button" class="btn btn-warning" onclick="listUnlistPatient(this)">Unlist
-                        </button>
-                    </td>
-                    <% } else if (data[i].listingStatus == 'Not Listed' && data[i].allocationStatus != 'Allocated'){ %>
-                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List
-                        </button>
-                    </td>
-                    <% } %>
-
-                    <% if (data[i].allocationStatus != 'Allocated' && data[i].listedtimestamp == null) {%>
-                    <td><button type="button" class="btn btn-info" onclick="editPatient(this)">Edit</button></td>
-                    <% } else { %>
-
-                    <% } %>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
 
         <form id="listUnlistPatient_form" action="viewPatients" role="form" method="post" style="display:none">
             <h3 class="mt-4 mb-3">List/Unlist Patient</h3>
@@ -237,9 +192,55 @@
 
 
             <button type="submit" class="btn btn-primary">Update Patient</button>
-
-
         </form>
+
+        <h3 class="mt-4 mb-3"><%= title %></h3>
+        <%- messages('my_message_template', locals) %>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Patient Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Contact No.</th>
+                    <th scope="col">Indications</th>
+                    <th scope="col">Listing Status</th>
+                    <th scope="col">Allocation Status</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Action</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i<data.length; i++) { %>
+                <tr>
+                    <td><%= data[i].patientId%></td>
+                    <td><%= data[i].patientName%></td>
+                    <td><%= data[i].patientContact%></td>
+                    <td><%= data[i].indications%></td>
+                    <td><%= data[i].listingStatus%></td>
+                    <td><%= data[i].allocationStatus%></td>
+                    <td><%= data[i].studid%></td>
+                    <% if (data[i].listingStatus == 'Listed' && data[i].allocationStatus != 'Allocated') {%>
+                    <td><button type="button" class="btn btn-warning" onclick="listUnlistPatient(this)">Unlist
+                        </button>
+                    </td>
+                    <% } else if (data[i].listingStatus == 'Not Listed' && data[i].allocationStatus != 'Allocated'){ %>
+                    <td><button type="button" class="btn btn-primary" onclick="listUnlistPatient(this)">List
+                        </button>
+                    </td>
+                    <% } %>
+
+                    <% if (data[i].allocationStatus != 'Allocated' && data[i].listedtimestamp == null) {%>
+                    <td><button type="button" class="btn btn-info" onclick="editPatient(this)">Edit</button></td>
+                    <% } else { %>
+
+                    <% } %>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+
 
     </div>
 

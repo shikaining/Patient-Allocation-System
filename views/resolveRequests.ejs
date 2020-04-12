@@ -77,6 +77,46 @@
     <!-- Page Content -->
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
+        <form id="resolvePatient_form" action="resolveRequests" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Resolve Patient</h3>
+            <div class="form-group">
+                <label for="studentId">Student ID:</label>
+                <input type="text" class="form-control" id="studentId" name="studentId"
+                    required="required" readonly="true">
+            </div>
+
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="text" class="form-control" id="patientId" name="patientId"
+                    required="required" readonly="true">
+            </div>
+            <button type="submit" class="btn btn-primary">Resolve Patient</button>
+        </form>
+
+        <form id="transferPatient_form" action="resolveRequests" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Transfer Patient to Other Student</h3>
+
+            <div class="form-group">
+                <label for="transferPatientId">Patient ID:</label>
+                <input type="text" class="form-control" id="transferPatientId" name="transferPatientId"
+                    required="required" readonly="true">
+            </div>
+
+            <div class="form-group">
+                <label for="transferStudentId">Transfer to Student ID:</label>
+                <input type="text" class="form-control" id="transferStudentId" name="transferStudentId"
+                    required="required" placeholder="Enter Student Id">
+            </div>
+            <button type="submit" class="btn btn-primary">Transfer Patient</button>
+
+            <!-- Hidden field to retrieve value -->
+            <div class="form-group" style="display:none">
+                <label for="trfstudentId">Student ID:</label>
+                <input type="text" class="form-control" id="trfstudentId" name="trfstudentId"
+                    required="required" readonly="true">
+            </div>
+        </form>
+        
         <h5>Current Indications Record:</h5>
         <table class="table table-sm" width="50%">
             <thead>
@@ -128,45 +168,7 @@
             </tbody>
         </table>
 
-        <form id="resolvePatient_form" action="resolveRequests" role="form" method="post" style="display:none">
-            <h3 class="mt-4 mb-3">Resolve Patient</h3>
-            <div class="form-group">
-                <label for="studentId">Student ID:</label>
-                <input type="text" class="form-control" id="studentId" name="studentId"
-                    required="required" readonly="true">
-            </div>
 
-            <div class="form-group">
-                <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId"
-                    required="required" readonly="true">
-            </div>
-            <button type="submit" class="btn btn-primary">Resolve Patient</button>
-        </form>
-
-        <form id="transferPatient_form" action="resolveRequests" role="form" method="post" style="display:none">
-            <h3 class="mt-4 mb-3">Transfer Patient to Other Student</h3>
-
-            <div class="form-group">
-                <label for="transferPatientId">Patient ID:</label>
-                <input type="text" class="form-control" id="transferPatientId" name="transferPatientId"
-                    required="required" readonly="true">
-            </div>
-
-            <div class="form-group">
-                <label for="transferStudentId">Transfer to Student ID:</label>
-                <input type="text" class="form-control" id="transferStudentId" name="transferStudentId"
-                    required="required" placeholder="Enter Student Id">
-            </div>
-            <button type="submit" class="btn btn-primary">Transfer Patient</button>
-
-            <!-- Hidden field to retrieve value -->
-            <div class="form-group" style="display:none">
-                <label for="trfstudentId">Student ID:</label>
-                <input type="text" class="form-control" id="trfstudentId" name="trfstudentId"
-                    required="required" readonly="true">
-            </div>
-        </form>
 
     </div>
 

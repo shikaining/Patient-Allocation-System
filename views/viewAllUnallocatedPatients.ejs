@@ -67,6 +67,37 @@
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
 
+        <form id="requestPatient_form" action="viewAllUnallocatedPatients" role="form" method="post"
+            style="display:none">
+            <h3 class="mt-4 mb-3">Request for Patient</h3>
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
+                    readonly="true">
+            </div>
+
+            <!-- <div class="form-group">
+                <label for="listStatus">Listing Status:</label>
+                <input type="text" class="form-control" id="listStatus" name="listStatus"
+                     required="required" readonly="true">
+            </div> -->
+            <button type="submit" class="btn btn-primary">Request Patient</button>
+
+            <!-- <div class="form-group" style="display:none">
+                <label for="allocationStatus">Allocation Status:</label>
+                <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
+                     required="required" readonly="true">
+            </div> -->
+
+            <div class="form-group" style="display:none">
+                <label for="indications">Indications of Patient:</label>
+                <input type="text" class="form-control" id="indications" name="indications" required="required"
+                    readonly="true">
+            </div>
+        </form>
+
+        <br />
+
         <h5>Current Indications Record:</h5>
         <table class="table table-sm" width="50%">
             <thead>
@@ -131,34 +162,7 @@
             </tbody>
         </table>
 
-        <form id="requestPatient_form" action="viewAllUnallocatedPatients" role="form" method="post"
-            style="display:none">
-            <h3 class="mt-4 mb-3">Request for Patient</h3>
-            <div class="form-group">
-                <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
-                    readonly="true">
-            </div>
 
-            <!-- <div class="form-group">
-                <label for="listStatus">Listing Status:</label>
-                <input type="text" class="form-control" id="listStatus" name="listStatus"
-                     required="required" readonly="true">
-            </div> -->
-            <button type="submit" class="btn btn-primary">Request Patient</button>
-
-            <!-- <div class="form-group" style="display:none">
-                <label for="allocationStatus">Allocation Status:</label>
-                <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
-                     required="required" readonly="true">
-            </div> -->
-
-            <div class="form-group" style="display:none">
-                <label for="indications">Indications of Patient:</label>
-                <input type="text" class="form-control" id="indications" name="indications" required="required"
-                    readonly="true">
-            </div>
-        </form>
     </div>
 
     <!-- /.container --><br />

@@ -50,6 +50,20 @@
     <!-- Page Content -->
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
+
+        <form id="withdrawRequest_form" action="viewRequests" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Withdraw Request</h3>
+            <div class="form-group">
+                <label for="requestId">Request ID:</label>
+                <input type="text" class="form-control" id="requestId" name="requestId"
+                    required="required" readonly="true">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Withdraw Request</button>
+        </form>
+
+        <br />
+
         <h5>Current Indications Record:</h5>
         <table class="table table-sm" width="50%">
             <thead>
@@ -103,16 +117,7 @@
             </tbody>
         </table>
 
-        <form id="withdrawRequest_form" action="viewRequests" role="form" method="post" style="display:none">
-            <h3 class="mt-4 mb-3">Withdraw Request</h3>
-            <div class="form-group">
-                <label for="requestId">Request ID:</label>
-                <input type="text" class="form-control" id="requestId" name="requestId"
-                    required="required" readonly="true">
-            </div>
 
-            <button type="submit" class="btn btn-primary">Withdraw Request</button>
-        </form>
     </div>
 
     <!-- /.container --><br />

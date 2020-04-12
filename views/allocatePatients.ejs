@@ -61,6 +61,30 @@
     <!-- Page Content -->
     <div class="container">
         <h1 class="mt-4 mb-3">Welcome <%= user%></h1>
+
+        <form id="allocatePatient_form" action="allocatePatients" role="form" method="post" style="display:none">
+            <h3 class="mt-4 mb-3">Allocate Patient</h3>
+            <div class="form-group">
+                <label for="patientId">Patient ID:</label>
+                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
+                    readonly="true">
+            </div>
+
+            <div class="form-group">
+                <label for="allocationStatus">Allocation Status:</label>
+                <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
+                    required="required" readonly="true">
+            </div>
+
+            <div class="form-group">
+                <label for="studentId">Student ID to Allocate:</label>
+                <input type="text" class="form-control" id="studentId" name="studentId" required="required"
+                    readonly="true">
+            </div>
+            <button type="submit" class="btn btn-primary">Allocate</button>
+        </form>
+
+        
         <h3 class="mt-4 mb-3"><%= title %></h3>
         <%- messages('my_message_template', locals) %>
         <table class="table">
@@ -86,7 +110,7 @@
                     <td><%= data[i].indications%></td>
                     <!-- <td><%= data[i].liststatus%></td> -->
                     <td><%= data[i].allocatedstatus%></td>
-                    
+
                     <%if (data[i].studid == undefined) { %>
                     <td>None</td>
                     <% } else { %>
@@ -102,33 +126,11 @@
                     <td><button type="button" class="btn btn-primary" onclick="allocatedPatient(this)">Allocate
                     </button></td>
                     <% } %>
-                    
+
                 </tr>
                 <% } %>
             </tbody>
         </table>
-
-        <form id="allocatePatient_form" action="allocatePatients" role="form" method="post" style="display:none">
-            <h3 class="mt-4 mb-3">Allocate Patient</h3>
-            <div class="form-group">
-                <label for="patientId">Patient ID:</label>
-                <input type="text" class="form-control" id="patientId" name="patientId" required="required"
-                    readonly="true">
-            </div>
-
-            <div class="form-group">
-                <label for="allocationStatus">Allocation Status:</label>
-                <input type="text" class="form-control" id="allocationStatus" name="allocationStatus"
-                    required="required" readonly="true">
-            </div>
-
-            <div class="form-group">
-                <label for="studentId">Student ID to Allocate:</label>
-                <input type="text" class="form-control" id="studentId" name="studentId" required="required"
-                    readonly="true">
-            </div>
-            <button type="submit" class="btn btn-primary">Allocate</button>
-        </form>
     </div>
 
     <!-- /.container --><br />
