@@ -210,7 +210,7 @@ module.exports = {
 
           console.log(sender);
           patientInstance.createPatient
-            .call(patientName, patientContact, solidityIndication, {
+            .call(solidityIndication, {
               from: sender,
               gas: "5000000"
             })
@@ -240,8 +240,6 @@ module.exports = {
                   } else {
                     patientInstance
                       .createPatient(
-                        patientName,
-                        patientContact,
                         solidityIndication,
                         { from: sender, gas: "5000000" }
                       )
@@ -359,8 +357,6 @@ module.exports = {
   },
   updatePatient: function (
     patientId,
-    patientName,
-    patientContact,
     solidityIndications,
     owner,
     resolution,
@@ -380,8 +376,6 @@ module.exports = {
         Patient.deployed().then(function (instance) {
           patientInstance = instance;
           patientInstance.updatePatient(
-            patientId,
-            patientName,
             patientContact,
             solidityIndications,
             owner,
