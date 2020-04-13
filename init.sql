@@ -129,8 +129,8 @@ INSERT INTO public.patient (pid,stfid,studid,"name",nric,contactno,liststatus,al
 ,(3,2,1,'Patient3','S9215003C','94540003','Unlisted','Allocated','Resolved','{Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics}','2020-04-13 14:05:14.348',1,'Kai Ning')
 ,(4,2,1,'Patient4','S9215004D','94540004','Unlisted','Allocated','Resolved','{Fixed Prosthodontics,Operative Dentistry,Oral Surgery}','2020-04-13 14:05:19.160',1,'Kai Ning')
 ,(5,2,1,'Patient5','S9215005E','94540005','Unlisted','Allocated','Resolved','{Operative Dentistry}','2020-04-13 14:05:24.739',1,'Kai Ning')
-,(6,2,NULL,'Patient6','S9215006F','94540006','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:29.339',1,'Kai Ning')
-,(7,2,NULL,'Patient7','S9215007G','94540007','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:34.127',1,'Kai Ning')
+,(6,2,NULL,'Patient6','S9215006F','94540006','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:29.339',1,'No Request Yet')
+,(7,2,NULL,'Patient7','S9215007G','94540007','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:34.127',1,'No Request Yet')
 ;
 
 
