@@ -35,7 +35,7 @@ CREATE TABLE Patient (
 	stfId integer not null,
 	studId int,
 	name varchar(60),
-	nric varchar(20) unique not null,
+	nric varchar(120) unique not null,
 	contactNo varchar(20),
 	listStatus varchar(20),
 	allocatedStatus varchar(20),
