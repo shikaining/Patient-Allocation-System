@@ -118,7 +118,7 @@ contract("Patient [Workflow Test]", accounts => {
 			console.log("----------------");
 			
 			// Check for returned patient ID
-			assert.equal(patientID.toNumber(), 1, "Patient 1 not created successfully");
+			assert.equal(patientID.toNumber(), 11, "Patient 1 not created successfully");
 			patient1 = patientID.toNumber();
 		}).then(() => {
 			// Create Patient 1
@@ -257,7 +257,7 @@ contract("Patient [Workflow Test]", accounts => {
 		patient.getTotalPatients.call()
 		.then((rsl) => {
 			// Check if total patients is updated correctly
-			assert.equal(rsl.toNumber(), 1, "Total number of patients incorrect");
+			assert.equal(rsl.toNumber(), 11, "Total number of patients incorrect");
 		})
 	);
 });
@@ -868,7 +868,7 @@ contract("Request [Workflow Test]", accounts => {
 			console.log("----------------");
 			
 			// Check for returned request ID
-			assert.equal(requestID.toNumber(), 1, "Request 1 not created successfully");
+			assert.equal(requestID.toNumber(), 6, "Request 1 not created successfully");
 			request1 = requestID.toNumber();
 		}).then(() => {
 			// Create Request 1
@@ -901,7 +901,7 @@ contract("Request [Workflow Test]", accounts => {
 			console.log("------------------");
 			
 			// Check for returned patient ID
-			assert.equal(patientID.toNumber(), 1, "Patient 2 not created successfully");
+			assert.equal(patientID.toNumber(), 11, "Patient 2 not created successfully");
 			patient2 = patientID.toNumber();
 		}).then(() => {
 			// Create Patient 2
@@ -957,9 +957,9 @@ contract("Request [Workflow Test]", accounts => {
 		.then((rsl) => {
 			console.log("Request Resolution");
 			console.log("------------------");
-			
+
 			// Check resolution
-			assert.equal(rsl[2], true, "Request 1's resolution incorrect");
+			assert.equal(rsl[5], true, "Request 1's resolution incorrect");
 		})
 	);
 	
@@ -970,7 +970,7 @@ contract("Request [Workflow Test]", accounts => {
 			console.log("--------------");
 			
 			// Check for returned request ID
-			assert.equal(requestID.toNumber(), 2, "Request 2 not created successfully");
+			assert.equal(requestID.toNumber(), 7, "Request 2 not created successfully");
 			request2 = requestID.toNumber();
 		}).then(() => {
 			// Create Request 2
@@ -1017,7 +1017,7 @@ contract("Request [Workflow Test]", accounts => {
 		request.getTotalRequests.call()
 		.then((rsl) => {
 			// Check if total requests is updated correctly
-			assert.equal(rsl.toNumber(), 2, "Total number of requests incorrect");
+			assert.equal(rsl.toNumber(), 7, "Total number of requests incorrect");
 		})
 	);
 });
