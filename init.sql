@@ -93,9 +93,9 @@ CREATE TABLE IndicationQuota (
 
 
 
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'password', 2017,'{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'password', 2018, '{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}','{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 1}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 1}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'password', 2017,'{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'password', 2018, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'password', 2019, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 
 
