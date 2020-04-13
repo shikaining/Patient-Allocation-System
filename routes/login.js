@@ -37,8 +37,8 @@ router.post('/', function (req, res, next) {
       req.flash('error', 'Invalid username or password');
       res.redirect('/login')
     } else {
-      verifyPassword = CryptoJS.AES.encrypt(password, 'IS4302').toString();
-        if(verifyPassword = hashedPassword.rows[0].password){
+      var bytes  = CryptoJS.AES.decrypt(hashedPassword.rows[0].password, 'IS4302');
+        if(password == bytes.toString(CryptoJS.enc.Utf8)){
           var sql_query = "SELECT * FROM public.student WHERE public.student.email ='" + email + "'";
 
           pool.query(sql_query, (err, student) => {
