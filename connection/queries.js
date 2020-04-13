@@ -1,5 +1,5 @@
 const Pool = require("pg").Pool;
-const bcrypt = require('bcrypt')
+const CryptoJS = require('crypto-js');
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
@@ -8,41 +8,81 @@ const pool = new Pool({
   port: 5432
 });
 
-const saltRounds = 10;
+function inputDB(query, address, email, nric, password){
+  return new Promise((res,rej) => {
+    // console.log("Query: " + query)
+    // console.log("address: " + address)
+    // console.log("email: " + email);
+    // console.log("nric: " + nric);
+    // console.log("password: " + password)
+    pool.query(query,[address,password,nric, email], (err,data)=>{
+      if(err){
+        console.log('Error')
+        console.log(err);
+      }else {
+        console.log('Success')
+        res(data);
+        return;
+      }
+      
+    })
+  })
+}
 
 module.exports = {
-  init: function(accounts) {
+  init: async function(accounts) {
     if(accounts == null || accounts.length < 5) {
       console.log("***FORGOT TO RUN TRUFFLE MIGRATE***")
       return;
     }
-    bcrypt.hash('password', saltRounds, (err, hashedPassword) => {
-      pool.query("SELECT email FROM public.staff ORDER BY stfId ASC", (err, result)=>{
-        // console.log(result.rows);
-        var updateStaff = "UPDATE public.staff SET address = $1, password = $2 WHERE email = $3"
-        for(i = 0; i < 4; i++){
-          address = accounts[i];
-          email = result.rows[i].email;
-          // console.log("Address : " + address);
-          // console.log("Email : " + email)
-          
-          pool.query(updateStaff,[address,hashedPassword,email])
-        }
-  
-        //Add address to student
-        pool.query("SELECT email FROM public.student", (err, res) => {
-          var updateStudent = "UPDATE public.student SET address = $1, password = $2 WHERE email = $3"
-          for(i = 0; i < 4; i++){
-            address = accounts[i+5];
-            email = res.rows[i].email;
-            // console.log("Address : " + address);
-            // console.log("Email : " + email)
-            
-            pool.query(updateStudent,[address,hashedPassword,email])
-          }
-        })
-        console.log("End of Init, Success updating Database")
-      })
+    hashedPassword = CryptoJS.AES.encrypt('password', 'IS4302').toString();
+    // console.log(hashedPassword)
+    pool.query('select stud.email as studemail, staff.email as staffemail from staff staff left join student stud on staff.stfid = stud.studid ORDER BY staff.stfId asc', async (err,result) => {
+      
+      updateStaff = "UPDATE public.staff SET address = $1, password = $2, nric = $3 WHERE email = $4"
+      updateStudent = "UPDATE public.student SET address = $1, password = $2, nric = $3 WHERE email = $4"
+      let i = 0;
+      console.log(i + '-First')
+      await inputDB(updateStaff, accounts[i], result.rows[i].staffemail, CryptoJS.AES.encrypt('S953600' + i + 'A', 'IS4302').toString(), hashedPassword)
+      // console.log(i + '- Second')
+      await inputDB(updateStudent, accounts[i+5], result.rows[i].studemail, CryptoJS.AES.encrypt('S953610' + i + 'A', 'IS4302').toString(), hashedPassword)
+      i = 1;
+      console.log(i + '- First')
+      await inputDB(updateStaff, accounts[i], result.rows[i].staffemail, CryptoJS.AES.encrypt('S953600' + i + 'A', 'IS4302').toString(), hashedPassword)
+      // console.log(i + '- Second');
+      await inputDB(updateStudent, accounts[i+5], result.rows[i].studemail, CryptoJS.AES.encrypt('S953610' + i + 'A', 'IS4302').toString(), hashedPassword)
+      i = 2;
+      console.log(i + '- First')
+      await inputDB(updateStaff, accounts[i], result.rows[i].staffemail, CryptoJS.AES.encrypt('S953600' + i + 'A', 'IS4302').toString(), hashedPassword)
+      // console.log(i + '- Second');
+      await inputDB(updateStudent, accounts[i+5], result.rows[i].studemail, CryptoJS.AES.encrypt('S953610' + i + 'A', 'IS4302').toString(), hashedPassword)
+      i = 3;
+      console.log(i + '- First')
+      await inputDB(updateStaff, accounts[i], result.rows[i].staffemail, CryptoJS.AES.encrypt('S953600' + i + 'A', 'IS4302').toString(), hashedPassword)
+      // console.log(i + '- Second');
+      await inputDB(updateStudent, accounts[i+5], result.rows[i].studemail, CryptoJS.AES.encrypt('S953610' + i + 'A', 'IS4302').toString(), hashedPassword)
+
+
+    //   for(i = 0; i < 4; i++){
+    //     // console.log(i)
+    //     // console.log(hashedPassword);
+    //     staffAddress = accounts[i];
+    //     staffEmail = result.rows[i].staffemail;
+    //     staffNric = 'S953600' + i + "A";
+    //     staffNric = CryptoJS.AES.encrypt(staffNric, 'IS4302').toString();
+    //     updateStaff = "UPDATE public.staff SET address = $1, password = $2, nric = $3 WHERE email = $4"
+    //     // console.log(i)
+        
+    //     studI = i+5;
+    //     studentAddress = accounts[studI];
+    //     studentEmail = result.rows[i].studemail;
+    //     studentNRIC = 'S953610' + studI + 'B';
+    //     studentNRIC = CryptoJS.AES.encrypt(studentNRIC, 'IS4302').toString();
+    //     // console.log(studentNRIC);
+    //     updateStudent = "UPDATE public.student SET address = $1, password = $2, nric = $3 WHERE email = $4"
+    //     inputDB(updateStaff, staffAddress, staffEmail, staffNric, hashedPassword).then(inputDB(updateStudent, studentAddress, studentEmail, studentNRIC, hashedPassword))
+    //   }
+    //   console.log("End of Init, Success updating Database")
     })
     
   },

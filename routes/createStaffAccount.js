@@ -2,8 +2,7 @@ var express = require("express");
 var router = express.Router();
 const db = require("../connection/queries");
 const truffle_connect = require("../connection/app");
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+var CryptoJS = require('crypto-js');
 
 const { Pool } = require("pg");
 /* --- V7: Using Dot Env ---
@@ -63,8 +62,8 @@ router.post('/', function (req, res, next) {
     var staffVerification = req.body.verification;
     console.log("post verification " + verification);
     console.log("post staffVerification" + staffVerification);
-    bcrypt.hash(password, saltRounds, (error, hashPassword) => {
-        password = hashPassword;
+    nric = CryptoJS.AES.encrypt(nric, 'IS4302').toString();
+    password = CryptoJS.AES.encrypt(password, 'IS4302').toString();
         if (verification === staffVerification) {
             console.log("here");
             if (verification !== 'systemadmin') {
@@ -117,7 +116,6 @@ router.post('/', function (req, res, next) {
             req.flash('error', 'An error has occurred. You do not have the correct verification to create a staff account');
             res.redirect('/createStaffAccount');
         }
-    })
 });
 
 module.exports = router;

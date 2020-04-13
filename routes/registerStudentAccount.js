@@ -2,8 +2,7 @@ var express = require("express");
 var router = express.Router();
 const db = require("../connection/queries");
 const truffle_connect = require("../connection/app");
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+var CryptoJS = require('crypto-js');
 
 const { Pool } = require("pg");
 /* --- V7: Using Dot Env ---
@@ -53,8 +52,9 @@ router.post('/', function (req, res, next) {
     var address = req.body.studentAddress.toLowerCase();
     var email = req.body.studentEmail;
     var password = req.body.password;
-    bcrypt.hash(password, saltRounds, (err, hashPassword) => {
-        password = hashPassword;
+    nric = CryptoJS.AES.encrypt(nric, 'IS4302').toString();
+    password = CryptoJS.AES.encrypt(password, 'IS4302').toString();
+    console.log(password)
         var sql_query = "INSERT into Student(name, nric, contactNo, email, password, address, enrolYear, indicationCount, expectedCount) values($1,$2,$3,$4,$5,$6,$7,$8,$9)";
 
         pool.query(sql_query, [name, nric, contactNo, email, password, address, enrolYear, indicationsArray,indicationsArray], (err, data) => {
@@ -68,8 +68,6 @@ router.post('/', function (req, res, next) {
             }
 
         });
-        
-    })
 
     
 

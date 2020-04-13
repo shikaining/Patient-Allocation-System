@@ -1,6 +1,5 @@
 var express = require('express');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+var CryptoJS = require('crypto-js');
 
 var router = express.Router();
 
@@ -38,8 +37,8 @@ router.post('/', function (req, res, next) {
       req.flash('error', 'Invalid username or password');
       res.redirect('/login')
     } else {
-      bcrypt.compare(password,hashedPassword.rows[0].password, (error, result) => {
-        if(result){
+      verifyPassword = CryptoJS.AES.encrypt(password, 'IS4302').toString();
+        if(verifyPassword = hashedPassword.rows[0].password){
           var sql_query = "SELECT * FROM public.student WHERE public.student.email ='" + email + "'";
 
           pool.query(sql_query, (err, student) => {
@@ -56,12 +55,10 @@ router.post('/', function (req, res, next) {
 
           });
         } else {
-          console.log("Bcrypt caught error");
+          console.log("Wrong Password");
           req.flash('error', 'Invalid username or password');
           res.redirect('/login')
         }
-        
-      })
     }
   })
 });

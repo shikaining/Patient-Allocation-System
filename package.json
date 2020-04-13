@@ -25,10 +25,10 @@
   },
   "dependencies": {
     "alert-node": "^3.0.10",
-    "bcrypt": "^4.0.1",
     "body-parser": "^1.18.2",
     "client-sessions": "^0.8.0",
     "connect-flash": "^0.1.1",
+    "crypto-js": "^4.0.0",
     "dotenv": "^6.2.0",
     "ejs": "~2.5.7",
     "express": "^4.17.1",

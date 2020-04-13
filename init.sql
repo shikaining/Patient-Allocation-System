@@ -7,7 +7,7 @@ drop table if exists IndicationQuota cascade;
 CREATE TABLE Student (
 	studId Serial,
 	name varchar(60),
-	nric varchar(20),
+	nric varchar(120),
 	contactNo varchar(20),
 	email varchar(128) unique not null,
 	password varchar(120),
@@ -21,7 +21,7 @@ CREATE TABLE Student (
 CREATE TABLE Staff (
 	stfId Serial,
 	name varchar(60),
-	nric varchar(20),
+	nric varchar(120),
 	contactNo varchar(20),
 	email varchar(128) unique not null,
 	password varchar(120),

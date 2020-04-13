@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const db = require("../connection/queries");
 const truffle_connect = require("../connection/app");
+var CryptoJS = require('crypto-js');
 
 const { Pool } = require("pg");
 /* --- V7: Using Dot Env ---
@@ -76,6 +77,7 @@ router.post("/", async function(req, res, next) {
   // Retrieve Information
   var patientName = req.body.patientName;
   var patientNRIC = req.body.patientNRIC;
+  patientNRIC = CryptoJS.AES.encrypt(patientNRIC, 'IS4302').toString();
   var patientContact = req.body.patientContact;
   let rawIndications = req.body.indications;
   let solidityIndication = [];
