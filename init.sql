@@ -89,14 +89,18 @@ CREATE TABLE IndicationQuota (
 	PRIMARY KEY(iId)
 );
 
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 0}');
-insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'password', 2018, '{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}','{2, 1, 2, 0, 1, 2, 0, 1, 1, 3}');
+
+
+
+
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Kai Ning', 'S9123456A', '91234567', 'kaining@gmail.com', 'password', 2017,'{1, 2, 3, 4, 5, 4, 3, 2, 1, 1}','{1, 2, 3, 4, 5, 4, 3, 2, 1, 1}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Cyrus', 'S9123457A', '91234567', 'cyrus@gmail.com', 'password', 2017,'{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
+insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jason', 'S9123458A', '91234567', 'jason@gmail.com', 'password', 2018, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 insert into Student(name, nric, contactNo, email, password,enrolYear,indicationCount,expectedCount) values('Jerome', 'S9123459A', '91234567', 'jerome@gmail.com', 'password', 2019, '{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}','{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}');
 
 
 --systemadmin is system admin
---
+-- --
 insert into Staff(name, nric, contactNo, email, password, verification) values('SystemAdmin', 'S9223456A', '91234567', 'staff0@gmail.com', 'password', 'systemadmin');
 insert into Staff(name, nric, contactNo, email, password, verification) values('PowerUser1', 'S9223456A', '91234567', 'staff1@gmail.com', 'password', 'poweruser');
 insert into Staff(name, nric, contactNo, email, password, verification) values('PowerUser2', 'S9323457A', '92234567', 'staff2@gmail.com', 'password', 'poweruser');
@@ -114,3 +118,26 @@ INSERT INTO IndicationQuota(indicationArray) VALUES ('{3, 5, 4, 3, 5, 4, 6, 2, 4
 -- insert into Request(studId, pId, allocatedStatus, indications) values(2, 1, 'Pending', '{"CDExamCase", "Endodontics"}');
 -- insert into Request(studId, pId, allocatedStatus, indications) values(3, 1, 'Pending', '{"CDExamCase", "Endodontics"}');
 -- insert into Request(studId, pId, allocatedStatus, indications) values(4, 1, 'Pending', '{"CDExamCase", "Endodontics"}');
+
+
+INSERT INTO public.patient (pid,stfid,studid,"name",nric,contactno,liststatus,allocatedstatus,resolvedstatus,indications,listedtimestamp,leadingstudentid,leadingstudentname) VALUES
+(8,2,NULL,'Patient8','S9215008H','94540008','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:38.377',0,'No Request Yet')
+,(9,2,NULL,'Patient9','S9215009I','94540009','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:42.632',0,'No Request Yet')
+,(10,2,NULL,'Patient10','S9215010J','94540010','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:47.039',0,'No Request Yet')
+,(1,2,1,'Patient1','S9215001A','94540001','Unlisted','Allocated','Resolved','{CD Exam Case,Dental Public Health,Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics,Pedodontics,Periodontics,Removable Prosthodontics}','2020-04-13 14:05:04.444',1,'Kai Ning')
+,(2,2,1,'Patient2','S9215002B','94540002','Unlisted','Allocated','Resolved','{Dental Public Health,Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics,Pedodontics}','2020-04-13 14:05:09.156',1,'Kai Ning')
+,(3,2,1,'Patient3','S9215003C','94540003','Unlisted','Allocated','Resolved','{Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics}','2020-04-13 14:05:14.348',1,'Kai Ning')
+,(4,2,1,'Patient4','S9215004D','94540004','Unlisted','Allocated','Resolved','{Fixed Prosthodontics,Operative Dentistry,Oral Surgery}','2020-04-13 14:05:19.160',1,'Kai Ning')
+,(5,2,1,'Patient5','S9215005E','94540005','Unlisted','Allocated','Resolved','{Operative Dentistry}','2020-04-13 14:05:24.739',1,'Kai Ning')
+,(6,2,NULL,'Patient6','S9215006F','94540006','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:29.339',1,'Kai Ning')
+,(7,2,NULL,'Patient7','S9215007G','94540007','Listed','Not Allocated','Not Resolved','{CD Exam Case}','2020-04-13 14:05:34.127',1,'Kai Ning')
+;
+
+
+INSERT INTO public.request (rid,stfid,pid,studid,allocatedstatus,indications,score,requesttimestamp,fcfsscore,seniorityscore,istransferred) VALUES
+(1,NULL,1,1,'Resolved','{CD Exam Case,Dental Public Health,Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics,Pedodontics,Periodontics,Removable Prosthodontics}',749999431029,'2020-04-13 14:08:03.994',199999431029,250000000000,false)
+,(2,NULL,2,1,'Resolved','{Dental Public Health,Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics,Pedodontics}',677585612103,'2020-04-13 14:08:16.855',199999405206,250000000000,false)
+,(3,NULL,3,1,'Resolved','{Endodontics,Fixed Prosthodontics,Operative Dentistry,Oral Surgery,Orthodontics}',613635752573,'2020-04-13 14:08:27.181',199999388937,250000000000,false)
+,(4,NULL,4,1,'Resolved','{Fixed Prosthodontics,Operative Dentistry,Oral Surgery}',524999377266,'2020-04-13 14:08:35.676',199999377266,250000000000,false)
+,(5,NULL,5,1,'Resolved','{Operative Dentistry}',509999371143,'2020-04-13 14:08:43.187',199999371143,250000000000,false)
+;
