@@ -49,7 +49,7 @@ For staff, the use cases include:
 	
 For students, the use cases include
 		
-	1.Register for student account
+	1. Register for student account
 	2. Create Request
 	3. Withdraw Request
 	4. Transfer Request
@@ -75,20 +75,27 @@ We cannot promise that this is the best algorithm to garner confidence from FOD�
 1. Firstly, we need to understand that we store 2 types of indication records for students and each record holds an integer for all 10 identified indications that FOD requires their students to treat before graduation.
 
 	a. Their **actual completed indications (AcCInd)**, whereby it is only updated when students click ‘resolve’ patients within their account.
+	
 	b. Their **expected indications (ExInd)** holds the information of both completed indications and allocated indications that have not been resolved. Basically, when all allocated patients for this student have been resolved, their *ExInd* will have the same values as the *AcCInd*.
 		
 		
 2. When a student makes a request for a patient, we will calculate their score for that particular request by taking the sum of their First Come First Served (FCFS) score, Indication Difference score and lastly, seniority score.
 
 	a. FCFS score weightage is at 20%
+		
 		i. We take the difference between the unix timestamp* of when the Patient was listed and the unix timestamp of when the request was created.
+		
 		ii. We inverted this value so that the later a student sends a request, the less points they actually get from here.
+	
 	b. Indication Difference score weightage is at 30%
+		
 		i. There is an Indications Quota that students have to meet before graduation, this will be predetermined by the senior management team in FOD.
 		ii. We take the indications the patient has and calculate the difference between Indications Quota and the students’ ExInd, only for the indications this patient has. If students have already hit their quota for graduation, the score for this indication will be 0, there is no negative scoring.
 		iii. From there we will divide the total difference with the sum of quota for the respective indications.
 		iv. Therefore, the less indications you have completed, the higher score you will get for Indication Difference score.
+	
 	c. Seniority score weightage is at 50%
+		
 		i. We take the difference between the year from the timestamp* when Patient was listed. 
 		ii. Therefore, the closer they are to graduation, the greater number of points the student gets for their Seniority score. *Timestamp : Patient’s listed timestamp is recorded when they are first listed. Which means if they get unlisted and listed back again, the timestamp will still be from the very first time it was listed. This is to facilitate fairness incase staff try to abuse the system and collaborate with students.
 		
@@ -107,7 +114,6 @@ We cannot promise that this is the best algorithm to garner confidence from FOD�
 5. Following that, for each pending request updated, we will update its respective patient’s first in queue student as there might be a new student with a change in score. Once that is done, that would be all for the allocation process.
 
 # Transfer Process
-
 
 
 
