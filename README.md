@@ -1,4 +1,4 @@
-# Patient-Allocation-System
+# Patient-Allocation-System (PAS)
 
 # Setting Up
 
@@ -8,8 +8,7 @@ Open a terminal from IDE:
 	1: cd projectFolder
 	2: npm install
 	
-# Setting up database and running Data Init
-
+# Databse Setup and Initialization
 
 Open PSQL:
 
@@ -17,7 +16,7 @@ Open PSQL:
 	2: \c api
 	3: \i path/to/your/postgresql script.sql
 
-# Running the project
+# Project Execution
 
 
 
@@ -33,7 +32,7 @@ Open another terminal:
 	4: View app on http://localhost:3000/home
 	
 
-# Use Cases of Proposed System
+# PAS Use Cases
 
 
 
@@ -68,7 +67,7 @@ Other than registering for a student account, all of these use cases mentioned a
 We cannot promise that this is the best algorithm to garner confidence from FOD’s undergraduates due to the lack of access to a large-scale, real-time user-acceptance test which can not only test the limits of the algorithm but also find potential flaws. This is in tandem and similar to how the updated NUS ModReg algorithm was tested during Semester 1 of AY2019/2020. However, in the circumstance that we have access to the above mentioned testing, we will definitely be able to optimize the algorithm to its peak performance and reliability. In which, making the optimized algorithm fully transparent will reinforce, stabilize and reestablish the lost trust and confidence of FOD’s undergraduates towards the allocation system.
 
 
-# Request Score Calculation:
+# Request Score Calculation
 	
 	
 	
