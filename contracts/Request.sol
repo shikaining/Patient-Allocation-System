@@ -1,7 +1,7 @@
 /*
 Author		: Cyrus Lee
 Matric. No.	: A0168385N
-Title		: Group02 Project - Request v1
+Title		: Group02 Project - Request v7
 */
 
 pragma solidity ^0.5.0;
