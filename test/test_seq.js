@@ -1,7 +1,7 @@
 /*
 Author		: Cyrus Lee
 Matric. No.	: A0168385N
-Title		: Group02 Project - Test Sequence v3
+Title		: Group02 Project - Test Sequence v7
 */
 
 const Patient = artifacts.require("Patient");
